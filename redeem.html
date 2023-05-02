@@ -1,37 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Promo Code Redemption</title>
-  </head>
-  <body>
-    <h1>enviro500</h1>
-    <div id="promoCodeForm"></div>
-    <div id="result"></div>
-    <script>
-      const promoCodeForm = document.querySelector('#promoCodeForm');
-      const result = document.querySelector('#result');
-      
-      const formHtml = `
-        <form>
-          <label for="promoCode">Enter your code:</label>
-          <input type="text" id="promoCode" name="promoCode">
-          <button type="submit">Redeem</button>
-        </form>
-      `;
-      
-      promoCodeForm.innerHTML = formHtml;
-      
-      const form = document.querySelector('form');
-      
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const promoCode = document.querySelector('#promoCode').value;
-        if (promoCode === 'enviro500$X') {
-          result.textContent = 'Code Redeemed';
-        } else {
-          result.textContent = 'Invalid promo code';
-        }
-      });
-    </script>
-  </body>
+<head>
+	<title>Promo Code Redemption</title>
+	<style>
+		body {
+			background-color: black;
+			color: white;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			text-align: center;
+			padding: 50px;
+		}
+		input[type=text] {
+			padding: 10px;
+			border-radius: 5px;
+			border: none;
+			outline: none;
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
+		input[type=submit] {
+			padding: 10px 20px;
+			border-radius: 5px;
+			border: none;
+			background-color: #428bca;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<h1>Promo Code Redemption</h1>
+	<p>Enter your promo code below to redeem it:</p>
+	<form>
+		<input type="text" id="promo-code" name="promo-code" placeholder="Enter your promo code here">
+		<input type="submit" value="Redeem">
+	</form>
+	<div id="result"></div>
+	<script>
+		var form = document.querySelector('form');
+		var input = document.querySelector('#promo-code');
+		var result = document.querySelector('#result');
+
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+
+			if (input.value === 'abc' || input.value === 'xyz') {
+				result.textContent = 'helloo';
+			} else {
+				result.textContent = 'Invalid promo code';
+			}
+		});
+	</script>
+</body>
 </html>

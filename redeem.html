@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Promo Code Redemption</title>
+  </head>
+  <body>
+    <h1>Promo Code Redemption</h1>
+    <div id="promoCodeForm"></div>
+    <div id="result"></div>
+    <script>
+      const promoCodeForm = document.querySelector('#promoCodeForm');
+      const result = document.querySelector('#result');
+      
+      const formHtml = `
+        <form>
+          <label for="promoCode">Enter your promo code:</label>
+          <input type="text" id="promoCode" name="promoCode">
+          <button type="submit">Redeem</button>
+        </form>
+      `;
+      
+      promoCodeForm.innerHTML = formHtml;
+      
+      const form = document.querySelector('form');
+      
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const promoCode = document.querySelector('#promoCode').value;
+        if (promoCode === 'abc') {
+          result.textContent = 'helloo';
+        } else {
+          result.textContent = 'Invalid promo code';
+        }
+      });
+    </script>
+  </body>
+</html>
 

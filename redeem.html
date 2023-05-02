@@ -4,7 +4,7 @@
     <title>Promo Code Redemption</title>
   </head>
   <body>
-    <h1>Promo Code Redemption</h1>
+    <h1>enviro500n</h1>
     <div id="promoCodeForm"></div>
     <div id="result"></div>
     <script>
@@ -13,7 +13,7 @@
       
       const formHtml = `
         <form>
-          <label for="promoCode">Enter your promo code:</label>
+          <label for="promoCode">Enter your code:</label>
           <input type="text" id="promoCode" name="promoCode">
           <button type="submit">Redeem</button>
         </form>
@@ -26,8 +26,8 @@
       form.addEventListener('submit', (event) => {
         event.preventDefault();
         const promoCode = document.querySelector('#promoCode').value;
-        if (promoCode === 'abc') {
-          result.textContent = 'helloo';
+        if (promoCode === 'enviro500$X') {
+          result.textContent = 'Code Redeemed';
         } else {
           result.textContent = 'Invalid promo code';
         }

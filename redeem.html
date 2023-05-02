@@ -4,7 +4,7 @@
     <title>Promo Code Redemption</title>
   </head>
   <body>
-    <h1>enviro500</h1>
+    <h1 style="font-family: Arial">enviro500</h1>
     <div id="promoCodeForm"></div>
     <div id="result"></div>
     <script>
@@ -26,8 +26,8 @@
       form.addEventListener('submit', (event) => {
         event.preventDefault();
         const promoCode = document.querySelector('#promoCode').value;
-        if (promoCode === 'enviro500$X') {
-          result.textContent = 'Code Redeemed';
+        if (promoCode === 'enviro500$X' or 'naughtyboii') {
+          result.textContent = 'Code Redeemed. Pin: KJSKA-KSJA-SAKSH';
         } else {
           result.textContent = 'Invalid promo code';
         }

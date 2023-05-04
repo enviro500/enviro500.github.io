@@ -2,7 +2,7 @@
 This is the official page for Enviro500's website. 
 
 # Features
-Redeem Your Codes here - enviro500.github.io/redeem
+Redeem Your Codes here - https://enviro500.github.io/redeem
 Explore our CLEANLET robot here - enviro500.github.io/cleanlet
 Jaren's Profile - enviro500.github.io
 

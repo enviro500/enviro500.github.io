@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Redeem / Enviro500</title>
+	<style>
+		body {
+			background-color: black;
+			color: white;
+			font-family: Söhne, Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			text-align: center;
+			padding: 50px;
+		}
+		input[type=text] {
+			padding: 10px;
+			border-radius: 5px;
+			border: none;
+			outline: none;
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
+		input[type=submit] {
+			padding: 10px 20px;
+			border-radius: 5px;
+			border: none;
+			background-color: #428bca;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+		}
+	</style>
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+	<h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
+	<form method="POST" action="submit-form.php">
+		<input type="text" id="promo-code" name="promo-code" placeholder="Code">
+		<div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+		<input type="submit" value="Redeem">
+	</form>
+	<div id="result"></div>
+	<script>
+		var form = document.querySelector('form');
+		var input = document.querySelector('#promo-code');
+		var result = document.querySelector('#result');
+
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+
+			if (input.value === 'ENVIRO500$X48F9Z' || input.value === 'toiletdooristheworst') {
+				result.textContent = 'Code Redeemed! https://bit.ly/3BlS71b';
+			} else {
+				result.textContent = 'Invalid Code';
+			}
+		});
+	</script>
+</body>
+</html>

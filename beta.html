@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Website</title>
+	<style>
+		body {
+			background-color: black;
+			color: white;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			text-align: center;
+			padding: 50px;
+		}
+		img {
+			max-width: 100%;
+			height: auto;
+			margin-bottom: 20px;
+		}
+		.btn {
+			background-color: #428bca;
+			color: white;
+			border-radius: 5px;
+			padding: 10px 20px;
+			cursor: pointer;
+			font-size: 16px;
+			border: none;
+			margin-bottom: 20px;
+		}
+		.popup {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0,0,0,0.7);
+			z-index: 99999;
+		}
+		.popup-content {
+			background-color: white;
+			color: black;
+			border-radius: 10px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			padding: 20px;
+			max-width: 400px;
+		}
+		.close {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			font-size: 20px;
+			color: black;
+			cursor: pointer;
+			border: none;
+			background-color: transparent;
+			outline: none;
+		}
+		.popup button {
+			margin: 20px 10px 0 10px;
+			padding: 10px 20px;
+			border-radius: 5px;
+			border: none;
+			background-color: #428bca;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<img src="https://via.placeholder.com/400x400.png?text=Your+Image+Here" alt="Image">
+	<button class="btn" id="signup">Sign Up Now</button>
+	<div class="popup" id="popup">
+		<div class="popup-content">
+			<h2>Redirect Warning</h2>
+			<p>You will be redirected to a third-party website. This website may have different privacy policies and terms &amp; conditions.</p>
+			<button id="cancel">Cancel</button>
+			<button id="proceed">Proceed</button>
+		</div>
+	</div>
+	<script>
+		var popup = document.getElementById("popup");
+		var btn = document.getElementById("signup");
+		var cancel = document.getElementById("cancel");
+		var proceed = document.getElementById("proceed");
+
+		btn.onclick = function() {
+			popup.style.display = "block";
+		}
+
+		cancel.onclick = function() {
+			popup.style.display = "none";
+		}
+
+		proceed.onclick = function() {
+			window.location.href = "https://www.example.com";
+		}
+	</script>
+</body>
+</html>

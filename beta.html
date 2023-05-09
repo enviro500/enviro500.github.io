@@ -6,7 +6,7 @@
 		body {
 			background-color: black;
 			color: white;
-			font-family: Söhne, Arial, sans-serif;
+			font-family: Söhne, sans-serif;
 			font-size: 16px;
 			line-height: 1.5;
 			text-align: center;
@@ -29,15 +29,29 @@
 			font-size: 16px;
 			cursor: pointer;
 		}
+		.center {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			margin-bottom: 20px;
+		}
 	</style>
 	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	<script>
+		function onSubmit(token) {
+			document.querySelector('form').submit();
+		}
+	</script>
 </head>
 <body>
 	<h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
-	<form method="POST" action="submit-form.php">
+	<form action="submit.php" method="POST">
 		<input type="text" id="promo-code" name="promo-code" placeholder="Code">
-		<div class="g-recaptcha" data-sitekey="6LcD2PMlAAAAAOSBkY6Vm0DJ9CZdsYHMPYnannmo"></div>
-		<input type="submit" value="Redeem">
+		<div class="center">
+			<div class="g-recaptcha" data-sitekey=6LcD2PMlAAAAAOSBkY6Vm0DJ9CZdsYHMPYnannmo data-callback="onSubmit"></div>
+		</div>
+		<input type="submit" value="Redeem" disabled>
 	</form>
 	<div id="result"></div>
 	<script>
@@ -52,6 +66,15 @@
 				result.textContent = 'Code Redeemed! https://bit.ly/3BlS71b';
 			} else {
 				result.textContent = 'Invalid Code';
+			}
+		});
+
+		input.addEventListener('keyup', function() {
+			var submitButton = document.querySelector('input[type="submit"]');
+			if (input.value !== '') {
+				submitButton.removeAttribute('disabled');
+			} else {
+				submitButton.setAttribute('disabled', '');
 			}
 		});
 	</script>

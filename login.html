@@ -81,15 +81,7 @@
         .then(function(userCredential) {
           // User is signed in
           result.textContent = 'Login successful';
-          var redirectAnchor = document.createElement('a');
-          redirectAnchor.href = 'https://enviro500.github.io/rickroll.mp4'; // Replace with the desired URL
-          redirectAnchor.target = '_self'; // Open the URL in the same window/tab
-          var clickEvent = new MouseEvent('click', {
-            view: window,
-            bubbles: false,
-            cancelable: true,
-          });
-          redirectAnchor.dispatchEvent(clickEvent);
+          window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Replace with the desired URL
         })
         .catch(function(error) {
           // Handle errors
@@ -142,15 +134,7 @@
         .then(function(userCredential) {
           // User is signed in
           result.textContent = 'Login successful';
-          var redirectAnchor = document.createElement('a');
-          redirectAnchor.href = 'https://enviro500.github.io/rickroll.mp4'; // Replace with the desired URL
-          redirectAnchor.target = '_self'; // Open the URL in the same window/tab
-          var clickEvent = new MouseEvent('click', {
-            view: window,
-            bubbles: false,
-            cancelable: true,
-          });
-          redirectAnchor.dispatchEvent(clickEvent);
+          window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Replace with the desired URL
         })
         .catch(function(error) {
           // Handle errors

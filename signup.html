@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SIGN UP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: center;
+      padding: 50px;
+    }
+    input[type=email], input[type=password] {
+      padding: 15px;
+      border-radius: 50px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      margin-bottom: 20px;
+      width: 250px;
+    }
+    input[type=submit] {
+      padding: 15px 25px;
+      border-radius: 50px;
+      border: none;
+      background-color: blue;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+    input[type=submit]:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    #googleSignInContainer {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+  </style>
+  <!-- Include Firebase JavaScript SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase.js"></script>
+</head>
+<body>
+  <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
+  <form id="signupForm">
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button type="submit">Sign up</button>
+  </form>
+  <div id="result"></div>
+  <div id="googleSignInContainer"></div>
+  <script>
+    var form = document.querySelector('form');
+    var result = document.querySelector('#result');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var email = document.querySelector('#email').value;
+      var password = document.querySelector('#password').value;
+
+      // Create a new user with email and password
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(function(userCredential) {
+          // User is signed up successfully
+          result.textContent = 'Sign up successful';
+          // You can redirect the user to another page here
+        })
+        .catch(function(error) {
+          // Handle errors
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
+        });
+    });
+
+    // Initialize Firebase
+    var firebaseConfig = {
+      apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+      authDomain: "enviro500web.firebaseapp.com",
+      projectId: "enviro500web",
+      storageBucket: "enviro500web.appspot.com",
+      messagingSenderId: "821087210177",
+      appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+      measurementId: "G-DQZ8WQFYSR"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Google Sign-In setup
+    function initGoogleSignIn() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init({
+          client_id: '532926255817-jjg1cc8mes9608q4s7vvl66um81ctrtb.apps.googleusercontent.com'
+        });
+        attachGoogleSignIn(document.getElementById('googleSignInContainer'));
+      });
+    }
+
+    function attachGoogleSignIn(element) {
+      gapi.signin2.render(element, {
+        'scope': 'profile email',
+        'width': 200,
+        'height': 40,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': onGoogleSignUpSuccess,
+        'onfailure': onGoogleSignUpFailure
+      });
+    }
+
+    function onGoogleSignUpSuccess(googleUser) {
+      var idToken = googleUser.getAuthResponse().id_token;
+      var credential = firebase.auth.GoogleAuthProvider.credential(idToken);
+
+      // Sign up with Google credential
+      firebase.auth().signInWithCredential(credential)
+        .then(function(userCredential) {
+          // User is signed up successfully
+          result.textContent = 'Sign up successful';
+          // You can redirect the user to another page here
+        })
+        .catch(function(error) {
+          // Handle errors
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
+        });
+    }
+
+    function onGoogleSignUpFailure(error) {
+      console.log(error);
+    }
+
+    // Load the Google Sign-In API
+    function loadGoogleSignInAPI() {
+      var script = document.createElement('script');
+      script.src = 'https://apis.google.com/js/platform.js';
+      script.onload = function() {
+        initGoogleSignIn();
+      };
+      document.body.appendChild(script);
+    }
+
+    // Call the function to load Google Sign-In API
+    loadGoogleSignInAPI();
+  </script>
+</body>
+</html>

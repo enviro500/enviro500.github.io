@@ -1,4 +1,4 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>LOGIN</title>
@@ -81,7 +81,15 @@
         .then(function(userCredential) {
           // User is signed in
           result.textContent = 'Login successful';
-          window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Surprises are waiting...
+          var redirectAnchor = document.createElement('a');
+          redirectAnchor.href = 'https://enviro500.github.io/rickroll.mp4'; // Replace with the desired URL
+          redirectAnchor.target = '_self'; // Open the URL in the same window/tab
+          var clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: false,
+            cancelable: true,
+          });
+          redirectAnchor.dispatchEvent(clickEvent);
         })
         .catch(function(error) {
           // Handle errors
@@ -134,7 +142,15 @@
         .then(function(userCredential) {
           // User is signed in
           result.textContent = 'Login successful';
-          window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Redirect to Google.com
+          var redirectAnchor = document.createElement('a');
+          redirectAnchor.href = 'https://enviro500.github.io/rickroll.mp4'; // Replace with the desired URL
+          redirectAnchor.target = '_self'; // Open the URL in the same window/tab
+          var clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: false,
+            cancelable: true,
+          });
+          redirectAnchor.dispatchEvent(clickEvent);
         })
         .catch(function(error) {
           // Handle errors

@@ -44,9 +44,10 @@
       justify-content: center;
       margin-top: 20px;
     }
-    #loginForm button {
-      font-family: Arial, sans-serif;
-      border-radius: 50px;
+    #forgotPassword {
+      color: white;
+      text-decoration: underline;
+      cursor: pointer;
     }
   </style>
   <!-- Include Firebase JavaScript SDK -->
@@ -63,12 +64,14 @@
     <input type="email" id="email" placeholder="Email" required><br>
     <input type="password" id="password" placeholder="Password" required><br>
     <button type="submit">Log in</button>
+    <p id="forgotPassword">Forgot Password? Reset your password here</p>
   </form>
   <div id="result"></div>
   <div id="googleSignInContainer"></div>
   <script>
     var form = document.querySelector('form');
     var result = document.querySelector('#result');
+    var forgotPasswordLink = document.querySelector('#forgotPassword');
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -81,7 +84,24 @@
         .then(function(userCredential) {
           // User is signed in
           result.textContent = 'Login successful';
-          window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Replace with the desired URL
+          window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Surprises are waiting...
+        })
+        .catch(function(error) {
+          // Handle errors
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
+        });
+    });
+
+    forgotPasswordLink.addEventListener('click', function() {
+      var email = document.querySelector('#email').value;
+
+      // Send password reset email
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(function() {
+          // Password reset email sent
+          result.textContent = 'Password reset email sent. Check your inbox.';
         })
         .catch(function(error) {
           // Handle errors
@@ -120,21 +140,21 @@
         'height': 40,
         'longtitle': true,
         'theme': 'dark',
-        'onsuccess': onGoogleSignInSuccess,
-        'onfailure': onGoogleSignInFailure
+        'onsuccess': onGoogleSignUpSuccess,
+        'onfailure': onGoogleSignUpFailure
       });
     }
 
-    function onGoogleSignInSuccess(googleUser) {
+    function onGoogleSignUpSuccess(googleUser) {
       var idToken = googleUser.getAuthResponse().id_token;
       var credential = firebase.auth.GoogleAuthProvider.credential(idToken);
 
-      // Sign in with Google credential
+      // Sign up with Google credential
       firebase.auth().signInWithCredential(credential)
         .then(function(userCredential) {
-          // User is signed in
-          result.textContent = 'Login successful';
-          window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Replace with the desired URL
+          // User is signed up successfully
+          result.textContent = 'Sign up successful';
+          // You can redirect the user to another page here
         })
         .catch(function(error) {
           // Handle errors
@@ -144,7 +164,7 @@
         });
     }
 
-    function onGoogleSignInFailure(error) {
+    function onGoogleSignUpFailure(error) {
       console.log(error);
     }
 

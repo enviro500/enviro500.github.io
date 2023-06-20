@@ -44,6 +44,11 @@
       justify-content: center;
       margin-top: 20px;
     }
+    #microsoftSignInContainer {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
     #forgotPassword {
       color: white;
       text-decoration: underline;
@@ -57,6 +62,8 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase.js"></script>
+  <!-- Include Microsoft Authentication Library (MSAL) -->
+  <script src="https://alcdn.msauth.net/browser/2.20.0/js/msal-browser.min.js"></script>
 </head>
 <body>
   <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
@@ -68,6 +75,7 @@
   </form>
   <div id="result"></div>
   <div id="googleSignInContainer"></div>
+  <div id="microsoftSignInContainer"></div>
   <script>
     var form = document.querySelector('form');
     var result = document.querySelector('#result');
@@ -166,6 +174,52 @@
 
     function onGoogleSignUpFailure(error) {
       console.log(error);
+    }
+
+    // Microsoft Sign-In setup
+    var msalConfig = {
+      auth: {
+        clientId: "061b2785-61c8-4262-8259-4baec370b871",
+        redirectUri: "https://enviro500.github.io"
+      }
+    };
+
+    var msalInstance = new msal.PublicClientApplication(msalConfig);
+
+    function signInWithMicrosoft() {
+      var loginRequest = {
+        scopes: ["openid", "profile", "email"]
+      };
+
+      msalInstance.loginPopup(loginRequest)
+        .then(function(response) {
+          // Successful Microsoft sign-in
+          var idToken = response.idToken;
+          var accessToken = response.accessToken;
+
+          // Authenticate with Firebase using the Microsoft credential
+          var credential = firebase.auth.OAuthProvider.credential({
+            idToken: idToken,
+            accessToken: accessToken
+          });
+
+          firebase.auth().signInWithCredential(credential)
+            .then(function(userCredential) {
+              // User is signed in
+              result.textContent = 'Sign in successful';
+              // You can redirect the user to another page here
+            })
+            .catch(function(error) {
+              // Handle errors
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
+            });
+        })
+        .catch(function(error) {
+          // Handle errors
+          console.log(error);
+        });
     }
 
     // Load the Google Sign-In API

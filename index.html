@@ -12,12 +12,11 @@
   </style>
 </head>
 <body>
-  <h1>You will be redirected to <span id="websiteUrl"></span> in <span id="timer">5</span> seconds.</h1>
+  <h1>You will be redirected in <span id="timer">5</span> seconds.</h1>
 
   <script>
-    var urlParts = window.location.pathname.split('/');
-    var redirectUrl = decodeURIComponent(urlParts[urlParts.length - 1]); // Extract the last part of the path as the redirect URL
-    document.getElementById('websiteUrl').textContent = redirectUrl; // Set the website URL in the message
+    var queryParams = new URLSearchParams(window.location.search);
+    var redirectUrl = queryParams.get('url'); // Get the 'url' query parameter
     var timer = 5; // Set the initial timer value
 
     function countdown() {
@@ -25,7 +24,7 @@
         timer--;
         document.getElementById('timer').textContent = timer;
       } else {
-        window.location.href = 'http://' + redirectUrl; // Redirect to the specified URL
+        window.location.href = redirectUrl; // Redirect to the specified URL
       }
     }
 

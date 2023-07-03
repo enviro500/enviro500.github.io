@@ -1,1 +1,34 @@
-<p>We are fixing this website to serve you better.</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Redirect</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: 'Gotham Black', sans-serif;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>You will be redirected to <span id="websiteUrl"></span> in <span id="timer">5</span> seconds.</h1>
+
+  <script>
+    var redirectUrl = window.location.pathname.split('/')[2]; // Extract the redirect URL from the path
+    document.getElementById('websiteUrl').textContent = redirectUrl; // Set the website URL in the message
+    var timer = 5; // Set the initial timer value
+
+    function countdown() {
+      if (timer > 0) {
+        timer--;
+        document.getElementById('timer').textContent = timer;
+      } else {
+        window.location.href = 'http://' + redirectUrl; // Redirect to the specified URL
+      }
+    }
+
+    setInterval(countdown, 1000); // Call the countdown function every second
+  </script>
+</body>
+</html>

@@ -1,116 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Redeem / Enviro500</title>
-    <style>
-        body {
-            background-color: black;
-            color: white;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            line-height: 1.5;
-            text-align: center;
-            padding: 50px;
-        }
-
-        input[type=text] {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        input[type=submit] {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: #428bca;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .logout-button {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: white;
-            color: black;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-    </style>
+	<title>Redeem / Enviro500</title>
+	<style>
+		body {
+			background-color: black;
+			color: white;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			text-align: center;
+			padding: 50px;
+		}
+		input[type=text] {
+			padding: 10px;
+			border-radius: 5px;
+			border: none;
+			outline: none;
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
+		input[type=submit] {
+			padding: 10px 20px;
+			border-radius: 5px;
+			border: none;
+			background-color: #428bca;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+		}
+	</style>
 </head>
 <body>
-    <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
-    <div id="login-container" style="display: none;">
-        <form>
-            <input type="text" id="promo-code" name="promo-code" placeholder="Code">
-            <input type="submit" value="Redeem">
-        </form>
-        <div id="result"></div>
-    </div>
-    <div id="logout-container" style="display: none;">
-        <button class="logout-button" onclick="logout()">Log Out</button>
-    </div>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script>
-        // Initialize Firebase
-        var firebaseConfig = {
-            apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
-            authDomain: "enviro500web.firebaseapp.com",
-            projectId: "enviro500web",
-            storageBucket: "enviro500web.appspot.com",
-            messagingSenderId: "821087210177",
-            appId: "1:821087210177:web:96f8bd5e588ed33085e240",
-            measurementId: "G-DQZ8WQFYSR"
-        };
-        firebase.initializeApp(firebaseConfig);
+	<h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
+	<form>
+		<input type="text" id="promo-code" name="promo-code" placeholder="Code">
+		<input type="submit" value="Redeem">
+	</form>
+	<div id="result"></div>
+	<script>
+		var form = document.querySelector('form');
+		var input = document.querySelector('#promo-code');
+		var result = document.querySelector('#result');
 
-        // Check if user is logged in or not
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                // User is logged in
-                document.getElementById('login-container').style.display = 'block';
-                document.getElementById('logout-container').style.display = 'block';
-            } else {
-                // User is not logged in, redirect to login page
-                window.location.href = 'login.html';
-            }
-        });
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
 
-        function logout() {
-            firebase.auth().signOut().then(function() {
-                // Sign-out successful.
-                window.location.href = 'login.html';
-            }).catch(function(error) {
-                // An error happened.
-                console.log(error);
-            });
-        }
-
-        var form = document.querySelector('form');
-        var input = document.querySelector('#promo-code');
-        var result = document.querySelector('#result');
-
-        form.addEventListener('submit', function(e) {
-I apologize for the confusion. Here's the modified code that includes your original redeem logic:
-
-```javascript
-// ...
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            if (input.value === 'ENVIRO735' || input.value === 'enviro735') {
-                result.textContent = 'CODE: 7QEQY-GALMU-BY77A (Visit roblox.com/redeem)';
-            } else {
-                result.textContent = 'Invalid Code';
-            }
-        });
-    </script>
+			if (input.value === 'ENVIRO735' || input.value === 'enviro735') {
+				result.textContent = 'We couldn't find a code worth 100R$.';
+			} else {
+				result.textContent = 'Invalid Code';
+			}
+		});
+	</script>
 </body>
 </html>

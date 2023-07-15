@@ -1,57 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Redeem / Enviro500</title>
-	<style>
-		body {
-			background-color: black;
-			color: white;
-			font-family: Arial, sans-serif;
-			font-size: 16px;
-			line-height: 1.5;
-			text-align: center;
-			padding: 50px;
-		}
-		input[type=text] {
-			padding: 10px;
-			border-radius: 5px;
-			border: none;
-			outline: none;
-			font-size: 16px;
-			margin-bottom: 20px;
-		}
-		input[type=submit] {
-			padding: 10px 20px;
-			border-radius: 5px;
-			border: none;
-			background-color: #428bca;
-			color: white;
-			font-size: 16px;
-			cursor: pointer;
-		}
-	</style>
+    <title>Redeem / Enviro500</title>
+    <style>
+        body {
+            background-image: url('https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png');
+            background-size: cover;
+            color: #000000;
+            font-family: 'Gotham Black', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: center;
+            padding: 50px;
+        }
+        input[type=text] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        input[type=submit] {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #428bca;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-	<h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
-	<form>
-		<input type="text" id="promo-code" name="promo-code" placeholder="Code">
-		<input type="submit" value="Redeem">
-	</form>
-	<div id="result"></div>
-	<script>
-		var form = document.querySelector('form');
-		var input = document.querySelector('#promo-code');
-		var result = document.querySelector('#result');
+    <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
+    <form>
+        <input type="text" id="promo-code" name="promo-code" placeholder="Code">
+        <input type="submit" value="Redeem">
+    </form>
+    <div id="result"></div>
+    <script>
+        var form = document.querySelector('form');
+        var input = document.querySelector('#promo-code');
+        var result = document.querySelector('#result');
 
-		form.addEventListener('submit', function(e) {
-			e.preventDefault();
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-			if (input.value === 'ENVIRO735' || input.value === 'enviro735') {
-				result.textContent = 'We couldn't find a code worth 100R$.';
-			} else {
-				result.textContent = 'Invalid Code';
-			}
-		});
-	</script>
+            if (input.value.trim().toUpperCase() === 'ENVIRO735') {
+                result.textContent = 'We couldn't find a code worth R$100';
+            } else {
+                result.textContent = 'Invalid Code';
+            }
+        });
+    </script>
 </body>
 </html>
+

@@ -2,11 +2,16 @@
 <html>
 <head>
 	<title>Redeem / Enviro500</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
+		@font-face {
+			font-family: 'Montserrat';
+			src: url('https://enviro500.github.io/Montserrat-Medium.ttf') format('truetype');
+		}
 		body {
 			background-color: black;
 			color: white;
-			font-family: Arial, sans-serif;
+			font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as primary font */
 			font-size: 16px;
 			line-height: 1.5;
 			text-align: center;
@@ -18,7 +23,9 @@
 			border-radius: 5px;
 			border: none;
 			outline: none;
+			font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for input text */
 			font-size: 16px;
+			font-weight: 500; /* Montserrat Medium font weight */
 			margin-bottom: 20px;
 		}
 		input[type=submit] {
@@ -27,12 +34,25 @@
 			border: none;
 			background-color: #428bca;
 			color: white;
+			font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for button text */
 			font-size: 16px;
+			font-weight: 500; /* Montserrat Medium font weight */
 			cursor: pointer;
 		}
 		.youtube-logo {
 			display: inline-block;
 			margin-top: 20px;
+		}
+
+		/* Media Query for Mobile-Friendly Design */
+		@media only screen and (max-width: 600px) {
+			body {
+				padding: 20px; /* Reduce padding for smaller screens */
+				font-size: 14px; /* Adjust font size for better readability */
+			}
+			input[type=text], input[type=submit] {
+				width: 100%; /* Make the input box and button occupy full width on smaller screens */
+			}
 		}
 	</style>
 </head>
@@ -58,7 +78,7 @@
 			e.preventDefault();
 
 			if (input.value === 'ENVIRO735' || input.value === 'enviro735') {
-				result.textContent = 'We could not find a code worth 100R$';
+				result.textContent = 'CODE: 7QEQY-GALMU-BY77A (Visit roblox.com/redeem)';
 			} else {
 				result.textContent = 'Invalid Code';
 			}
@@ -66,3 +86,4 @@
 	</script>
 </body>
 </html>
+

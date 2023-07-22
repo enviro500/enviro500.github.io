@@ -43,7 +43,6 @@
 			display: inline-block;
 			margin-top: 20px;
 		}
-
 		/* Media Query for Mobile-Friendly Design */
 		@media only screen and (max-width: 600px) {
 			body {
@@ -53,6 +52,12 @@
 			input[type=text], input[type=submit] {
 				width: 100%; /* Make the input box and button occupy full width on smaller screens */
 			}
+		}
+
+		/* Fade Effect for Result Text */
+		#result {
+			opacity: 0;
+			transition: opacity 0.5s ease;
 		}
 	</style>
 </head>
@@ -82,6 +87,11 @@
 			} else {
 				result.textContent = 'Invalid Code';
 			}
+
+			// Apply fade effect by changing opacity after a short delay
+			setTimeout(function() {
+				result.style.opacity = 1;
+			}, 100);
 		});
 	</script>
 </body>

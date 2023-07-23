@@ -19,7 +19,7 @@
 		}
 		input[type=text] {
 			padding: 15px; /* Increased padding to make the input box taller */
-			width: 300px; /* Increased width to make the input box wider */
+			width: 350px; /* Increased width to make the input box wider */
 			border-radius: 5px;
 			border: none;
 			outline: none;
@@ -28,16 +28,24 @@
 			font-weight: 500; /* Montserrat Medium font weight */
 			margin-bottom: 20px;
 		}
+		/* Apply the new styles for the Redeem button */
 		input[type=submit] {
-			padding: 15px 30px; /* Increased padding to make the button taller and wider */
-			border-radius: 5px;
+			padding: 15px 155px; /* Increased padding to make the button taller and wider */
+			border-radius: 7px; /* Changed border-radius to 7px */
 			border: none;
-			background-color: #428bca;
+			background-color: #4A00B0; /* Changed button color */
+			background-image: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to)); /* Apply gradient to the button background */
 			color: white;
 			font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for button text */
 			font-size: 16px;
 			font-weight: 500; /* Montserrat Medium font weight */
 			cursor: pointer;
+		}
+		/* Apply the new styles for the Result Text */
+		#result {
+			margin-top: 20px;
+			opacity: 0;
+			transition: opacity 0.5s ease;
 		}
 		.youtube-logo {
 			display: inline-block;
@@ -53,18 +61,13 @@
 				width: 100%; /* Make the input box and button occupy full width on smaller screens */
 			}
 		}
-
-		/* Fade Effect for Result Text */
-		#result {
-			opacity: 0;
-			transition: opacity 0.5s ease;
-		}
 	</style>
 </head>
 <body>
 	<h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
 	<form>
 		<input type="text" id="promo-code" name="promo-code" placeholder="Code">
+		<br> <!-- Line break to move the Redeem button below the input box -->
 		<input type="submit" value="Redeem">
 	</form>
 	<div id="result"></div>
@@ -83,7 +86,7 @@
 			e.preventDefault();
 
 			if (input.value === 'ENVIRO735' || input.value === 'enviro735') {
-				result.textContent = 'CODE: 7QEQY-GALMU-BY77A (Visit roblox.com/redeem)';
+				result.textContent = 'We couldn't find a code worth 100R$';
 			} else {
 				result.textContent = 'Invalid Code';
 			}

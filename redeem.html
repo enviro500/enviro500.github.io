@@ -1,107 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Redeem / Enviro500</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<style>
-		@font-face {
-			font-family: 'Montserrat';
-			src: url('https://enviro500.github.io/Montserrat-Medium.ttf') format('truetype');
-		}
-		body {
-			background-color: black;
-			color: white;
-			font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as primary font */
-			font-size: 16px;
-			line-height: 1.5;
-			text-align: center;
-			padding: 50px;
-		}
-		input[type=text] {
-			padding: 15px; /* Increased padding to make the input box taller */
-			width: 350px; /* Increased width to make the input box wider */
-			border-radius: 5px;
-			border: none;
-			outline: none;
-			font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for input text */
-			font-size: 16px;
-			font-weight: 500; /* Montserrat Medium font weight */
-			margin-bottom: 20px;
-		}
-		/* Apply the new styles for the Redeem button */
-		input[type=submit] {
-			padding: 15px 155px; /* Increased padding to make the button taller and wider */
-			border-radius: 7px; /* Changed border-radius to 7px */
-			border: none;
-			background-color: #4A00B0; /* Changed button color */
-			background-image: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to)); /* Apply gradient to the button background */
-			color: white;
-			font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for button text */
-			font-size: 16px;
-			font-weight: 500; /* Montserrat Medium font weight */
-			cursor: pointer;
-		}
-		/* Apply the new styles for the Result Text */
-		#result {
-			margin-top: 20px;
-			opacity: 0;
-			transition: opacity 0.5s ease;
-		}
-		.youtube-logo {
-			display: inline-block;
-			margin-top: 20px;
-		}
-		/* Media Query for Mobile-Friendly Design */
-		@media only screen and (max-width: 600px) {
-			body {
-				padding: 20px; /* Reduce padding for smaller screens */
-				font-size: 14px; /* Adjust font size for better readability */
-			}
-			input[type=text], input[type=submit] {
-				width: 100%; /* Make the input box and button occupy full width on smaller screens */
-			}
-		}
-	</style>
+    <title>Redeem / Enviro500</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @font-face {
+            font-family: 'Montserrat';
+            src: url('https://enviro500.github.io/Montserrat-Medium.ttf') format('truetype');
+        }
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as primary font */
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: center;
+            padding: 50px;
+        }
+        input[type=text] {
+            padding: 15px; /* Increased padding to make the input box taller */
+            width: 350px; /* Increased width to make the input box wider */
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for input text */
+            font-size: 16px;
+            font-weight: 500; /* Montserrat Medium font weight */
+            margin-bottom: 20px;
+        }
+        /* Apply the new styles for the Redeem button */
+        input[type=submit] {
+            padding: 15px 155px; /* Increased padding to make the button taller and wider */
+            border-radius: 7px; /* Changed border-radius to 7px */
+            border: none;
+            background-color: #4A00B0; /* Changed button color */
+            background-image: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to)); /* Apply gradient to the button background */
+            color: white;
+            font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for button text */
+            font-size: 16px;
+            font-weight: 500; /* Montserrat Medium font weight */
+            cursor: pointer;
+        }
+        /* Apply the new styles for the Result Text */
+        #result {
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .youtube-logo {
+            display: inline-block;
+            margin-top: 20px;
+        }
+        /* Media Query for Mobile-Friendly Design */
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 20px; /* Reduce padding for smaller screens */
+                font-size: 14px; /* Adjust font size for better readability */
+            }
+            input[type=text], input[type=submit] {
+                width: 100%; /* Make the input box and button occupy full width on smaller screens */
+            }
+        }
+    </style>
 </head>
 <body>
-	<h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
-	<form>
-		<input type="text" id="promo-code" name="promo-code" placeholder="Code">
-		<br> <!-- Line break to move the Redeem button below the input box -->
-		<input type="submit" value="Redeem">
-	</form>
-	<div id="result"></div>
-	
-	<!-- YouTube Logo Button -->
-	<a href="https://www.youtube.com/enviro500" target="_blank" class="youtube-logo">
-		<img src="https://i.ibb.co/mtkWzRF/image.png" alt="YouTube" width="40" height="30">
-	</a>
+<h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
+<form>
+    <input type="text" id="promo-code" name="promo-code" placeholder="Code">
+    <br> <!-- Line break to move the Redeem button below the input box -->
+    <input type="submit" value="Redeem">
+</form>
+<div id="result"></div>
 
-	<script>
-		// Disable right-click on the entire document
-		document.addEventListener('contextmenu', function(e) {
-			e.preventDefault();
-		});
+<!-- YouTube Logo Button -->
+<a href="https://www.youtube.com/enviro500" target="_blank" class="youtube-logo">
+    <img src="https://i.ibb.co/mtkWzRF/image.png" alt="YouTube" width="40" height="30">
+</a>
 
-		// Your existing script for handling form submission and output message
-		var form = document.querySelector('form');
-		var input = document.querySelector('#promo-code');
-		var result = document.querySelector('#result');
+<script>
+    // Disable right-click on the entire document
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
 
-		form.addEventListener('submit', function(e) {
-			e.preventDefault();
+    // Your existing script for handling form submission and output message
+    var form = document.querySelector('form');
+    var input = document.querySelector('#promo-code');
+    var result = document.querySelector('#result');
 
-			if (input.value === 'NDP23' || input.value === 'NDP23') {
-				result.textContent = "Coming Soon...";
-			} else {
-				result.textContent = 'Sorry, we couldn't find a code.';
-			}
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-			// Apply fade effect by changing opacity after a short delay
-			setTimeout(function() {
-				result.style.opacity = 1;
-			}, 100);
-		});
-	</script>
+        if (input.value === 'NDP23') {
+            result.textContent = "Coming Soon...";
+        } else {
+            result.textContent = "Sorry, we couldn't find a code.";
+        }
+
+        // Apply fade effect by changing opacity after a short delay
+        setTimeout(function() {
+            result.style.opacity = 1;
+        }, 100);
+    });
+</script>
 </body>
 </html>

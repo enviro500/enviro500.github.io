@@ -1,58 +1,75 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>LOGIN - ENVIRO500</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    @font-face {
+      font-family: 'Montserrat';
+      src: url('https://enviro500.github.io/Montserrat-Medium.ttf') format('truetype');
+    }
+
     body {
       background-color: black;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: 'Montserrat', Arial, sans-serif;
       font-size: 16px;
       line-height: 1.5;
       text-align: center;
       padding: 50px;
     }
-    input[type=email], input[type=password] {
+
+    input[type=email],
+    input[type=password] {
       padding: 15px;
-      border-radius: 50px;
+      border-radius: 10px;
       border: none;
       outline: none;
-      font-size: 16px;
       margin-bottom: 20px;
-      width: 250px;
-    }
-    input[type=submit] {
-      padding: 15px 25px;
-      border-radius: 50px;
-      border: none;
-      background-color: blue;
-      color: white;
+      width: 350px;
       font-size: 16px;
+      font-family: 'Montserrat';
+    }
+
+    input[type=submit] {
+      padding: 15px 155px;
+      border-radius: 7px;
+      border: none;
+      font-size: 15px;
+      font-family: 'Montserrat';
+      background-color: #4A00B0;
+      background-image: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to));
+      color: white;
       cursor: pointer;
-      font-weight: bold;
-      text-transform: uppercase;
+      font-weight: 500;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       transition: all 0.3s ease;
     }
+
     input[type=submit]:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
+
     #googleSignInContainer {
       display: flex;
       justify-content: center;
       margin-top: 20px;
     }
+
     #microsoftSignInContainer {
       display: flex;
       justify-content: center;
       margin-top: 20px;
     }
-    #forgotPassword {
-      color: white;
+
+    #forgotPasswordLink {
+      color: lightblue;
       text-decoration: underline;
       cursor: pointer;
+      display: block;
+      margin-top: 10px;
     }
   </style>
   <!-- Include Firebase JavaScript SDK -->
@@ -65,13 +82,14 @@
   <!-- Include Microsoft Authentication Library (MSAL) -->
   <script src="https://alcdn.msauth.net/browser/2.20.0/js/msal-browser.min.js"></script>
 </head>
+
 <body>
   <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
   <form id="loginForm">
     <input type="email" id="email" placeholder="Email" required><br>
     <input type="password" id="password" placeholder="Password" required><br>
-    <button type="submit">Log in</button>
-    <p id="forgotPassword">Forgot Password? Input in 'Email' input, click here & check your inbox.</p>
+    <input type="submit" value="Log in">
+    <a id="forgotPasswordLink" href="your-forget-password-link">Forget password? Click here</a>
   </form>
   <div id="result"></div>
   <div id="googleSignInContainer"></div>
@@ -79,7 +97,7 @@
   <script>
     var form = document.querySelector('form');
     var result = document.querySelector('#result');
-    var forgotPasswordLink = document.querySelector('#forgotPassword');
+    var forgotPasswordLink = document.querySelector('#forgotPasswordLink');
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -93,23 +111,6 @@
           // User is signed in
           result.textContent = 'Login successful';
           window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Surprises are waiting...
-        })
-        .catch(function(error) {
-          // Handle errors
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
-        });
-    });
-
-    forgotPasswordLink.addEventListener('click', function() {
-      var email = document.querySelector('#email').value;
-
-      // Send password reset email
-      firebase.auth().sendPasswordResetEmail(email)
-        .then(function() {
-          // Password reset email sent
-          result.textContent = 'Password reset email sent. Check your inbox.';
         })
         .catch(function(error) {
           // Handle errors
@@ -176,52 +177,6 @@
       console.log(error);
     }
 
-    // Microsoft Sign-In setup
-    var msalConfig = {
-      auth: {
-        clientId: "061b2785-61c8-4262-8259-4baec370b871",
-        redirectUri: "https://enviro500.github.io/login"
-      }
-    };
-
-    var msalInstance = new msal.PublicClientApplication(msalConfig);
-
-    function signInWithMicrosoft() {
-      var loginRequest = {
-        scopes: ["openid", "profile", "email"]
-      };
-
-      msalInstance.loginPopup(loginRequest)
-        .then(function(response) {
-          // Successful Microsoft sign-in
-          var idToken = response.idToken;
-          var accessToken = response.accessToken;
-
-          // Authenticate with Firebase using the Microsoft credential
-          var credential = firebase.auth.OAuthProvider.credential({
-            idToken: idToken,
-            accessToken: accessToken
-          });
-
-          firebase.auth().signInWithCredential(credential)
-            .then(function(userCredential) {
-              // User is signed in
-              result.textContent = 'Sign in successful';
-              // You can redirect the user to another page here
-            })
-            .catch(function(error) {
-              // Handle errors
-              var errorCode = error.code;
-              var errorMessage = error.message;
-              result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
-            });
-        })
-        .catch(function(error) {
-          // Handle errors
-          console.log(error);
-        });
-    }
-
     // Load the Google Sign-In API
     function loadGoogleSignInAPI() {
       var script = document.createElement('script');
@@ -237,4 +192,6 @@
   </script>
   <script src="//code.tidio.co/exq4tyezs73tsjmbpi7q81qouibyuc63.js" async></script>
 </body>
+
 </html>
+

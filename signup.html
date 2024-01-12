@@ -4,34 +4,41 @@
   <title>SIGN UP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    @font-face {
+            font-family: 'Montserrat';
+            src: url('https://enviro500.github.io/Montserrat-Medium.ttf') format('truetype');
+    }
     body {
       background-color: black;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as primary font */
       font-size: 16px;
       line-height: 1.5;
       text-align: center;
       padding: 50px;
     }
+    input[type=email], input[type=password], input[type=submit] {
+      font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for input and button text */
+      font-size: 16px;
+      font-weight: 500; /* Montserrat Medium font weight */
+    }
     input[type=email], input[type=password] {
       padding: 15px;
-      border-radius: 40px;
+      border-radius: 5px;
       border: none;
       outline: none;
-      font-size: 16px;
       margin-bottom: 20px;
-      width: 250px;
+      width: 350px;
     }
     input[type=submit] {
-      padding: 15px 25px;
-      border-radius: 40px;
+      padding: 15px 155px;
+      border-radius: 7px;
       border: none;
-      background-color: blue;
+      background-color: #4A00B0;
+      background-image: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to));
       color: white;
-      font-size: 16px;
       cursor: pointer;
-      font-weight: bold;
-      text-transform: uppercase;
+      font-weight: 500;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       transition: all 0.3s ease;
     }
@@ -58,12 +65,12 @@
   <form id="signupForm">
     <input type="email" id="email" placeholder="Email" required><br>
     <input type="password" id="password" placeholder="Password" required><br>
-    <button type="submit">Sign up</button>
+    <input type="submit" value="Sign up">
   </form>
   <div id="result"></div>
   <div id="googleSignInContainer"></div>
   <script>
-    var form = document.querySelector('form');
+  var form = document.querySelector('form');
     var result = document.querySelector('#result');
 
     form.addEventListener('submit', function(e) {

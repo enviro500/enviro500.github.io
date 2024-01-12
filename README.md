@@ -19,6 +19,12 @@ What's new in UI2.0?
 - Account Feature
 - Redeem with Code feature
 
+# Proposed Features
+- Account system (feature and uses to be confirmed)
+- Sign in with mutiple providers, including Microsoft through Passkey.
+- Bus Model Tracker
+- TRANSENTHU Concept App
+
 # Infomation
 No part of this website, not even HTML code may be copied, reproduce, sold by any means, mechincal, electronic or otherwise without the prior written permission from the developer of this website, Enviro500. 
 For further enquires email jarenstudio@asia.com :)

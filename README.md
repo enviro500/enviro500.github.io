@@ -2,6 +2,16 @@
 This is the official page for Enviro500's website. 
 
 # Changelog
+
+## UI2.0 (V1.3)
+What's new in UI2.0?
+- New look, new font, new theme and colours
+- Moved Forget Password feature from the login page to a fresh new page with UI2.0.
+### V1.2
+- Added Tidio chatbot to login
+- Added new fonts
+- Added 'Cleanlet', our latest robot and 'Beta' for feature testing.
+- Easter eggs
 ### V1.1
 - Added Reset Password feature
 - Added 'Sign In with Google' to Accounts.

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Microsoft Teams</title>
+</head>
+<body>
+    <h1>Click the button below to open Microsoft Teams</h1>
+    
+    <button onclick="openTeams()">Open Microsoft Teams</button>
+
+    <script>
+        function openTeams() {
+            // Replace the URL with your Microsoft Teams URL
+            var teamsURL = "msteams://";
+
+            // Open Microsoft Teams if available, otherwise alert the user
+            if (navigator.userAgent.indexOf("MSIE") !== -1 || navigator.userAgent.indexOf("rv:11") !== -1) {
+                // For Internet Explorer
+                alert("Please use a modern browser to open Microsoft Teams.");
+            } else if (navigator.userAgent.indexOf("Edge") !== -1) {
+                // For Microsoft Edge
+                window.location.href = teamsURL;
+            } else if (navigator.userAgent.indexOf("Chrome") !== -1 || navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
+                // For Chrome, Firefox, and Safari
+                var iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = teamsURL;
+                document.body.appendChild(iframe);
+            } else {
+                // For other browsers
+                alert("Microsoft Teams may not be supported on your browser.");
+            }
+        }
+    </script>
+</body>
+</html>

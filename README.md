@@ -29,5 +29,5 @@ What's new in UI2.0?
 - TRANSENTHU Concept App
 
 # Infomation
-No part of this website, not even HTML code may be copied, reproduce, sold by any means, mechincal, electronic or otherwise without the prior written permission from the developer of this website, Enviro500. 
+Feel free to use any of the code here.
 For further enquires email jarenstudio@asia.com :)

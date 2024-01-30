@@ -3,6 +3,8 @@ This is the official page for Enviro500's website.
 
 # Changelog
 
+#### V1.3.0.1
+- Added folders, modified URL for accounts (login, sign up & reset password) and beta pages.
 ## UI2.0 (V1.3)
 What's new in UI2.0?
 - New look, new font, new theme and colours

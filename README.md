@@ -22,9 +22,11 @@ What's new in UI2.0?
 - Account Feature
 - Redeem with Code feature
 
+
 # Proposed Features
 - Account system (feature and uses to be confirmed)
-- Sign in with mutiple providers, including Microsoft through Passkey.
+- PWA (Progressive Web Apps)
+- Sign in with mutiple providers, including Microsoft and through Passkey.
 - Bus Model Tracker
 - TRANSENTHU Concept App
 

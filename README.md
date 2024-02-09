@@ -3,6 +3,9 @@ This is the official page for Enviro500's website.
 
 # Changelog
 
+### V1.3..1 
+- Progressive Web App (PWA) support for Code Redeem.
+- 
 #### V1.3.0.1
 - Added folders, modified URL for accounts (login, sign up & reset password) and beta pages.
 - Deleted Account page
@@ -25,7 +28,6 @@ What's new in UI2.0?
 
 # Proposed Features
 - Account system (feature and uses to be confirmed)
-- PWA (Progressive Web Apps)
 - Sign in with mutiple providers, including Microsoft and through Passkey.
 - Bus Model Tracker
 - TRANSENTHU Concept App

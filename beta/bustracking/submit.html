@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Tracking Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bus Tracking Form</h1>
+        <form id="trackingForm">
+            <label for="busRegNumber">Bus Registration Number:</label>
+            <select id="busRegNumber" required>
+                <option value="SG4010H">SG4010H</option>
+                <option value="SG5999Z">SG5999Z</option>
+            </select>
+            
+            <label for="busService">Bus Service:</label>
+            <input type="text" id="busService" required>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+            authDomain: "enviro500web.firebaseapp.com",
+            projectId: "enviro500web",
+            storageBucket: "enviro500web.appspot.com",
+            messagingSenderId: "821087210177",
+            appId: "1:821087210177:web:96f8bd5e588ed33085e240"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.firestore();
+
+        // Submit form data to Firestore
+        const trackingForm = document.getElementById('trackingForm');
+        trackingForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const busRegNumber = document.getElementById('busRegNumber').value;
+            const busService = document.getElementById('busService').value;
+
+            db.collection("busTracking").add({
+                busRegNumber: busRegNumber,
+                busService: busService,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(function(docRef) {
+                console.log("Document written with ID: ", docRef.id);
+                trackingForm.reset();
+            })
+            .catch(function(error) {
+                console.error("Error adding document: ", error);
+            });
+        });
+    </script>
+</body>
+</html>

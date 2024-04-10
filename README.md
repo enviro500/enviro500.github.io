@@ -3,7 +3,7 @@ This is the official page for Enviro500's website.
 
 # Changelog
 
-### V1.3..1 
+### V1.3.1 
 - Progressive Web App (PWA) support for Code Redeem.
 - 
 #### V1.3.0.1

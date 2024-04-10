@@ -2,10 +2,12 @@
 This is the official page for Enviro500's website. 
 
 # Changelog
-
+#### V1.3.2.1
+- Added Firebase measurement for Dynamic Route Map Display Template website
+### V1.3.2
+- Added Dynamic Route Map Display Template website and files
 ### V1.3.1 
 - Progressive Web App (PWA) support for Code Redeem.
-- 
 #### V1.3.0.1
 - Added folders, modified URL for accounts (login, sign up & reset password) and beta pages.
 - Deleted Account page

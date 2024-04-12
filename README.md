@@ -4,6 +4,8 @@ This is the official page for Enviro500's website.
 # Changelog
 #### V1.3.2.1
 - Added Firebase measurement for Dynamic Route Map Display Template website
+- Duplicated /redeem to /index
+- Added Google Adsense code, awaiting Google for approval
 ### V1.3.2
 - Added Dynamic Route Map Display Template website and files
 ### V1.3.1 

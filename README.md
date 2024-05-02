@@ -2,6 +2,9 @@
 This is the official page for Enviro500's website. 
 
 # Changelog
+
+### V1.3.3
+- Added Github Sign In Option! 
 #### V1.3.2.1
 - Added Firebase measurement for Dynamic Route Map Display Template website
 - Duplicated /redeem to /index

@@ -3,6 +3,12 @@ This is the official page for Enviro500's website.
 
 # Changelog
 
+## UI3.0 / V1.4 (COMING SOON)
+- Refreshed website theme: Changed to 'Inter' font, redesigned layouts
+- More sign-in options
+- Refreshed Redeem Website
+- Page Menu
+- Dashboard
 ### V1.3.3
 - Added Github Sign In Option! 
 #### V1.3.2.1

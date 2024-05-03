@@ -15,13 +15,9 @@
         src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
     } 
 
-
-
-    
-
     body {
       background-image: url('https://member.thescienceacademy.sg/media/auth/bg8.jpg');
-      color: white;
+      color: black;
       font-family: 'Interfont', Arial, sans-serif;
       font-size: 16px;
       line-height: 1.5;
@@ -29,16 +25,40 @@
       padding: 50px;
     }
 
+    .login-box {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex-direction: column;
+      border: 2px solid white;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 75px 0px;
+      background-color: white;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Added box shadow */
+      transform: translateX(100%); /* Shifted to the right */
+    }
+
+    .login-text {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: black;
+    }
+
     input[type=email],
     input[type=password] {
       padding: 15px;
       border-radius: 8px;
-      border: none;
+      border: 2px solid grey; /* Changed border color to grey */
       outline: none;
       margin-bottom: 20px;
-      width: 350px;
+      width: 325px;
       font-size: 16px;
       font-family: 'Interfont';
+      text-align: center;
     }
 
     input[type=submit] {
@@ -61,26 +81,32 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
 
-    #googleSignInContainer {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    #microsoftSignInContainer {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
+    #googleSignInContainer,
+    #microsoftSignInContainer,
     #githubSignInContainer {
       display: flex;
       justify-content: center;
       margin-top: 20px;
     }
 
+    #googleSignInContainer button {
+      padding: 10px 50px;
+      font-size: 16px;
+      background-color: #fff;
+      border: 2px solid #000000;
+      border-radius: 5px;
+      color: #000000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #googleSignInContainer button:hover {
+      background-color: #4A00B0;
+      color: #fff;
+    }
+
     #forgotPasswordLink {
-      color: lightblue;
+      color: black;
       text-decoration: underline;
       cursor: pointer;
       display: block;
@@ -101,17 +127,20 @@
 </head>
 
 <body>
-  <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
-  <form id="loginForm">
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Password" required><br>
-    <input type="submit" value="Log in">
-    <a id="forgotPasswordLink" href="reset-password">Forget password? Click here</a>
-  </form>
-  <div id="result"></div>
-  <div id="googleSignInContainer"></div>
-  <div id="microsoftSignInContainer"></div>
-  <div id="githubSignInContainer"></div>
+  <div class="login-box">
+    <div class="login-text">Login</div>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <input type="submit" value="Log in">
+      <a id="forgotPasswordLink" href="reset-password">Forget password? Click here</a>
+    </form>
+    <div id="result"></div>
+    <div id="googleSignInContainer"></div>
+    <div id="microsoftSignInContainer"></div>
+    <div id="githubSignInContainer"></div>
+  </div>
+
   <script>
     var form = document.querySelector('form');
     var result = document.querySelector('#result');

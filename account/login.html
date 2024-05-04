@@ -38,7 +38,6 @@
       padding: 75px 0px;
       background-color: white;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Added box shadow */
-
     }
 
     .login-text {
@@ -89,20 +88,34 @@
       margin-top: 20px;
     }
 
-    #googleSignInContainer button {
-      padding: 10px 50px;
-      font-size: 16px;
-      background-color: #fff;
-      border: 2px solid #000000;
+    #googleSignInButton,
+    #githubSignInButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
       border-radius: 5px;
-      color: #000000;
+      background-color: white;
+      border: 2px solid black;
+      color: black;
+      font-size: 16px;
+      font-family: 'Interfont';
+      font-weight: bold;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
-    #googleSignInContainer button:hover {
+    #googleSignInButton img,
+    #githubSignInButton img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+
+    #googleSignInButton:hover,
+    #githubSignInButton:hover {
       background-color: #4A00B0;
-      color: #fff;
+      color: white;
     }
 
     #forgotPasswordLink {
@@ -112,7 +125,7 @@
       display: block;
       margin-top: 10px;
       font-size: 12px;
-      font:'Interfont';
+      font-family: 'Interfont';
     }
   </style>
   <!-- Include Firebase JavaScript SDK -->
@@ -136,9 +149,18 @@
       <a id="forgotPasswordLink" href="reset-password">Forget password? Click here</a>
     </form>
     <div id="result"></div>
-    <div id="googleSignInContainer"></div>
-    <div id="microsoftSignInContainer"></div>
-    <div id="githubSignInContainer"></div>
+    <div id="googleSignInContainer">
+      <button id="googleSignInButton">
+        <img src="https://example.com/google_logo.png" alt="Google Logo" style="width: 20px; height: 20px; margin-right: 10px;">
+        Sign in with Google
+      </button>
+    </div>
+    <div id="githubSignInContainer">
+      <button id="githubSignInButton">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg" alt="GitHub Logo" style="width: 20px; height: 20px; margin-right: 10px;">
+        Sign in with GitHub
+      </button>
+    </div>
   </div>
 
   <script>
@@ -223,11 +245,11 @@
     function onGoogleSignUpFailure(error) {
       console.log(error);
     }
-
+    
     // GitHub Sign-In setup
     function initGitHubSignIn() {
-      var githubSignInButton = document.createElement('button');
-      githubSignInButton.textContent = 'Sign in with GitHub';
+      var githubSignInButton = document.getElementById('githubSignInButton'); // Corrected line
+
       githubSignInButton.addEventListener('click', function() {
         var provider = new firebase.auth.GithubAuthProvider();
         firebase.auth().signInWithPopup(provider)
@@ -244,8 +266,10 @@
             result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
           });
       });
-      document.getElementById('githubSignInContainer').appendChild(githubSignInButton);
     }
+
+    // Call the function to initialize GitHub Sign-In
+    initGitHubSignIn();
 
     // Load the Google Sign-In API
     function loadGoogleSignInAPI() {
@@ -259,9 +283,6 @@
 
     // Call the function to load Google Sign-In API
     loadGoogleSignInAPI();
-
-    // Call the function to initialize GitHub Sign-In
-    initGitHubSignIn();
   </script>
   <script src="//code.tidio.co/exq4tyezs73tsjmbpi7q81qouibyuc63.js" async></script>
 </body>

@@ -9,6 +9,9 @@ This is the official page for Enviro500's website.
 - Refreshed Redeem Website
 - Page Menu
 - Dashboard
+
+### V1.4 Release 1
+- Completed refreshed login page with mobile support
 ### V1.3.3
 - Added Github Sign In Option! 
 #### V1.3.2.1

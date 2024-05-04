@@ -22,12 +22,16 @@
       font-size: 15px;
       line-height: 1.5;
       text-align: center;
-      padding: 50px;
+     padding: 20px; /* Adjusted padding for better mobile view */
+     margin: 0; /* Added to remove default body margin */
+    }
+    html, body {
+      overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
     .login-box {
       display: flex;
-      justify-content: flex-end;
+     justify-content: center; /* Center horizontally */
       align-items: center;
       flex-direction: column;
       border: 2px solid white;

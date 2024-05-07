@@ -10,7 +10,7 @@ This is the official page for Enviro500's website.
 - Page Menu
 - Dashboard
 
-### V1.3.4 
+#### V1.3.3.1
 - Added Banner to redeem website
 ### V1.4 Release 1
 - Completed refreshed login page with mobile support

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <link rel="manifest" href="manifest.json">
-    <title>Redeem / Enviro500</title>
+    <title>Code Checker/Redeem</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @font-face {
@@ -31,7 +31,7 @@
         }
         /* Apply the new styles for the Redeem button */
         input[type=submit] {
-            padding: 15px 155px; /* Increased padding to make the button taller and wider */
+            padding: 15px 140px; /* Increased padding to make the button taller and wider */
             border-radius: 7px; /* Changed border-radius to 7px */
             border: none;
             background-color: #4A00B0; /* Changed button color */
@@ -52,13 +52,6 @@
             display: inline-block;
             margin-top: 20px;
         }
-        /* New styles for the announcement banner */
-        .announcement-banner {
-            background-color: #0000FF; /* Choose your preferred color */
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
         /* Media Query for Mobile-Friendly Design */
         @media only screen and (max-width: 600px) {
             body {
@@ -74,18 +67,15 @@
      crossorigin="anonymous"></script>
 </head>
 <body>
-<!-- Top Announcement Banner -->
-<div class="announcement-banner">
-    <p>This website will be moved to our new hub website at a futher date as part of our 3.0 Update.</p>
-</div>
-
 <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
 <form>
     <input type="text" id="promo-code" name="promo-code" placeholder="Code">
     <br> <!-- Line break to move the Redeem button below the input box -->
-    <input type="submit" value="Redeem">
+    <input type="submit" value="Check Code">
 </form>
 <div id="result"></div>
+
+<!-- YouTube Logo Button -->
 <a href="https://www.youtube.com/enviro500" target="_blank" class="youtube-logo">
     <img src="https://i.ibb.co/mtkWzRF/image.png" alt="YouTube" width="40" height="30">
 </a>
@@ -104,8 +94,8 @@
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        if (input.value === 'NDP23') {
-            result.textContent = "Coming Soon...";
+        if (input.value === 'YOUR_NEW_CODE_HERE') { // Replace 'YOUR_NEW_CODE_HERE' with your new code
+            result.textContent = "Coming Soon..."; // Update the message accordingly
         } else {
             result.textContent = "Sorry, we couldn't find a code.";
         }

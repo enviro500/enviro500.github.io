@@ -10,6 +10,9 @@ This is the official page for Enviro500's website.
 - Page Menu
 - Dashboard
 
+### V1.4 R1.1
+- Replaced script with added Firestore to redeem website
+
 #### V1.3.3.1
 - Added Banner to redeem website
 ### V1.4 Release 1

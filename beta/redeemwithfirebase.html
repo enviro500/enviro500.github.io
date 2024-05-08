@@ -12,41 +12,39 @@
     <div id="message"></div>
 
     <!-- Firebase JavaScript SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js"></script>
-    <script>
-        // Your Firebase Config
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
             authDomain: "enviro500web.firebaseapp.com",
             projectId: "enviro500web",
             storageBucket: "enviro500web.appspot.com",
             messagingSenderId: "821087210177",
-            appId: "1:821087210177:web:96f8bd5e588ed33085e240"
+            appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+            measurementId: "G-DQZ8WQFYSR"
         };
-      
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
 
-        // Firestore instance
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        function checkCode() {
+        async function checkCode() {
             const code = document.getElementById("codeInput").value.trim();
             const messageDisplay = document.getElementById("message");
 
-            // Check if code exists in Firestore
-            db.collection("codes").doc(code).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        messageDisplay.innerText = doc.data().message;
-                    } else {
-                        messageDisplay.innerText = "Invalid code.";
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error getting document:", error);
-                });
+            try {
+                const docRef = doc(db, "codes", code);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    messageDisplay.innerText = docSnap.data().message;
+                } else {
+                    messageDisplay.innerText = "Invalid code.";
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+            }
         }
     </script>
 </body>

@@ -31,7 +31,7 @@
         }
         /* Apply the new styles for the Redeem button */
         input[type=submit] {
-            padding: 15px 140px; /* Increased padding to make the button taller and wider */
+            padding: 15px 155px; /* Increased padding to make the button taller and wider */
             border-radius: 7px; /* Changed border-radius to 7px */
             border: none;
             background-color: #4A00B0; /* Changed button color */
@@ -80,45 +80,53 @@
     <img src="https://i.ibb.co/mtkWzRF/image.png" alt="YouTube" width="40" height="30">
 </a>
 
-<script>
-    // Disable right-click on the entire document
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
+<!-- Firebase JavaScript SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
 
-    // Your existing script for handling form submission and output message
-    var form = document.querySelector('form');
-    var input = document.querySelector('#promo-code');
-    var result = document.querySelector('#result');
+    const firebaseConfig = {
+        apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+        authDomain: "enviro500web.firebaseapp.com",
+        projectId: "enviro500web",
+        storageBucket: "enviro500web.appspot.com",
+        messagingSenderId: "821087210177",
+        appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+        measurementId: "G-DQZ8WQFYSR"
+    };
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        if (input.value === 'YOUR_NEW_CODE_HERE') { // Replace 'YOUR_NEW_CODE_HERE' with your new code
-            result.textContent = "Coming Soon..."; // Update the message accordingly
-        } else {
-            result.textContent = "Sorry, we couldn't find a code.";
+    async function checkCode() {
+        const code = document.getElementById("promo-code").value.trim();
+        const result = document.getElementById("result");
+
+        console.log("Checking code:", code); // Log the code
+
+        try {
+            const docRef = doc(db, "codes", code);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                result.textContent = docSnap.data().message;
+            } else {
+                result.textContent = "Invalid code.";
+            }
+        } catch (error) {
+            console.error("Error getting document:", error);
         }
 
         // Apply fade effect by changing opacity after a short delay
         setTimeout(function() {
             result.style.opacity = 1;
         }, 100);
-    });
-   
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(function(registration) {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(function(error) {
-          console.log('Service Worker registration failed:', error);
-        });
-    });
-  }
+    }
 
-
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        checkCode();
+    });
 </script>
 </body>
 </html>

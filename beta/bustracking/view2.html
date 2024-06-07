@@ -33,7 +33,7 @@
       </tr>
     </thead>
     <tbody id="busList">
-      <!-- Bus sighting will be inserted here dynamically -->
+      <!-- Most recently updated bus sighting will be inserted here dynamically -->
     </tbody>
   </table>
 
@@ -57,61 +57,44 @@
     const db = firebase.firestore();
 
     // Function to display the most recently updated bus sighting
-    function displayLatestBusSighting() {
+    function displayMostRecentBusSighting() {
       const busList = document.getElementById('busList');
 
       // Clear existing data
       busList.innerHTML = '';
 
       // Get the most recently updated bus sighting from Firestore
-      db.collection('bus-sightings')
-        .orderBy('timestamp', 'desc')
-        .limit(1)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td><a href="#" onclick="showBusLogs('${data.busPlate}')">${data.busPlate}</a></td>
-              <td>${data.service}</td>
-              <td>${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'N/A'}</td>
-            `;
-            busList.appendChild(row);
-          });
-        })
-        .catch((error) => {
-          console.error('Error getting latest bus sighting: ', error);
+      db.collection('bus-sightings').orderBy('timestamp', 'desc').limit(1).get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><a href="${getBusLink(data.busPlate)}" target="_blank">${data.busPlate}</a></td>
+            <td>${data.service}</td>
+            <td>${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'N/A'}</td>
+          `;
+          busList.appendChild(row);
         });
+      }).catch((error) => {
+        console.error('Error getting most recent bus sighting: ', error);
+      });
     }
 
-    // Function to show bus logs in a window
-    function showBusLogs(busPlate) {
-      const busLogsWindow = window.open('', 'Bus Logs', 'width=600,height=400,scrollbars=yes');
-      if (!busLogsWindow) return; // Popup blocked
+    // Function to generate bus links based on bus plate
+    function getBusLink(busPlate) {
+      // Example URLs for bus plates
+      const busLinks = {
+        'SG5999Z': 'sg5999z.com',
+        'SG4013A': 'ilovebuses.com'
+        // Add more mappings as needed
+      };
 
-      // Get all logs regarding the given bus plate
-      db.collection('bus-sightings')
-        .where('busPlate', '==', busPlate)
-        .orderBy('timestamp', 'desc')
-        .get()
-        .then((querySnapshot) => {
-          busLogsWindow.document.write('<h2>Bus Logs for ' + busPlate + '</h2>');
-          busLogsWindow.document.write('<ul>');
-          querySnapshot.forEach((doc) => {
-            const logData = doc.data();
-            busLogsWindow.document.write('<li>' + logData.timestamp.toDate().toLocaleString() + ': ' + logData.service + '</li>');
-          });
-          busLogsWindow.document.write('</ul>');
-        })
-        .catch((error) => {
-          console.error('Error getting bus logs: ', error);
-          busLogsWindow.document.write('<p>Error getting bus logs.</p>');
-        });
+      // Check if bus plate exists in busLinks, if not, return a default URL
+      return busLinks[busPlate] || 'example.com';
     }
 
     // Call the function initially
-    displayLatestBusSighting();
+    displayMostRecentBusSighting();
   </script>
 </body>
 </html>

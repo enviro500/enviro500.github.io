@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bus Spotting</title>
   <style>
-    @font-face {
-        font-family: 'Inter';
-        src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
+        @font-face {
+            font-family: 'Inter';
+            src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
         }
     body {
       font-family: Inter, sans-serif;
@@ -37,7 +37,7 @@
       </tr>
     </thead>
     <tbody id="busList">
-      <!-- Most recently updated bus sighting will be inserted here dynamically -->
+      <!-- Bus sightings will be inserted here dynamically -->
     </tbody>
   </table>
 
@@ -60,27 +60,38 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Function to display the most recently updated bus sighting
-    function displayMostRecentBusSighting() {
+    // Function to display bus sightings
+    function displayBusSightings() {
       const busList = document.getElementById('busList');
 
       // Clear existing data
       busList.innerHTML = '';
 
-      // Get the most recently updated bus sighting from Firestore
-      db.collection('bus-sightings').orderBy('timestamp', 'desc').limit(1).get().then((querySnapshot) => {
+      // Get bus sightings from Firestore
+      db.collection('bus-sightings').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
+        const busMap = new Map();
+
         querySnapshot.forEach((doc) => {
           const data = doc.data();
+          const busPlate = data.busPlate;
+
+          // Keep only the most recent sighting for each bus plate
+          if (!busMap.has(busPlate)) {
+            busMap.set(busPlate, data);
+          }
+        });
+
+        busMap.forEach((data, busPlate) => {
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td><a href="${getBusLink(data.busPlate)}" target="_blank">${data.busPlate}</a></td>
+            <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
             <td>${data.service}</td>
             <td>${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'N/A'}</td>
           `;
           busList.appendChild(row);
         });
       }).catch((error) => {
-        console.error('Error getting most recent bus sighting: ', error);
+        console.error('Error getting bus sightings: ', error);
       });
     }
 
@@ -88,17 +99,17 @@
     function getBusLink(busPlate) {
       // Example URLs for bus plates
       const busLinks = {
-        'SG5999Z': 'sg5999z.com',
-        'SG4013A': 'ilovebuses.com'
+        'SG5999Z': 'https://sg5999z.com',
+        'SG4013A': 'https://ilovebuses.com'
         // Add more mappings as needed
       };
 
       // Check if bus plate exists in busLinks, if not, return a default URL
-      return busLinks[busPlate] || 'example.com';
+      return busLinks[busPlate] || 'https://example.com';
     }
 
     // Call the function initially
-    displayMostRecentBusSighting();
+    displayBusSightings();
   </script>
 </body>
 </html>

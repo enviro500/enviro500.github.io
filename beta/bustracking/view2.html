@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Bus Sightings</title>
+</head>
+<body>
+    <h2>View Bus Sightings</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Bus Plate</th>
+                <th>Service (it is on)</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody id="bus-sightings">
+            <!-- Bus sightings will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+              apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+              authDomain: "enviro500web.firebaseapp.com",
+              projectId: "enviro500web",
+              storageBucket: "enviro500web.appspot.com",
+              messagingSenderId: "821087210177",
+              appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+              measurementId: "G-DQZ8WQFYSR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const sightingsList = document.getElementById('bus-sightings');
+
+        // Real-time listener for bus sightings
+        db.collection('bus-sightings').onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(change => {
+                const data = change.doc.data();
+                if (change.type === 'added') {
+                    renderSighting(data);
+                }
+            });
+        });
+
+        // Function to render bus sighting
+        function renderSighting(data) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${data.busPlate}</td>
+                <td>${data.service}</td>
+                <td>${data.timestamp.toDate().toLocaleDateString()}</td>
+            `;
+            sightingsList.appendChild(tr);
+        }
+    </script>
+</body>
+</html>

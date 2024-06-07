@@ -20,10 +20,10 @@
         </tbody>
     </table>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore-compat.js"></script>
     <script>
-        // Initialize Firebase
+        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
             authDomain: "enviro500web.firebaseapp.com",
@@ -34,57 +34,11 @@
             measurementId: "G-DQZ8WQFYSR"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        const sightingsList = document.getElementById('bus-sightings');
-
-        // Function to render bus sighting
-        function renderSighting(data) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${data.busPlate}</td>
-                <td>${data.service}</td>
-                <td>${data.timestamp.toDate().toLocaleDateString()}</td>
-            `;
-            sightingsList.appendChild(tr);
-
-            // Add event listener to the row to show all timestamps on click
-            tr.addEventListener('click', () => {
-                showAllTimestamps(data.busPlate);
-            });
-        }
-
-        // Function to show all timestamps for a specific bus plate
-        function showAllTimestamps(busPlate) {
-            const timestampRef = db.collection('bus-sightings')
-                                    .where('busPlate', '==', busPlate)
-                                    .orderBy('timestamp', 'desc');
-
-            timestampRef.get().then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    alert(`Bus Plate: ${data.busPlate}\nTimestamp: ${data.timestamp.toDate().toLocaleString()}`);
-                });
-            }).catch((error) => {
-                console.error("Error getting documents: ", error);
-            });
-        }
-
-        // Preload the table with bus plates and "NIL" for service and last updated
-        ['SG5999Z', 'SG4012C', 'SG4013A'].forEach(busPlate => {
-            renderSighting({ busPlate, service: 'NIL', timestamp: new Date() });
-        });
-
-        // Real-time listener for bus sightings
-        db.collection('bus-sightings').onSnapshot(snapshot => {
-            snapshot.docChanges().forEach(change => {
-                const data = change.doc.data();
-                if (change.type === 'added') {
-                    renderSighting(data);
-                }
-            });
-        });
+        // Rest of your JavaScript code...
     </script>
 </body>
 </html>

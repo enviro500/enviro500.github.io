@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Bus Sighting</title>
+</head>
+<body>
+    <h2>Submit Bus Sighting</h2>
+    <form id="submit-form">
+        <label for="bus-plate">Bus Plate:</label>
+        <input type="text" id="bus-plate" name="bus-plate"><br><br>
+        <label for="service">Service:</label>
+        <input type="text" id="service" name="service"><br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <p id="message"></p>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+              apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+              authDomain: "enviro500web.firebaseapp.com",
+              projectId: "enviro500web",
+              storageBucket: "enviro500web.appspot.com",
+              messagingSenderId: "821087210177",
+              appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+              measurementId: "G-DQZ8WQFYSR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const form = document.getElementById('submit-form');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const busPlate = form['bus-plate'].value;
+            const service = form['service'].value;
+
+            // Check if bus plate is recognized
+            if (!['SG5999Z', 'SG4012C', 'SG4013A'].includes(busPlate)) {
+                message.textContent = "You can only submit certain bus plates!";
+                return;
+            }
+
+            try {
+                // Add sighting to Firestore
+                await db.collection('bus-sightings').add({
+                    busPlate,
+                    service,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                message.textContent = "Success!";
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                message.textContent = "Error submitting sighting. Please try again later.";
+            }
+        });
+    </script>
+</body>
+</html>

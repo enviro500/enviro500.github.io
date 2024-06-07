@@ -1,44 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Bus Sightings</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bus Spotting</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
 </head>
 <body>
-    <h2>View Bus Sightings</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Bus Plate</th>
-                <th>Service (it is on)</th>
-                <th>Last Updated</th>
-            </tr>
-        </thead>
-        <tbody id="bus-sightings">
-            <!-- Bus sightings will be dynamically added here -->
-        </tbody>
-    </table>
+  <h1>Bus Spotting</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Bus Plate</th>
+        <th>Service</th>
+        <th>Last Updated</th>
+      </tr>
+    </thead>
+    <tbody id="busList">
+      <!-- Bus sightings will be inserted here dynamically -->
+    </tbody>
+  </table>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore-compat.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
-            authDomain: "enviro500web.firebaseapp.com",
-            projectId: "enviro500web",
-            storageBucket: "enviro500web.appspot.com",
-            messagingSenderId: "821087210177",
-            appId: "1:821087210177:web:96f8bd5e588ed33085e240",
-            measurementId: "G-DQZ8WQFYSR"
-        };
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+      authDomain: "enviro500web.firebaseapp.com",
+      projectId: "enviro500web",
+      storageBucket: "enviro500web.appspot.com",
+      messagingSenderId: "821087210177",
+      appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+      measurementId: "G-DQZ8WQFYSR"
+    };
 
-        // Rest of your JavaScript code...
-    </script>
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Function to display bus sightings
+    function displayBusSightings() {
+      const busList = document.getElementById('busList');
+
+      // Clear existing data
+      busList.innerHTML = '';
+
+      // Get bus sightings from Firestore
+      db.collection('bus-sightings').get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${data.busPlate}</td>
+            <td>${data.service}</td>
+            <td>${new Date(data.timestamp.toDate()).toLocaleString()}</td>
+          `;
+          busList.appendChild(row);
+        });
+      }).catch((error) => {
+        console.error('Error getting bus sightings: ', error);
+      });
+    }
+
+    // Call the function initially
+    displayBusSightings();
+  </script>
 </body>
 </html>

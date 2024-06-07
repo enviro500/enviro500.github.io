@@ -66,17 +66,14 @@
       // Get bus sightings from Firestore
       db.collection('bus-sightings').get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          doc.data().then((data) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${data.busPlate}</td>
-              <td>${data.service}</td>
-              <td>${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'N/A'}</td>
-            `;
-            busList.appendChild(row);
-          }).catch((error) => {
-            console.error('Error getting bus data: ', error);
-          });
+          const data = doc.data();
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${data.busPlate}</td>
+            <td>${data.service}</td>
+            <td>${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'N/A'}</td>
+          `;
+          busList.appendChild(row);
         });
       }).catch((error) => {
         console.error('Error getting bus sightings: ', error);

@@ -17,19 +17,22 @@
 
     <p id="message"></p>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js"></script>
     <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            measurementId: "YOUR_MEASUREMENT_ID"
+        };
+        
         // Check if Firebase app is already initialized
         if (!firebase.apps.length) {
-            // Initialize Firebase
-            const firebaseConfig = {
-                apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
-                authDomain: "enviro500web.firebaseapp.com",
-                projectId: "enviro500web",
-                storageBucket: "enviro500web.appspot.com",
-                messagingSenderId: "821087210177",
-                appId: "1:821087210177:web:96f8bd5e588ed33085e240",
-                measurementId: "G-DQZ8WQFYSR"
-            };
             firebase.initializeApp(firebaseConfig);
         }
 

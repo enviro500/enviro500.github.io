@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Bus Sighting2</title>
+    <title>Submit Bus Sighting23</title>
     <style>
         @font-face {
             font-family: 'Inter';
@@ -168,7 +168,7 @@
         let directions = [];
         
         async function initializeData() {
-            busServices = await fetchData("https://datamall2.mytransport.sg/ltaodataservice/BusServices", apiHeaders);
+            busServices = await fetchData("https://corsproxy.io/?https://datamall2.mytransport.sg/ltaodataservice/BusServices", apiHeaders);
             serviceNos = busServices.map(service => service.ServiceNo);
             directions = busServices.map(service => service.DestinationCode);
         }
@@ -187,7 +187,7 @@
 
         // Function to fetch bus stops based on selected service and direction
         async function fetchBusStops(service, direction) {
-            const busRoutes = await fetchData(`https://datamall2.mytransport.sg/ltaodataservice/BusRoutes?$filter=ServiceNo eq '${service}' and Direction eq ${direction}`, apiHeaders);
+            const busRoutes = await fetchData(`https://corsproxy.io/?https://datamall2.mytransport.sg/ltaodataservice/BusRoutes?$filter=ServiceNo eq '${service}' and Direction eq ${direction}`, apiHeaders);
             return busRoutes.map(route => route.BusStopCode);
         }
 

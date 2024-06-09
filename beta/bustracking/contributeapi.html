@@ -154,10 +154,10 @@
         async function fetchData(url, headers) {
             const response = await fetch(url, {
                 headers,
-                mode: 'no-cors'
+                mode: 'cors'
             });
             const data = await response.json();
-            return data.value;
+            return data.contents ? JSON.parse(data.contents) : [];
         }
 
         // API configuration
@@ -166,8 +166,8 @@
         };
 
         // CORS proxy URLs
-        const corsProxyBusServices = 'https://corsproxy.io/?http%3A%2F%2Fdatamall2.mytransport.sg%2Fltaodataservice%2FBusServices';
-        const corsProxyBusRoutes = 'https://corsproxy.io/?http%3A%2F%2Fdatamall2.mytransport.sg%2Fltaodataservice%2FBusRoutes';
+        const corsProxyBusServices = 'https://api.allorigins.win/get?url=http://datamall2.mytransport.sg/ltaodataservice/BusServices';
+        const corsProxyBusRoutes = 'https://api.allorigins.win/get?url=http://datamall2.mytransport.sg/ltaodataservice/BusRoutes';
 
         // Fetch bus services and directions
         let busServices = [];
@@ -230,16 +230,4 @@
                     busStop,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                message.textContent = "Success!";
-                setTimeout(() => {
-                    window.location.href = "https://enviro500.github.io/beta/bustracking/view2";
-                }, 2000);
-            } catch (error) {
-                console.error("Error adding document: ", error);
-                message.textContent = "Error submitting sighting. Please try again later.";
-            }
-        });
-    </script>
-</body>
-</html>
-
+                message.text

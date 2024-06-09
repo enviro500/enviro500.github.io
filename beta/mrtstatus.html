@@ -1,248 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Bus Sighting23</title>
-    <style>
-        @font-face {
-            font-family: 'Inter';
-            src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
-        }
-        body {
-            font-family: Inter, sans-serif;
-            background: #f7f7f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            position: relative;
-        }
-        h2 {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"], button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #message {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .autocomplete-suggestions {
-            border: 1px solid #ccc;
-            border-top: none;
-            max-height: 150px;
-            overflow-y: auto;
-            position: absolute;
-            background-color: white;
-            width: calc(100% - 22px);
-            z-index: 1000;
-        }
-        .autocomplete-suggestion {
-            padding: 10px;
-            cursor: pointer;
-        }
-        .autocomplete-suggestion:hover {
-            background-color: #f2f2f2;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MRT Disruption Info</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Submit Bus Sighting</h2>
-        <form id="submit-form">
-            <label for="bus-plate">Bus Plate:</label>
-            <input type="text" id="bus-plate" name="bus-plate" autocomplete="off">
-            <div id="bus-plate-autocomplete" class="autocomplete-suggestions"></div>
+  <h1>MRT Disruption Information</h1>
+  <div id="disruption-info"></div>
 
-            <label for="service">Service No.:</label>
-            <input type="text" id="service" name="service" autocomplete="off">
-            <div id="service-autocomplete" class="autocomplete-suggestions"></div>
-
-            <label for="direction">Direction:</label>
-            <input type="text" id="direction" name="direction" autocomplete="off">
-            <div id="direction-autocomplete" class="autocomplete-suggestions"></div>
-
-            <label for="bus-stop">Bus Stop Spotted:</label>
-            <input type="text" id="bus-stop" name="bus-stop" autocomplete="off">
-            <div id="bus-stop-autocomplete" class="autocomplete-suggestions"></div>
-
-            <button type="submit">Submit</button>
-        </form>
-        <p id="message"></p>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script>
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
-            authDomain: "enviro500web.firebaseapp.com",
-            projectId: "enviro500web",
-            storageBucket: "enviro500web.appspot.com",
-            messagingSenderId: "821087210177",
-            appId: "1:821087210177:web:96f8bd5e588ed33085e240",
-            measurementId: "G-DQZ8WQFYSR"
-        };
-        
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+  <script>
+    function fetchData() {
+      fetch("https://corsproxy.io/?http%3A%2F%2Fdatamall2.mytransport.sg%2Fltaodataservice%2FBusRoutes", {
+        method: "GET",
+        headers: {
+          "AccountKey": "1wo2iVrSTjeP0HHhAwdwoQ=="
         }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Process the fetched data and display it
+        document.getElementById("disruption-info").innerHTML = JSON.stringify(data, null, 2);
+      })
+      .catch(error => console.error("Error fetching data:", error));
+    }
 
-        const db = firebase.firestore();
+    // Fetch data initially
+    fetchData();
 
-        const form = document.getElementById('submit-form');
-        const message = document.getElementById('message');
-
-        // Predefined data for autocomplete
-        const busPlates = ['SG5999Z', 'SG4012C', 'SG4013A'];
-
-        // Function to create autocomplete suggestions
-        function createAutocomplete(input, suggestions, suggestionBox) {
-            input.addEventListener('input', () => {
-                const value = input.value.toLowerCase();
-                suggestionBox.innerHTML = '';
-                if (value) {
-                    suggestions.filter(item => item.toLowerCase().includes(value)).forEach(item => {
-                        const suggestion = document.createElement('div');
-                        suggestion.classList.add('autocomplete-suggestion');
-                        suggestion.textContent = item;
-                        suggestion.addEventListener('click', () => {
-                            input.value = item;
-                            suggestionBox.innerHTML = '';
-                        });
-                        suggestionBox.appendChild(suggestion);
-                    });
-                }
-            });
-        }
-
-        // Initialize autocomplete for bus plate input
-        const busPlateInput = document.getElementById('bus-plate');
-        const busPlateAutocomplete = document.getElementById('bus-plate-autocomplete');
-        createAutocomplete(busPlateInput, busPlates, busPlateAutocomplete);
-
-        // Function to fetch data from APIs
-        async function fetchData(url, headers) {
-            const response = await fetch(url, {
-                headers,
-                mode: 'cors'
-            });
-            const data = await response.json();
-            return data.value;
-        }
-
-        // API configuration
-        const apiHeaders = {
-            'AccountKey': '1wo2iVrSTjeP0HHhAwdwoQ=='
-        };
-
-        // CORS proxy URLs
-        const corsProxyBusServices = 'https://corsproxy.io/?http%3A%2F%2Fdatamall2.mytransport.sg%2Fltaodataservice%2FBusServices';
-        const corsProxyBusRoutes = 'https://corsproxy.io/?http%3A%2F%2Fdatamall2.mytransport.sg%2Fltaodataservice%2FBusRoutes';
-
-        // Fetch bus services and directions
-        let busServices = [];
-        let serviceNos = [];
-        let directions = [];
-        
-        async function initializeData() {
-            try {
-                busServices = await fetchData(corsProxyBusServices, apiHeaders);
-                serviceNos = busServices.map(service => service.ServiceNo);
-                directions = busServices.map(service => service.DestinationCode);
-            } catch (error) {
-                console.error("Error initializing data: ", error);
-            }
-        }
-
-        initializeData();
-
-        // Initialize autocomplete for service number input
-        const serviceInput = document.getElementById('service');
-        const serviceAutocomplete = document.getElementById('service-autocomplete');
-        createAutocomplete(serviceInput, serviceNos, serviceAutocomplete);
-
-        // Initialize autocomplete for direction input
-        const directionInput = document.getElementById('direction');
-        const directionAutocomplete = document.getElementById('direction-autocomplete');
-        createAutocomplete(directionInput, directions, directionAutocomplete);
-
-        // Function to fetch bus stops based on selected service and direction
-        async function fetchBusStops(service, direction) {
-            const busRoutes = await fetchData(`${corsProxyBusRoutes}?$filter=ServiceNo eq '${service}' and Direction eq ${direction}`, apiHeaders);
-            return busRoutes.map(route => route.BusStopCode);
-        }
-
-        // Initialize autocomplete for bus stop input
-        const busStopInput = document.getElementById('bus-stop');
-        const busStopAutocomplete = document.getElementById('bus-stop-autocomplete');
-        serviceInput.addEventListener('change', async () => {
-            const selectedService = serviceInput.value;
-            const selectedDirection = directionInput.value;
-            if (serviceNos.includes(selectedService) && directions.includes(selectedDirection)) {
-                const busStops = await fetchBusStops(selectedService, selectedDirection);
-                createAutocomplete(busStopInput, busStops, busStopAutocomplete);
-            }
-        });
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const busPlate = form['bus-plate'].value;
-            const service = form['service'].value;
-            const direction = form['direction'].value;
-            const busStop = form['bus-stop'].value;
-
-            if (!busPlates.includes(busPlate) || !serviceNos.includes(service) || !directions.includes(direction)) {
-                message.textContent = "Please enter valid details!";
-                return;
-            }
-
-            try {
-                await db.collection('bus-sightings').add({
-                    busPlate,
-                    service,
-                    direction,
-                    busStop,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                message.textContent = "Success!";
-                setTimeout(() => {
-                    window.location.href = "https://enviro500.github.io/beta/bustracking/view2";
-                }, 2000);
-            } catch (error) {
-                console.error("Error adding document: ", error);
-                message.textContent = "Error submitting sighting. Please try again later.";
-            }
-        });
-    </script>
+    // Fetch data every 10 seconds
+    setInterval(fetchData, 10000);
+  </script>
 </body>
 </html>

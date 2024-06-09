@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Bus Sighting</title>
+    <title>Submit Bus Sighting2</title>
     <style>
         @font-face {
             font-family: 'Inter';
@@ -230,4 +230,16 @@
                     busStop,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                message.text
+                message.textContent = "Success!";
+                setTimeout(() => {
+                    window.location.href = "https://enviro500.github.io/beta/bustracking/view2";
+                }, 2000);
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                message.textContent = "Error submitting sighting. Please try again later.";
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bus Services</title>
 <style>
-  @font-face {
-    font-family: 'Inter';
-    src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
-  }
-  
-  @font-face {
-    font-family: 'LTAIdentity';
-    src: url('https://enviro500.github.io/beta/LTAIdentity.Medium.ttf') format('truetype');
-  }
-  
+ @font-face {
+            font-family: 'Inter';
+            src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
+ }
+ 
+ @font-face {
+            font-family: 'LTAIdentity';
+            src: url('https://enviro500.github.io/beta/LTAIdentity.Medium.ttf') format('truetype');
+        }
+        
   body {
     font-family: Inter, sans-serif;
     padding: 20px;
@@ -33,7 +33,7 @@
     width: 100%;
     padding: 8px;
     font-size: 16px;
-    font-family: 'Inter';
+    font-family:'Inter';
     border-radius: 5px;
     border: 1px solid #ccc;
     box-sizing: border-box;
@@ -77,10 +77,10 @@
 <h1>Contribute A Spotting</h1>
 
 <div class="bus-plate-search">
-  <label for="busPlateSearchInput">Bus Plate:</label>
-  <input type="text" id="busPlateSearchInput" placeholder="Enter Bus Plate">
+  <label for="plateSearchInput">Bus Plate:</label>
+  <input type="text" id="plateSearchInput" placeholder="Enter Bus Plate">
 
-  <div class="search-results" id="busPlateSearchResults"></div>
+  <div class="search-results" id="plateSearchResults"></div>
 </div>
 
 <div class="bus-service-search">
@@ -100,111 +100,55 @@
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
 <script>
-  // Your web app's Firebase configuration
+  // Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
     authDomain: "bus-spotters.firebaseapp.com",
     projectId: "bus-spotters",
     storageBucket: "bus-spotters.appspot.com",
     messagingSenderId: "872895466265",
-    appId: "1:872895466265:web:32161fda30a88f0c771388"
+    appId: "1:872895466265:web:32161fda30a88f0c771388",
+    measurementId: "G-737J867X6Q"
   };
-
+  
   // Initialize Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore(app);
+  firebase.initializeApp(firebaseConfig);
 
   document.addEventListener("DOMContentLoaded", function() {
-    const myHeaders = new Headers();
-    myHeaders.append("AccountKey", "1wo2iVrSTjeP0HHhAwdwoQ==");
-
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow"
-    };
-
-    const fetchBusStops = async () => {
-      let allBusStops = [];
-      let skip = 0;
-      let keepFetching = true;
-
-      while (keepFetching) {
-        const response = await fetch(`https://web-production-ae66.up.railway.app/http://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip=${skip}`, requestOptions);
-        const data = await response.json();
-        if (data.value.length > 0) {
-          allBusStops = allBusStops.concat(data.value);
-          skip += 500;
-        } else {
-          keepFetching = false;
-        }
-      }
-
-      return allBusStops;
-    };
-
-    const fetchBusServices = async () => {
-      let allBusServices = [];
-      let skip = 0;
-      let keepFetching = true;
-
-      while (keepFetching) {
-        const response = await fetch(`https://web-production-ae66.up.railway.app/http://datamall2.mytransport.sg/ltaodataservice/BusServices?$skip=${skip}`, requestOptions);
-        const data = await response.json();
-        if (data.value.length > 0) {
-          allBusServices = allBusServices.concat(data.value);
-          skip += 500;
-        } else {
-          keepFetching = false;
-        }
-      }
-
-      return allBusServices;
-    };
-
-    const fetchBusPlates = async () => {
-      const busPlates = [];
-      const collections = await db.listCollections();
-      collections.forEach(collection => {
-        const collectionName = collection.id;
-        if (/^(SG|SBS|PC|PZ|SMB)/.test(collectionName)) {
-          busPlates.push(collectionName);
-        }
-      });
-      return busPlates;
-    };
 
     const populateBusPlateSearchResults = async () => {
-      const busPlates = await fetchBusPlates();
-      const busPlateSearchInput = document.getElementById('busPlateSearchInput');
-      const busPlateSearchResults = document.getElementById('busPlateSearchResults');
+      const prefixes = ['SG', 'SBS', 'PC', 'PZ', 'SMB'];
+      const allBusPlates = [];
+      for (const prefix of prefixes) {
+        const snapshot = await firebase.firestore().collection(prefix).get();
+        snapshot.forEach(doc => {
+          allBusPlates.push(doc.id);
+        });
+      }
 
-      busPlateSearchInput.addEventListener('input', (event) => {
+      const plateSearchInput = document.getElementById('plateSearchInput');
+      const plateSearchResults = document.getElementById('plateSearchResults');
+
+      plateSearchInput.addEventListener('input', (event) => {
         const searchText = event.target.value.toLowerCase().trim();
-        const filteredResults = busPlates.filter(plate => plate.toLowerCase().includes(searchText));
-
-        // Clear previous results
-        busPlateSearchResults.innerHTML = '';
+        const filteredResults = allBusPlates.filter(plate => plate.toLowerCase().includes(searchText));
+        
+        plateSearchResults.innerHTML = '';
 
         if (searchText.length > 0) {
-          // Display search results box
-          busPlateSearchResults.style.display = 'block';
-          // Display filtered results
-          filteredResults.forEach(plate => {
+          plateSearchResults.style.display = 'block';
+          filteredResults.forEach(result => {
             const resultItem = document.createElement('div');
             resultItem.classList.add('search-result');
-            resultItem.textContent = plate;
+            resultItem.textContent = result;
             resultItem.addEventListener('click', () => {
-              // Populate search input with selected result
-              busPlateSearchInput.value = plate;
-              // Hide search results box after selection
-              busPlateSearchResults.style.display = 'none';
+              plateSearchInput.value = result;
+              plateSearchResults.style.display = 'none';
             });
-            busPlateSearchResults.appendChild(resultItem);
+            plateSearchResults.appendChild(resultItem);
           });
         } else {
-          // Hide search results box if search input is empty
-          busPlateSearchResults.style.display = 'none';
+          plateSearchResults.style.display = 'none';
         }
       });
     };

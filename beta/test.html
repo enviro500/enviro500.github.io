@@ -4,30 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Data Fetcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>API Data Fetcher</h1>
     <button id="fetchDataButton">Fetch Data</button>
+
     <div id="result"></div>
 
     <script>
         document.getElementById('fetchDataButton').addEventListener('click', function() {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const apiUrl = 'http://datamall2.mytransport.sg/ltaodataservice/BusServices?$skip=500';
-            const fetchUrl = proxyUrl + apiUrl;
+            const myHeaders = new Headers();
+            myHeaders.append("AccountKey", "1wo2iVrSTjeP0HHhAwdwoQ==");
 
-            fetch(fetchUrl)
-                .then(response => {
+            const requestOptions = {
+                method: "GET",
+                headers: myHeaders,
+                redirect: "follow"
+            };
+
+            fetch("https://corsproxy.io/?http%3A%2F%2Fdatamall2.mytransport.sg%2Fltaodataservice%2FBusServices%3F%24skip%3D500", requestOptions)
+                .then((response) => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error('Network response was not ok ' + response.statusText);
                     }
                     return response.text();
                 })
-                .then(data => {
-                    document.getElementById('result').textContent = data;
+                .then((result) => {
+                    document.getElementById('result').textContent = result;
                 })
-                .catch(error => {
-                    console.error('There was an error fetching the data:', error);
+                .catch((error) => {
+                    document.getElementById('result').textContent = 'Fetch error: ' + error;
                 });
         });
     </script>

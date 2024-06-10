@@ -165,8 +165,9 @@
             'AccountKey': '1wo2iVrSTjeP0HHhAwdwoQ=='
         };
 
-        // CORS proxy URL
+        // CORS proxy URLs
         const corsProxyBusServices = 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusServices';
+        const corsProxyBusRoutes = 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusRoutes';
 
         // Fetch bus services
         async function fetchBusServices() {
@@ -182,8 +183,38 @@
             createAutocomplete(serviceInput, serviceNumbers, serviceAutocomplete);
         }
 
-        // Initialize service number autocomplete
         initializeServiceAutocomplete();
+
+        // Function to fetch bus stops based on selected service and direction
+        async function fetchBusStops(service, direction) {
+            const busRoutes = await fetchData(`${corsProxyBusRoutes}?$filter=ServiceNo eq '${service}' and Direction eq ${direction}`, apiHeaders);
+            return busRoutes.map(route => route.BusStopCode);
+        }
+
+        // Initialize autocomplete for direction input
+        const directionInput = document.getElementById('direction');
+        const directionAutocomplete = document.getElementById('direction-autocomplete');
+        createAutocomplete(directionInput, [], directionAutocomplete);
+
+        // Update bus stop autocomplete when service and direction change
+        const busStopInput = document.getElementById('bus-stop');
+        const busStopAutocomplete = document.getElementById('bus-stop-autocomplete');
+        serviceInput.addEventListener('change', async () => {
+            const selectedService = serviceInput.value;
+            const selectedDirection = directionInput.value;
+            if (selectedService && selectedDirection) {
+                const busStops = await fetchBusStops(selectedService, selectedDirection);
+                createAutocomplete(busStopInput, busStops, busStopAutocomplete);
+            }
+        });
+        directionInput.addEventListener('change', async () => {
+            const selectedService = serviceInput.value;
+            const selectedDirection = directionInput.value;
+            if (selectedService && selectedDirection) {
+                const busStops = await fetchBusStops(selectedService, selectedDirection);
+                createAutocomplete(busStopInput, busStops, busStopAutocomplete);
+            }
+        });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -192,7 +223,7 @@
             const direction = form['direction'].value;
             const busStop = form['bus-stop'].value;
 
-            if (!busPlates.includes(busPlate) || service === '' || direction === '') {
+            if (!busPlates.includes(busPlate)) {
                 message.textContent = "Please enter valid details!";
                 return;
             }

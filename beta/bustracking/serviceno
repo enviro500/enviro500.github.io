@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus Services</title>
+</head>
+<body>
+<h1>Bus Services</h1>
+<label for="busService">Select a Bus Service:</label>
+<select id="busService">
+  <option value="" selected disabled>Select a bus service</option>
+</select>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  fetch('https://corsproxy.io/?http://datamall2.mytransport.sg/ltaodataservice/BusServices')
+    .then(response => response.json())
+    .then(data => {
+      const busServices = data.value;
+      const dropdown = document.getElementById('busService');
+      
+      busServices.forEach(service => {
+        const option = document.createElement('option');
+        option.value = service.ServiceNo;
+        option.text = service.ServiceNo;
+        dropdown.appendChild(option);
+      });
+    })
+    .catch(error => console.error('Error fetching bus services:', error));
+});
+</script>
+</body>
+</html>

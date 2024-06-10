@@ -97,8 +97,8 @@
   <div class="search-results" id="destinationSearchResults"></div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
 <script>
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -164,8 +164,8 @@
 
     const fetchBusPlates = async () => {
       const busPlates = [];
-      const querySnapshot = await db.listCollections();
-      querySnapshot.forEach(collection => {
+      const collections = await db.listCollections();
+      collections.forEach(collection => {
         const collectionName = collection.id;
         if (/^(SG|SBS|PC|PZ|SMB)/.test(collectionName)) {
           busPlates.push(collectionName);

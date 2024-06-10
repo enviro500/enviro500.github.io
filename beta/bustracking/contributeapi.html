@@ -237,7 +237,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const getDestinationDescription = async (destinationCode, allBusStops) => {
     const destination = allBusStops.find(stop => stop.BusStopCode === destinationCode);
-    return destination ? ${destination.Description} : destinationCode;
+    return destination ? `${destination.Description}` : destinationCode;
+
   };
 
   populateServiceSearchResults();

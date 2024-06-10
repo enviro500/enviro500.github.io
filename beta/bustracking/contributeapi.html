@@ -72,13 +72,6 @@
         .autocomplete-suggestion:hover {
             background-color: #f2f2f2;
         }
-        .service-dropdown {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
@@ -90,10 +83,8 @@
             <div id="bus-plate-autocomplete" class="autocomplete-suggestions"></div>
 
             <label for="service">Service No.:</label>
-            <!-- Dropdown to display service numbers -->
-            <select id="service" name="service" class="service-dropdown">
-                <option value="" disabled selected>Select Service No.</option>
-            </select>
+            <input type="text" id="service" name="service" autocomplete="off">
+            <div id="service-autocomplete" class="autocomplete-suggestions"></div>
 
             <label for="direction">Direction:</label>
             <input type="text" id="direction" name="direction" autocomplete="off">
@@ -174,24 +165,55 @@
             'AccountKey': '1wo2iVrSTjeP0HHhAwdwoQ=='
         };
 
-        // CORS proxy URL for fetching bus services
+        // CORS proxy URL
         const corsProxyBusServices = 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusServices';
 
-        // Fetch bus services and populate the dropdown list
-        async function initializeData() {
-            const busServices = await fetchData(corsProxyBusServices, apiHeaders);
-            const serviceDropdown = document.getElementById('service');
-            busServices.forEach(service => {
-                const option = document.createElement('option');
-                option.text = service.ServiceNo;
-                option.value = service.ServiceNo;
-                serviceDropdown.add(option);
-            });
+        // Fetch bus services
+        async function fetchBusServices() {
+            const services = await fetchData(corsProxyBusServices, apiHeaders);
+            return services.map(service => service.ServiceNo);
         }
 
-        initializeData();
+        // Function to initialize service number autocomplete
+        async function initializeServiceAutocomplete() {
+            const serviceNumbers = await fetchBusServices();
+            const serviceInput = document.getElementById('service');
+            const serviceAutocomplete = document.getElementById('service-autocomplete');
+            createAutocomplete(serviceInput, serviceNumbers, serviceAutocomplete);
+        }
 
-        // Function to fetch bus stops based on selected service and direction
-        async function fetchBusStops(service, direction) {
-            // Implement fetching
+        // Initialize service number autocomplete
+        initializeServiceAutocomplete();
 
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const busPlate = form['bus-plate'].value;
+            const service = form['service'].value;
+            const direction = form['direction'].value;
+            const busStop = form['bus-stop'].value;
+
+            if (!busPlates.includes(busPlate) || service === '' || direction === '') {
+                message.textContent = "Please enter valid details!";
+                return;
+            }
+
+            try {
+                await db.collection('bus-sightings').add({
+                    busPlate,
+                    service,
+                    direction,
+                    busStop,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                message.textContent = "Success!";
+                setTimeout(() => {
+                    window.location.href = "https://enviro500.github.io/beta/bustracking/view2";
+                }, 2000);
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                message.textContent = "Error submitting sighting. Please try again later.";
+            }
+        });
+    </script>
+</body>
+</html>

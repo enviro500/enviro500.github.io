@@ -14,7 +14,16 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  fetch('https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusServices')
+  const myHeaders = new Headers();
+  myHeaders.append("AccountKey", "1wo2iVrSTjeP0HHhAwdwoQ==");
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow"
+  };
+
+  fetch("https://corsproxy.io/?http://datamall2.mytransport.sg/ltaodataservice/BusServices", requestOptions)
     .then(response => response.json())
     .then(data => {
       const busServices = data.value;

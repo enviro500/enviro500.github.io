@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
     redirect: "follow"
   };
 
-  fetch("https://corsproxy.io/?http://datamall2.mytransport.sg/ltaodataservice/BusServices", requestOptions)
+  fetch("https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusServices", requestOptions)
     .then(response => response.json())
     .then(data => {
       const busServices = data.value;

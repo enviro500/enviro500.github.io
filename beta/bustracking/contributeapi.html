@@ -65,7 +65,7 @@
 
   .bus-stop-code {
     background-color: limegreen;
-    color: white;
+    color: black;
     padding: 2px 5px;
     font-family: 'LTAIdentity', Courier, monospace;
     border-radius: 3px;
@@ -90,7 +90,44 @@
   <div class="search-results" id="destinationSearchResults"></div>
 </div>
 
+<div class="bus-stop-search">
+  <label for="busStopSearchInput">Select Bus Stop:</label>
+  <input type="text" id="busStopSearchInput" placeholder="Enter Bus Stop" disabled>
+
+  <div class="search-results" id="busStopSearchResults"></div>
+</div>
+
+<form id="submit-form">
+  <label for="bus-plate">Bus Plate:</label>
+  <input type="text" id="bus-plate" name="bus-plate"><br><br>
+  <label for="service">Service:</label>
+  <input type="text" id="service" name="service"><br><br>
+  <button type="submit">Submit</button>
+</form>
+
+<p id="message"></p>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
+// Initialize Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+    authDomain: "enviro500web.firebaseapp.com",
+    projectId: "enviro500web",
+    storageBucket: "enviro500web.appspot.com",
+    messagingSenderId: "821087210177",
+    appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+    measurementId: "G-DQZ8WQFYSR"
+};
+
+// Check if Firebase app is already initialized
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+const db = firebase.firestore();
+
 document.addEventListener("DOMContentLoaded", function() {
   const myHeaders = new Headers();
   myHeaders.append("AccountKey", "1wo2iVrSTjeP0HHhAwdwoQ==");
@@ -107,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let keepFetching = true;
 
     while (keepFetching) {
-      const response = await fetch(https://web-production-6b18.up.railway.app/http://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip=${skip}, requestOptions);
+      const response = await fetch(`https://web-production-dfef.up.railway.app/http://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip=${skip}`, requestOptions);
       const data = await response.json();
       if (data.value.length > 0) {
         allBusStops = allBusStops.concat(data.value);
@@ -126,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let keepFetching = true;
 
     while (keepFetching) {
-      const response = await fetch(https://web-production-6b18.up.railway.app/http://datamall2.mytransport.sg/ltaodataservice/BusServices?$skip=${skip}, requestOptions);
+      const response = await fetch(`https://web-production-dfef.up.railway.app/http://datamall2.mytransport.sg/ltaodataservice/BusServices?$skip=${skip}`, requestOptions);
       const data = await response.json();
       if (data.value.length > 0) {
         allBusServices = allBusServices.concat(data.value);
@@ -139,6 +176,12 @@ document.addEventListener("DOMContentLoaded", function() {
     return allBusServices;
   };
 
+  const fetchBusStopsCodes = async () => {
+    let allBusStops = await fetchBusStops();
+    let allBusStopCodes = allBusStops.map(stop => stop.BusStopCode);
+    return allBusStopCodes;
+  };
+
   const populateServiceSearchResults = async () => {
     const allBusServices = await fetchBusServices();
     const allBusStops = await fetchBusStops();
@@ -147,6 +190,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const serviceSearchResults = document.getElementById('serviceSearchResults');
     const destinationSearchInput = document.getElementById('destinationSearchInput');
     const destinationSearchResults = document.getElementById('destinationSearchResults');
+    const busStopSearchInput = document.getElementById('busStopSearchInput'); // Added
 
     serviceSearchInput.addEventListener('input', async (event) => {
       const searchText = event.target.value.toLowerCase().trim();
@@ -157,6 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
       // Clear previous results
       serviceSearchResults.innerHTML = '';
 
+     
       if (searchText.length > 0) {
         // Display search results box
         serviceSearchResults.style.display = 'block';
@@ -177,6 +222,7 @@ document.addEventListener("DOMContentLoaded", function() {
               serviceSearchResults.style.display = 'none';
               // Clear previous destination results
               destinationSearchResults.innerHTML = '';
+              //
               // Reset destination input
               destinationSearchInput.value = '';
               destinationSearchInput.setAttribute('readonly', 'readonly');
@@ -201,6 +247,8 @@ document.addEventListener("DOMContentLoaded", function() {
             serviceSearchResults.appendChild(resultItem);
           }
         });
+        // Enable the bus stop input field
+        busStopSearchInput.removeAttribute('disabled'); // Added
       } else {
         // Hide search results box if search input is empty
         serviceSearchResults.style.display = 'none';
@@ -208,6 +256,9 @@ document.addEventListener("DOMContentLoaded", function() {
         destinationSearchInput.classList.add('disabled');
         destinationSearchInput.value = '';
         destinationSearchResults.style.display = 'none';
+        // Disable the bus stop input field if no service is selected
+        busStopSearchInput.setAttribute('disabled', 'disabled'); // Added
+        busStopSearchInput.value = ''; // Clear the input value
       }
     });
   };
@@ -221,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const destination = await getDestinationDescription(destinationCode, allBusStops);
       const destinationItem = document.createElement('div');
       destinationItem.classList.add('search-result');
-      destinationItem.innerHTML = <span class="bus-stop-code">${destinationCode}</span> ${destination};
+      destinationItem.innerHTML = `<span class="bus-stop-code">${destinationCode}</span> ${destination}`;
       destinationItem.addEventListener('click', () => {
         // Populate destination search input with selected destination code
         document.getElementById('destinationSearchInput').value = destination;
@@ -235,13 +286,87 @@ document.addEventListener("DOMContentLoaded", function() {
     destinationSearchResults.style.display = 'block';
   };
 
+  const populateBusStopSearchResults = async () => {
+    const allBusStops = await fetchBusStops();
+    const busStopSearchInput = document.getElementById('busStopSearchInput');
+    const busStopSearchResults = document.getElementById('busStopSearchResults');
+
+    // Initially display the first 8 bus stops with descriptions
+    displayBusStops(allBusStops.slice(0, 8));
+
+    busStopSearchInput.addEventListener('input', (event) => {
+      const searchText = event.target.value.toLowerCase().trim();
+      const filteredResults = allBusStops.filter(stop => stop.Description.toLowerCase().includes(searchText) || stop.BusStopCode.includes(searchText));
+
+      // Clear previous results
+      busStopSearchResults.innerHTML = '';
+
+      if (searchText.length > 0) {
+        // Display search results box
+        busStopSearchResults.style.display = 'block';
+        // Display filtered results
+        displayBusStops(filteredResults);
+      } else {
+        // Display the first 8 bus stops if search input is empty
+        displayBusStops(allBusStops.slice(0, 8));
+      }
+    });
+
+    // Function to display bus stops
+    function displayBusStops(busStops) {
+      busStops.forEach(stop => {
+        const stopItem = document.createElement('div');
+        stopItem.classList.add('search-result');
+        stopItem.innerHTML = `<span class="bus-stop-code">${stop.BusStopCode}</span> ${stop.Description}`;
+        stopItem.addEventListener('click', () => {
+          // Populate bus stop search input with selected result
+          busStopSearchInput.value = stop.BusStopCode;
+          // Hide search results box after selection
+          busStopSearchResults.style.display = 'none';
+        });
+        busStopSearchResults.appendChild(stopItem);
+      });
+    }
+  };
+
   const getDestinationDescription = async (destinationCode, allBusStops) => {
     const destination = allBusStops.find(stop => stop.BusStopCode === destinationCode);
     return destination ? `${destination.Description}` : destinationCode;
-
   };
 
   populateServiceSearchResults();
+  populateBusStopSearchResults();
+
+  // Initially, disable the bus stop input field
+  document.getElementById('busStopSearchInput').setAttribute('disabled', 'disabled'); // Added
+
+  const form = document.getElementById('submit-form');
+  const message = document.getElementById('message');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const busPlate = form['bus-plate'].value;
+    const service = form['service'].value;
+
+    // Check if bus plate is recognized
+    if (!['SG5999Z', 'SG4012C', 'SG4013A'].includes(busPlate)) {
+      message.textContent = "You can only submit certain bus plates!";
+      return;
+    }
+
+    try {
+      // Add sighting to Firestore
+      await db.collection('bus-sightings').add({
+        busPlate,
+        service,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      message.textContent = "Success!";
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      message.textContent = "Error submitting sighting. Please try again later.";
+    }
+  });
 });
 </script>
 </body>

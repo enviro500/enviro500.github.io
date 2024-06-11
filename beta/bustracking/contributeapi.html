@@ -339,18 +339,21 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
-  try {
-    // Add sighting to Firestore
-    await db.collection('bus-sightings').add({
-      busPlate,
-      service,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    message.textContent = "Success!";
-  } catch (error) {
-    console.error("Error adding document: ", error);
-    message.textContent = "Error submitting sighting. Please try again later.";
-  }
+ try {
+  console.log("Submitting to Firestore:", { busPlate, service });
+  // Add sighting to Firestore
+  await db.collection('bus-sightings').add({
+    busPlate,
+    service,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  console.log("Submission successful");
+  message.textContent = "Success!";
+} catch (error) {
+  console.error("Error submitting to Firestore: ", error);
+  message.textContent = "Error submitting sighting. Please try again later.";
+}
+
 });
 
   });

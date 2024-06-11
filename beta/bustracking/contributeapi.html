@@ -327,30 +327,32 @@
     const form = document.getElementById('submit-form');
     const message = document.getElementById('message');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const busPlate = form['bus-plate'].value;
-      const service = document.getElementById('service').value; // Getting the service from the input
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  console.log("Form submitted"); // Debugging statement
+  const busPlate = form['bus-plate'].value;
+  const service = document.getElementById('service').value; // Getting the service from the input
 
-      // Check if bus plate is recognized
-      if (!['SG5999Z', 'SG4012C', 'SG4013A'].includes(busPlate)) {
-        message.textContent = "You can only submit certain bus plates!";
-        return;
-      }
+  // Check if bus plate is recognized
+  if (!['SG5999Z', 'SG4012C', 'SG4013A'].includes(busPlate)) {
+    message.textContent = "You can only submit certain bus plates!";
+    return;
+  }
 
-      try {
-        // Add sighting to Firestore
-        await db.collection('bus-sightings').add({
-          busPlate,
-          service,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        message.textContent = "Success!";
-      } catch (error) {
-        console.error("Error adding document: ", error);
-        message.textContent = "Error submitting sighting. Please try again later.";
-      }
+  try {
+    // Add sighting to Firestore
+    await db.collection('bus-sightings').add({
+      busPlate,
+      service,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
+    message.textContent = "Success!";
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    message.textContent = "Error submitting sighting. Please try again later.";
+  }
+});
+
   });
 </script>
 </body>

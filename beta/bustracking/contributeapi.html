@@ -96,8 +96,6 @@
 <form id="submit-form">
   <label for="bus-plate">Bus Plate:</label>
   <input type="text" id="bus-plate" name="bus-plate"><br><br>
-  <label for="service">Service:</label>
-  <input type="text" id="service" name="service"><br><br>
   <button type="submit">Submit</button>
 </form>
 
@@ -205,7 +203,6 @@
               resultItem.classList.add('search-result');
               resultItem.textContent = result.ServiceNo;
               resultItem.addEventListener('click', async () => {
-                // Populate search input with selected result
                 // Populate search input with selected result
                 serviceSearchInput.value = result.ServiceNo;
                 // Hide search results box after selection
@@ -333,7 +330,7 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const busPlate = form['bus-plate'].value;
-      const service = form['service'].value;
+      const service = document.getElementById('service').value; // Getting the service from the input
 
       // Check if bus plate is recognized
       if (!['SG5999Z', 'SG4012C', 'SG4013A'].includes(busPlate)) {
@@ -358,4 +355,5 @@
 </script>
 </body>
 </html>
+
 

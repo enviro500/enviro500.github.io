@@ -77,8 +77,8 @@
 <h1>Contribute A Spotting</h1>
 
 <div class="bus-service-search">
-  <label for="serviceSearchInput">Select Bus Service:</label>
-  <input type="text" id="serviceSearchInput" placeholder="Enter Bus Service">
+  <label for="service">Service:</label>
+  <input type="text" id="service" name="service" placeholder="Enter Bus Service">
 
   <div class="search-results" id="serviceSearchResults"></div>
 </div>
@@ -100,8 +100,6 @@
 <form id="submit-form">
   <label for="bus-plate">Bus Plate:</label>
   <input type="text" id="bus-plate" name="bus-plate"><br><br>
-  <label for="service">Service:</label>
-  <input type="text" id="service" name="service"><br><br>
   <button type="submit">Submit</button>
 </form>
 
@@ -186,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const allBusServices = await fetchBusServices();
     const allBusStops = await fetchBusStops();
 
-    const serviceSearchInput = document.getElementById('serviceSearchInput');
+    const serviceSearchInput = document.getElementById('service');
     const serviceSearchResults = document.getElementById('serviceSearchResults');
     const destinationSearchInput = document.getElementById('destinationSearchInput');
     const destinationSearchResults = document.getElementById('destinationSearchResults');
@@ -201,8 +199,8 @@ document.addEventListener("DOMContentLoaded", function() {
       // Clear previous results
       serviceSearchResults.innerHTML = '';
 
-     
       if (searchText.length > 0) {
+        //
         // Display search results box
         serviceSearchResults.style.display = 'block';
         // Create a set to store unique service numbers
@@ -261,7 +259,35 @@ document.addEventListener("DOMContentLoaded", function() {
         busStopSearchInput.value = ''; // Clear the input value
       }
     });
-  };
+
+    const form = document.getElementById('submit-form');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const busPlate = form['bus-plate'].value;
+      const service = form['service'].value;
+
+      // Check if bus plate is recognized
+      if (!['SG5999Z', 'SG4012C', 'SG4013A'].includes(busPlate)) {
+        message.textContent = "You can only submit certain bus plates!";
+        return;
+      }
+
+      try {
+        // Add sighting to Firestore
+        await db.collection('bus-sightings').add({
+          busPlate,
+          service,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        message.textContent = "Success!";
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        message.textContent = "Error submitting sighting. Please try again later.";
+      }
+    });
+  });
 
   const populateDestinationSearchResults = async (destinationCodes, allBusStops) => {
     const destinationSearchResults = document.getElementById('destinationSearchResults');
@@ -339,34 +365,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initially, disable the bus stop input field
   document.getElementById('busStopSearchInput').setAttribute('disabled', 'disabled'); // Added
-
-  const form = document.getElementById('submit-form');
-  const message = document.getElementById('message');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const busPlate = form['bus-plate'].value;
-    const service = form['service'].value;
-
-    // Check if bus plate is recognized
-    if (!['SG5999Z', 'SG4012C', 'SG4013A'].includes(busPlate)) {
-      message.textContent = "You can only submit certain bus plates!";
-      return;
-    }
-
-    try {
-      // Add sighting to Firestore
-      await db.collection('bus-sightings').add({
-        busPlate,
-        service,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      message.textContent = "Success!";
-    } catch (error) {
-      console.error("Error adding document: ", error);
-      message.textContent = "Error submitting sighting. Please try again later.";
-    }
-  });
 });
 </script>
 </body>

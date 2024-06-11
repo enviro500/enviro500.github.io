@@ -200,7 +200,6 @@ document.addEventListener("DOMContentLoaded", function() {
       serviceSearchResults.innerHTML = '';
 
       if (searchText.length > 0) {
-        //
         // Display search results box
         serviceSearchResults.style.display = 'block';
         // Create a set to store unique service numbers
@@ -287,7 +286,7 @@ document.addEventListener("DOMContentLoaded", function() {
         message.textContent = "Error submitting sighting. Please try again later.";
       }
     });
-  })
+  });
 
   const populateDestinationSearchResults = async (destinationCodes, allBusStops) => {
     const destinationSearchResults = document.getElementById('destinationSearchResults');
@@ -369,3 +368,5 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 </body>
 </html>
+
+

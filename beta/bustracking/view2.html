@@ -69,6 +69,7 @@ const firebaseConfig = {
   measurementId: "G-737J867X6Q"
 };
 
+
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -89,7 +90,7 @@ const firebaseConfig = {
           querySnapshot.forEach((doc) => {
             const data = doc.data();
             const busPlate = doc.id; // Collection name represents bus plate
-            const lastUpdated = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
+            const lastUpdated = data.timestamp ? formatDate(data.timestamp.toDate()) : 'N/A';
             const status = getStatus(data.timestamp);
 
             // Add row to table
@@ -121,6 +122,12 @@ const firebaseConfig = {
 
       // Check if bus plate exists in busLinks, if not, return a default URL
       return busLinks[busPlate] || 'https://example.com';
+    }
+
+    // Function to format date
+    function formatDate(date) {
+      const options = { day: 'numeric', month: 'short', year: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
     }
 
     // Function to get the status based on the timestamp

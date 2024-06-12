@@ -74,7 +74,7 @@
 
 <div class="service-search">
   <label for="serviceSearchInput">Select Service:</label>
-  <input type="text" id="service" placeholder="Enter Bus Service">
+  <input type="text" id="service" placeholder="Retrieving info from API. Please wait" disabled>
 
   <div class="search-results" id="serviceSearchResults"></div>
 </div>
@@ -123,6 +123,15 @@
   const db = firebase.firestore();
 
   document.addEventListener("DOMContentLoaded", async function() {
+    const serviceSearchInput = document.getElementById('service');
+    const destinationSearchInput = document.getElementById('destinationSearchInput');
+    const busStopSearchInput = document.getElementById('busStopSearchInput');
+
+    serviceSearchInput.placeholder = "Retrieving info from API. Please wait";
+    serviceSearchInput.disabled = true;
+    destinationSearchInput.disabled = true;
+    busStopSearchInput.disabled = true;
+
     const myHeaders = new Headers();
     myHeaders.append("AccountKey", "1wo2iVrSTjeP0HHhAwdwoQ==");
 
@@ -174,12 +183,14 @@
     const allBusServices = await fetchBusServices();
     const allBusStops = await fetchBusStops();
 
+    serviceSearchInput.placeholder = "Enter Bus Service";
+    serviceSearchInput.disabled = false;
+    destinationSearchInput.disabled = false;
+    busStopSearchInput.disabled = false;
+
     const populateServiceSearchResults = async () => {
-      const serviceSearchInput = document.getElementById('service');
       const serviceSearchResults = document.getElementById('serviceSearchResults');
-      const destinationSearchInput = document.getElementById('destinationSearchInput');
       const destinationSearchResults = document.getElementById('destinationSearchResults');
-      const busStopSearchInput = document.getElementById('busStopSearchInput'); // Added
 
       serviceSearchInput.addEventListener('input', async (event) => {
         const searchText = event.target.value.toLowerCase().trim();
@@ -235,8 +246,6 @@
               serviceSearchResults.appendChild(resultItem);
             }
           });
-          // Enable the bus stop input field
-          busStopSearchInput.removeAttribute('disabled'); // Added
         } else {
           // Hide search results box if search input is empty
           serviceSearchResults.style.display = 'none';
@@ -244,9 +253,6 @@
           destinationSearchInput.classList.add('disabled');
           destinationSearchInput.value = '';
           destinationSearchResults.style.display = 'none';
-          // Disable the bus stop input field if no service is selected
-          busStopSearchInput.setAttribute('disabled', 'disabled'); // Added
-          busStopSearchInput.value = ''; // Clear the input value
         }
       });
     };

@@ -81,28 +81,33 @@ const firebaseConfig = {
       // Clear existing data
       busList.innerHTML = '';
 
-      // Fetch data from all collections
-      db.collectionGroup('bus-sightings').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const busPlate = doc.id; // Collection name represents bus plate
-          const lastUpdated = data.timestamp ? formatDate(data.timestamp.toDate()) : 'N/A';
-          const status = getStatus(data.timestamp);
+      // Prefixes for collections
+      const prefixes = ['SG5999Z', 'SG4013A', 'PZ', 'SMB', 'SG'];
 
-          // Add row to table
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
-            <td>${lastUpdated}</td>
-            <td>${data.Service}</td>
-            <td>${data.Destination}</td>
-            <td>${data.BusStop}</td>
-            <td>${status}</td>
-          `;
-          busList.appendChild(row);
+      // Loop through collections
+      prefixes.forEach(prefix => {
+        db.collection(prefix).orderBy('timestamp', 'desc').get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const busPlate = doc.id; // Collection name represents bus plate
+            const lastUpdated = data.timestamp ? formatDate(data.timestamp.toDate()) : 'N/A';
+            const status = getStatus(data.timestamp);
+
+            // Add row to table
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
+              <td>${lastUpdated}</td>
+              <td>${data.Service}</td>
+              <td>${data.Destination}</td>
+              <td>${data.BusStop}</td>
+              <td>${status}</td>
+            `;
+            busList.appendChild(row);
+          });
+        }).catch((error) => {
+          console.error('Error getting bus sightings: ', error);
         });
-      }).catch((error) => {
-        console.error('Error getting bus sightings: ', error);
       });
     }
 

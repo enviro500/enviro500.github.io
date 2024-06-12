@@ -19,6 +19,27 @@
     font-family: Inter, sans-serif;
     padding: 20px;
   }
+  
+  .submit-button {
+  background-color: #72B671; /* Green background */
+  border: none; /* Remove border */
+  color: white; /* White text */
+  padding: 10px 20px; /* Padding */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block; /* Display as inline block */
+  font-size: 15px; /* Font size */
+  margin: 20px 0; /* Add margin */
+  cursor: pointer; /* Add cursor on hover */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+  font-family: "Inter";
+}
+
+.submit-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
 
   h1 {
     margin-bottom: 20px;
@@ -46,6 +67,7 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
+    margin-bottom: 20px;
     display: none; /* Initially hide the search results */
   }
 
@@ -71,7 +93,10 @@
 </head>
 <body>
 <h1>Contribute A Spotting</h1>
-
+<form id="submit-form">
+  <label for="bus-plate">Bus Plate:</label>
+  <input type="text" id="bus
+  -plate" name="bus-plate"><br><br>
 <div class="service-search">
   <label for="serviceSearchInput">Select Service:</label>
   <input type="text" id="service" placeholder="Retrieving info from API. Please wait" disabled>
@@ -93,10 +118,8 @@
   <div class="search-results" id="busStopSearchResults"></div>
 </div>
 
-<form id="submit-form">
-  <label for="bus-plate">Bus Plate:</label>
-  <input type="text" id="bus-plate" name="bus-plate"><br><br>
-  <button type="submit">Submit</button>
+
+  <button type="submit" class="submit-button">Submit</button>
 </form>
 
 <p id="message"></p>
@@ -114,6 +137,7 @@
     appId: "1:872895466265:web:32161fda30a88f0c771388",
     measurementId: "G-737J867X6Q"
   };
+  
 
   // Check if Firebase app is already initialized
   if (!firebase.apps.length) {
@@ -368,4 +392,3 @@
 </script>
 </body>
 </html>
-

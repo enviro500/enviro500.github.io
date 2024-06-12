@@ -43,7 +43,7 @@
       <tr>
         <th>Bus Plate</th>
         <th>Date</th>
-        <th>Service No.</th>
+        <th>Service</th>
         <th>Destination</th>
         <th>Bus Stop</th>
         <th>Status</th> <!-- New column added for status -->
@@ -59,15 +59,15 @@
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
   <script>
     // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
-      authDomain: "enviro500web.firebaseapp.com",
-      projectId: "enviro500web",
-      storageBucket: "enviro500web.appspot.com",
-      messagingSenderId: "821087210177",
-      appId: "1:821087210177:web:96f8bd5e588ed33085e240",
-      measurementId: "G-DQZ8WQFYSR"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
+  authDomain: "bus-spotters.firebaseapp.com",
+  projectId: "bus-spotters",
+  storageBucket: "bus-spotters.appspot.com",
+  messagingSenderId: "872895466265",
+  appId: "1:872895466265:web:32161fda30a88f0c771388",
+  measurementId: "G-737J867X6Q"
+};
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
@@ -80,25 +80,33 @@
       // Clear existing data
       busList.innerHTML = '';
 
-      // Get bus sightings from Firestore
-      db.collection('busPlate').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const lastUpdated = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
-          const status = getStatus(data.timestamp);
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><a href="${getBusLink(doc.id)}" target="_blank">${doc.id}</a></td>
-            <td>${lastUpdated}</td>
-            <td>${data.Service}</td>
-            <td>${data.Destination}</td>
-            <td>${data.BusStop}</td>
-            <td>${status}</td>
-          `;
-          busList.appendChild(row);
+      // Prefixes for collections
+      const prefixes = ['PC', 'SBS', 'PZ', 'SMB', 'SG'];
+
+      // Loop through collections
+      prefixes.forEach(prefix => {
+        db.collection(prefix).orderBy('timestamp', 'desc').get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const busPlate = doc.id; // Collection name represents bus plate
+            const lastUpdated = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
+            const status = getStatus(data.timestamp);
+
+            // Add row to table
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
+              <td>${lastUpdated}</td>
+              <td>${data.Service}</td>
+              <td>${data.Destination}</td>
+              <td>${data.BusStop}</td>
+              <td>${status}</td>
+            `;
+            busList.appendChild(row);
+          });
+        }).catch((error) => {
+          console.error('Error getting bus sightings: ', error);
         });
-      }).catch((error) => {
-        console.error('Error getting bus sightings: ', error);
       });
     }
 
@@ -135,3 +143,4 @@
   </script>
 </body>
 </html>
+

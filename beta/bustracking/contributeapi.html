@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bus Services</title>
 <style>
- @font-face {
-            font-family: 'Inter';
-            src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
- }
- 
- @font-face {
-            font-family: 'LTAIdentity';
-            src: url('https://enviro500.github.io/beta/LTAIdentity.Medium.ttf') format('truetype');
-        }
-        
+  @font-face {
+    font-family: 'Inter';
+    src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: 'LTAIdentity';
+    src: url('https://enviro500.github.io/beta/LTAIdentity.Medium.ttf') format('truetype');
+  }
+
   body {
     font-family: Inter, sans-serif;
     padding: 20px;
@@ -105,16 +105,15 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
   // Initialize Firebase
- const firebaseConfig = {
-  apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
-  authDomain: "bus-spotters.firebaseapp.com",
-  projectId: "bus-spotters",
-  storageBucket: "bus-spotters.appspot.com",
-  messagingSenderId: "872895466265",
-  appId: "1:872895466265:web:32161fda30a88f0c771388",
-  measurementId: "G-737J867X6Q"
-};
-
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
+    authDomain: "bus-spotters.firebaseapp.com",
+    projectId: "bus-spotters",
+    storageBucket: "bus-spotters.appspot.com",
+    messagingSenderId: "872895466265",
+    appId: "1:872895466265:web:32161fda30a88f0c771388",
+    measurementId: "G-737J867X6Q"
+  };
 
   // Check if Firebase app is already initialized
   if (!firebase.apps.length) {
@@ -123,7 +122,7 @@
 
   const db = firebase.firestore();
 
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", async function() {
     const myHeaders = new Headers();
     myHeaders.append("AccountKey", "1wo2iVrSTjeP0HHhAwdwoQ==");
 
@@ -171,10 +170,11 @@
       return allBusServices;
     };
 
-    const populateServiceSearchResults = async () => {
-      const allBusServices = await fetchBusServices();
-      const allBusStops = await fetchBusStops();
+    // Fetch data immediately upon loading the page
+    const allBusServices = await fetchBusServices();
+    const allBusStops = await fetchBusStops();
 
+    const populateServiceSearchResults = async () => {
       const serviceSearchInput = document.getElementById('service');
       const serviceSearchResults = document.getElementById('serviceSearchResults');
       const destinationSearchInput = document.getElementById('destinationSearchInput');
@@ -275,7 +275,6 @@
     };
 
     const populateBusStopSearchResults = async () => {
-      const allBusStops = await fetchBusStops();
       const busStopSearchInput = document.getElementById('busStopSearchInput');
       const busStopSearchResults = document.getElementById('busStopSearchResults');
 

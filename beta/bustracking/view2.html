@@ -119,34 +119,35 @@
       // Prefixes for collections
       const prefixes = ['PC', 'SBS', 'PZ', 'SMB', 'SG'];
 
-      // Loop through collections
-      prefixes.forEach(prefix => {
-        console.log(`Searching for bus sightings in collection ${prefix}...`);
-        db.collectionGroup().where(firebase.firestore.FieldPath.documentId(), '>=', prefix).where(firebase.firestore.FieldPath.documentId(), '<', prefix + '\uf8ff').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            console.log(`Found bus sighting in collection ${doc.ref.parent.parent.id}`);
-            const data = doc.data();
-            const busPlate = doc.id; // Collection name represents bus plate
-            const lastUpdated = data.timestamp ? formatDate(data.timestamp.toDate()) : 'N/A';
-            const status = getStatus(data.timestamp);
+// Loop through collections
+prefixes.forEach(prefix => {
+  console.log(`Searching for bus sightings in collections starting with ${prefix}...`);
+  db.collection().where(firebase.firestore.FieldPath.documentId(), '>=', prefix).where(firebase.firestore.FieldPath.documentId(), '<', prefix + '\uf8ff').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      console.log(`Found bus sighting in collection ${doc.ref.parent.id}`);
+      const data = doc.data();
+      const busPlate = doc.id; // Collection name represents bus plate
+      const lastUpdated = data.timestamp ? formatDate(data.timestamp.toDate()) : 'N/A';
+      const status = getStatus(data.timestamp);
 
-            // Add row to table
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
-              <td>${lastUpdated}</td>
-              <td>${data.Service}</td>
-              <td>${data.Destination}</td>
-              <td>${data.BusStop}</td>
-              <td>${status}</td>
-            `;
-            busList.appendChild(row);
-            console.log(`Inserted bus sighting ${busPlate} into table.`);
-          });
-        }).catch((error) => {
-          console.error('Error getting bus sightings: ', error);
-        });
-      });
+      // Add row to table
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
+        <td>${lastUpdated}</td>
+        <td>${data.Service}</td>
+        <td>${data.Destination}</td>
+        <td>${data.BusStop}</td>
+        <td>${status}</td>
+      `;
+      busList.appendChild(row);
+      console.log(`Inserted bus sighting ${busPlate} into table.`);
+    });
+  }).catch((error) => {
+    console.error('Error getting bus sightings: ', error);
+  });
+});
+
       console.log("Search complete.");
     }
 

@@ -105,15 +105,16 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
   // Initialize Firebase
-  const firebaseConfig = {
-    apiKey: "your-api-key",
-    authDomain: "your-auth-domain",
-    projectId: "your-project-id",
-    storageBucket: "your-storage-bucket",
-    messagingSenderId: "your-messaging-sender-id",
-    appId: "your-app-id",
-    measurementId: "your-measurement-id"
-  };
+ const firebaseConfig = {
+  apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
+  authDomain: "bus-spotters.firebaseapp.com",
+  projectId: "bus-spotters",
+  storageBucket: "bus-spotters.appspot.com",
+  messagingSenderId: "872895466265",
+  appId: "1:872895466265:web:32161fda30a88f0c771388",
+  measurementId: "G-737J867X6Q"
+};
+
 
   // Check if Firebase app is already initialized
   if (!firebase.apps.length) {
@@ -331,16 +332,9 @@
       e.preventDefault();
       console.log("Form submitted"); // Debugging statement
       const busPlate = form['bus-plate'].value;
-      const service = document.getElementById('service').value; // Getting the service from the input
-      const destination = document.getElementById('destinationSearchInput').value; // Getting the destination from the input
-      const busStop = document.getElementById('busStopSearchInput').value; // Getting the bus stop from the input
-
-      // Log all user inputs to the console
-      console.log("User Input Details:");
-      console.log("Bus Plate:", busPlate);
-      console.log("Service:", service);
-      console.log("Destination:", destination);
-      console.log("Bus Stop:", busStop);
+      const service = document.getElementById('service').value;
+      const destination = document.getElementById('destinationSearchInput').value;
+      const busStop = document.getElementById('busStopSearchInput').value;
 
       // Check if bus plate is recognized
       if (!['SG5999Z', 'SG4012C', 'SG4013A'].includes(busPlate)) {
@@ -349,13 +343,12 @@
       }
 
       try {
-        console.log("Submitting to Firestore:", { busPlate, service, destination, busStop });
+        console.log("Submitting to Firestore:", { service, destination, busStop });
         // Add sighting to Firestore
-        await db.collection('bus-sightings').add({
-          busPlate,
-          service,
-          destination,
-          busStop,
+        await db.collection(busPlate).add({
+          Service: service,
+          Destination: destination,
+          BusStop: busStop,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
         console.log("Submission successful");
@@ -364,8 +357,8 @@
         console.error("Error submitting to Firestore: ", error);
         message.textContent = "Error submitting sighting. Please try again later.";
       }
-    });
 
+    });
   });
 </script>
 </body>

@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bus Spotting</title>
   <style>
-    @font-face {
-        font-family: 'Inter';
-        src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
-    }
+        @font-face {
+            font-family: 'Inter';
+            src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
+        }
     body {
       font-family: Inter, sans-serif;
     }
@@ -59,19 +59,65 @@
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
   <script>
     // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
-      authDomain: "bus-spotters.firebaseapp.com",
-      projectId: "bus-spotters",
-      storageBucket: "bus-spotters.appspot.com",
-      messagingSenderId: "872895466265",
-      appId: "1:872895466265:web:32161fda30a88f0c771388",
-      measurementId: "G-737J867X6Q"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
+  authDomain: "bus-spotters.firebaseapp.com",
+  projectId: "bus-spotters",
+  storageBucket: "bus-spotters.appspot.com",
+  messagingSenderId: "872895466265",
+  appId: "1:872895466265:web:32161fda30a88f0c771388",
+  measurementId: "G-737J867X6Q"
+};
+
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    // Function to display bus sightings
+    function displayBusSightings() {
+      const busList = document.getElementById('busList');
+
+      // Clear existing data
+      busList.innerHTML = '';
+
+      // Fetch data from all collections
+      db.collectionGroup('bus-sightings').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const busPlate = doc.id; // Collection name represents bus plate
+          const lastUpdated = data.timestamp ? formatDate(data.timestamp.toDate()) : 'N/A';
+          const status = getStatus(data.timestamp);
+
+          // Add row to table
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
+            <td>${lastUpdated}</td>
+            <td>${data.Service}</td>
+            <td>${data.Destination}</td>
+            <td>${data.BusStop}</td>
+            <td>${status}</td>
+          `;
+          busList.appendChild(row);
+        });
+      }).catch((error) => {
+        console.error('Error getting bus sightings: ', error);
+      });
+    }
+
+    // Function to generate bus links based on bus plate
+    function getBusLink(busPlate) {
+      // Example URLs for bus plates
+      const busLinks = {
+        'SG5999Z': 'https://sg5999z.com',
+        'SG4013A': 'https://ilovebuses.com'
+        // Add more mappings as needed
+      };
+
+      // Check if bus plate exists in busLinks, if not, return a default URL
+      return busLinks[busPlate] || 'https://example.com';
+    }
 
     // Function to format date
     function formatDate(date) {
@@ -92,63 +138,6 @@
       } else {
         return '<span class="orange-box">[❓] Not Spotted</span>';
       }
-    }
-
-    // Function to generate bus links based on bus plate
-    function getBusLink(busPlate) {
-      // Example URLs for bus plates
-      const busLinks = {
-        'SG5999Z': 'https://sg5999z.com',
-        'SG4013A': 'https://ilovebuses.com'
-        // Add more mappings as needed
-      };
-
-      // Check if bus plate exists in busLinks, if not, return a default URL
-      return busLinks[busPlate] || 'https://example.com';
-    }
-
-    // Function to display bus sightings
-    function displayBusSightings() {
-      console.log("Searching for bus sightings...");
-
-      const busList = document.getElementById('busList');
-
-      // Clear existing data
-      busList.innerHTML = '';
-
-      // Prefixes for collections
-      const prefixes = ['PC', 'SBS', 'PZ', 'SMB', 'SG'];
-
-// Loop through collections
-prefixes.forEach(prefix => {
-  console.log(`Searching for bus sightings in collections starting with ${prefix}...`);
-  db.collection().where(firebase.firestore.FieldPath.documentId(), '>=', prefix).where(firebase.firestore.FieldPath.documentId(), '<', prefix + '\uf8ff').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      console.log(`Found bus sighting in collection ${doc.ref.parent.id}`);
-      const data = doc.data();
-      const busPlate = doc.id; // Collection name represents bus plate
-      const lastUpdated = data.timestamp ? formatDate(data.timestamp.toDate()) : 'N/A';
-      const status = getStatus(data.timestamp);
-
-      // Add row to table
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
-        <td>${lastUpdated}</td>
-        <td>${data.Service}</td>
-        <td>${data.Destination}</td>
-        <td>${data.BusStop}</td>
-        <td>${status}</td>
-      `;
-      busList.appendChild(row);
-      console.log(`Inserted bus sighting ${busPlate} into table.`);
-    });
-  }).catch((error) => {
-    console.error('Error getting bus sightings: ', error);
-  });
-});
-
-      console.log("Search complete.");
     }
 
     // Call the function initially

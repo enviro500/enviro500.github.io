@@ -24,6 +24,16 @@
     th {
       background-color: #f2f2f2;
     }
+    .green-box {
+      background-color: #a3d6a3;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .orange-box {
+      background-color: #ffcc80;
+      padding: 5px;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -34,6 +44,7 @@
         <th>Bus Plate</th>
         <th>Service</th>
         <th>Last Updated</th>
+        <th>Status</th> <!-- New column added for status -->
       </tr>
     </thead>
     <tbody id="busList">
@@ -83,10 +94,13 @@
 
         busMap.forEach((data, busPlate) => {
           const row = document.createElement('tr');
+          const lastUpdated = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
+          const status = getStatus(data.timestamp);
           row.innerHTML = `
             <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
             <td>${data.service}</td>
-            <td>${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'N/A'}</td>
+            <td>${lastUpdated}</td>
+            <td>${status}</td>
           `;
           busList.appendChild(row);
         });
@@ -106,6 +120,21 @@
 
       // Check if bus plate exists in busLinks, if not, return a default URL
       return busLinks[busPlate] || 'https://example.com';
+    }
+
+    // Function to get the status based on the timestamp
+    function getStatus(timestamp) {
+      if (!timestamp) return 'N/A';
+
+      const tenDaysAgo = new Date();
+      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+      const sightingDate = timestamp.toDate();
+
+      if (sightingDate > tenDaysAgo) {
+        return '<span class="green-box">[✔️] In Service</span>';
+      } else {
+        return '<span class="orange-box">[❓] Not Spotted</span>';
+      }
     }
 
     // Call the function initially

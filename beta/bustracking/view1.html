@@ -26,7 +26,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -48,12 +48,10 @@
             const busTableBody = document.getElementById('bus-table-body');
             busTableBody.innerHTML = ''; // Clear existing data
 
-            // Get all collections (bus plate numbers)
-            const collectionsSnapshot = await getDocs(collection(db, "bus-spotters"));
-
-            for (const doc of collectionsSnapshot.docs) {
-                const busPlate = doc.id;
-
+            // Manually listing bus plates
+            const busPlates = ["SG5999Z", "SG5999Z2"]; // Add all your bus plates here
+            
+            for (const busPlate of busPlates) {
                 // Get the most recent document based on the timestamp
                 const q = query(collection(db, busPlate), orderBy('timestamp', 'desc'), limit(1));
                 const querySnapshot = await getDocs(q);
@@ -100,4 +98,5 @@
     </script>
 </body>
 </html>
+
 

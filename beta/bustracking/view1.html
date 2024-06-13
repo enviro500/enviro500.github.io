@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Spotters</title>
+    <script src="https://www.gstatic.com/firebasejs/9.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.7.0/firebase-firestore.js"></script>
+</head>
+<body>
+    <h1>Bus Spotters</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Bus Plate</th>
+                <th>Date</th>
+                <th>Service</th>
+                <th>Destination</th>
+                <th>Bus Stop</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="bus-table-body">
+            <!-- Data will be populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
+            authDomain: "bus-spotters.firebaseapp.com",
+            projectId: "bus-spotters",
+            storageBucket: "bus-spotters.appspot.com",
+            messagingSenderId: "872895466265",
+            appId: "1:872895466265:web:32161fda30a88f0c771388",
+            measurementId: "G-737J867X6Q"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+
+        // Fetch data from Firestore
+        async function fetchBusData() {
+            const busTableBody = document.getElementById('bus-table-body');
+            busTableBody.innerHTML = ''; // Clear existing data
+
+            // Get all collections (bus plate numbers)
+            const collections = await db.listCollections();
+
+            for (const collection of collections) {
+                const busPlate = collection.id;
+
+                // Get the most recent document based on the timestamp
+                const querySnapshot = await db.collection(busPlate)
+                    .orderBy('timestamp', 'desc')
+                    .limit(1)
+                    .get();
+
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+
+                    // Create a new row for the table
+                    const row = document.createElement('tr');
+
+                    // Create cells and append to the row
+                    const busPlateCell = document.createElement('td');
+                    busPlateCell.textContent = busPlate;
+                    row.appendChild(busPlateCell);
+
+                    const dateCell = document.createElement('td');
+                    dateCell.textContent = data.timestamp.toDate().toLocaleString();
+                    row.appendChild(dateCell);
+
+                    const serviceCell = document.createElement('td');
+                    serviceCell.textContent = data.Service;
+                    row.appendChild(serviceCell);
+
+                    const destinationCell = document.createElement('td');
+                    destinationCell.textContent = data.Destination;
+                    row.appendChild(destinationCell);
+
+                    const busStopCell = document.createElement('td');
+                    busStopCell.textContent = data.BusStop;
+                    row.appendChild(busStopCell);
+
+                    const statusCell = document.createElement('td');
+                    statusCell.textContent = data.Status;
+                    row.appendChild(statusCell);
+
+                    // Append the row to the table body
+                    busTableBody.appendChild(row);
+                });
+            }
+        }
+
+        // Fetch bus data when the page loads
+        window.onload = fetchBusData;
+    </script>
+</body>
+</html>

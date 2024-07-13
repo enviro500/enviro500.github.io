@@ -1,152 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bus Spotting</title>
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG Bus Spotters</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
         @font-face {
             font-family: 'Inter';
             src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
         }
-    body {
-      font-family: Inter, sans-serif;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    .green-box {
-      background-color: #a3d6a3;
-      padding: 5px;
-      border-radius: 5px;
-    }
-    .orange-box {
-      background-color: #ffcc80;
-      padding: 5px;
-      border-radius: 5px;
-    }
-  </style>
+        @font-face {
+            font-family: 'LTAIdentity';
+            src: url('https://enviro500.github.io/files/LTAIdentity-Medium.woff') format('woff');
+        }
+        
+         @font-face {
+            font-family: 'Sans';
+            src: url('https://enviro500.github.io/files/fonts/OpenSans.ttf') format('truetype');
+        }       
+
+
+
+        body {
+            font-family: 'Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 95%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+            word-wrap: break-word;
+            font-size: 1.1em;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .service-box {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'LTAIdentity';
+        }
+
+        .status-box {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .status-green {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .status-orange {
+            background-color: orange;
+            color: white;
+        }
+
+        .status-red {
+            background-color: red;
+            color: white;
+        }
+
+        .glyphicon {
+            margin-right: 5px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                border: 1px solid #ddd;
+                margin-bottom: 5px;
+            }
+
+            td {
+                border: none;
+                border-bottom: 1px solid #ddd;
+                position: relative;
+                padding-left: 50%;
+                text-align: left;
+            }
+
+            td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            td:nth-of-type(1):before { content: "Bus Plate"; }
+            td:nth-of-type(2):before { content: "Date"; }
+            td:nth-of-type(3):before { content: "Service"; }
+            td:nth-of-type(4):before { content: "Destination"; }
+            td:nth-of-type(5):before { content: "Bus Stop"; }
+            td:nth-of-type(6):before { content: "Status"; }
+        }
+    </style>
 </head>
 <body>
-  <h1>Bus Spotting</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Bus Plate</th>
-        <th>Date</th>
-        <th>Service</th>
-        <th>Destination</th>
-        <th>Bus Stop</th>
-        <th>Status</th> <!-- New column added for status -->
-      </tr>
-    </thead>
-    <tbody id="busList">
-      <!-- Bus sightings will be inserted here dynamically -->
-    </tbody>
-  </table>
+    <div class="container">
+        <h1>SG BusSpotters</h1>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bus Plate</th>
+                        <th>Date</th>
+                        <th>Service</th>
+                        <th>Destination</th>
+                        <th>Bus Stop</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="bus-table-body">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-  <script>
-    // Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
-  authDomain: "bus-spotters.firebaseapp.com",
-  projectId: "bus-spotters",
-  storageBucket: "bus-spotters.appspot.com",
-  messagingSenderId: "872895466265",
-  appId: "1:872895466265:web:32161fda30a88f0c771388",
-  measurementId: "G-737J867X6Q"
-};
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
+            authDomain: "bus-spotters.firebaseapp.com",
+            projectId: "bus-spotters",
+            storageBucket: "bus-spotters.appspot.com",
+            messagingSenderId: "872895466265",
+            appId: "1:872895466265:web:32161fda30a88f0c771388",
+            measurementId: "G-737J867X6Q"
+        };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    // Function to display bus sightings
-    function displayBusSightings() {
-      const busList = document.getElementById('busList');
+        function daysDifference(date1, date2) {
+            const diffTime = Math.abs(date2 - date1);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
 
-      // Clear existing data
-      busList.innerHTML = '';
+        function getStatusBox(lastUpdatedTimestamp) {
+            const today = new Date();
+            const lastUpdatedDate = lastUpdatedTimestamp.toDate();
+            const daysDiff = daysDifference(lastUpdatedDate, today);
 
-      // Prefixes for collections
-      const prefixes = ['SG5999Z', 'SG4013A', 'PZ', 'SMB', 'SG'];
+            if (daysDiff <= 10) {
+                return `<span class="status-box status-green"><i class="fa fa-check-circle-o glyphicon"></i> In Service</span>`;
+            } else if (daysDiff > 10 && daysDiff <= 500) {
+                return `<span class="status-box status-orange"><i class="fa fa-question-circle-o glyphicon"></i> Not Spotted</span>`;
+            } else {
+                return `<span class="status-box status-red"><i class="fa fa-remove glyphicon"></i> Trial Ended</span>`;
+            }
+        }
 
-      // Loop through collections
-      prefixes.forEach(prefix => {
-        db.collection(prefix).orderBy('timestamp', 'desc').get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const busPlate = doc.id; // Collection name represents bus plate
-            const lastUpdated = data.timestamp ? formatDate(data.timestamp.toDate()) : 'N/A';
-            const status = getStatus(data.timestamp);
+        async function fetchBusData() {
+            const busTableBody = document.getElementById('bus-table-body');
+            busTableBody.innerHTML = '';
 
-            // Add row to table
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td><a href="${getBusLink(busPlate)}" target="_blank">${busPlate}</a></td>
-              <td>${lastUpdated}</td>
-              <td>${data.Service}</td>
-              <td>${data.Destination}</td>
-              <td>${data.BusStop}</td>
-              <td>${status}</td>
-            `;
-            busList.appendChild(row);
-          });
-        }).catch((error) => {
-          console.error('Error getting bus sightings: ', error);
-        });
-      });
-    }
+            const busPlates = ["SG5999Z", "SG4001J", "SG4002G", "SG4003D", "SG4004B", "SG4005Z", "SG4006X", "SG4007T", "SG4009M", "SG1000G", "SG4010H", "SG4012C", "SG4013A"];
 
-    // Function to generate bus links based on bus plate
-    function getBusLink(busPlate) {
-      // Example URLs for bus plates
-      const busLinks = {
-        'SG5999Z': 'https://sg5999z.com',
-        'SG4013A': 'https://ilovebuses.com'
-        // Add more mappings as needed
-      };
+            for (const busPlate of busPlates) {
+                const q = query(collection(db, busPlate), orderBy('timestamp', 'desc'), limit(1));
+                const querySnapshot = await getDocs(q);
 
-      // Check if bus plate exists in busLinks, if not, return a default URL
-      return busLinks[busPlate] || 'https://example.com';
-    }
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
 
-    // Function to format date
-    function formatDate(date) {
-      const options = { day: 'numeric', month: 'short', year: 'numeric' };
-      return date.toLocaleDateString('en-US', options);
-    }
+                    const row = document.createElement('tr');
 
-    // Function to get the status based on the timestamp
-    function getStatus(timestamp) {
-      if (!timestamp) return 'N/A';
+                    const busPlateCell = document.createElement('td');
+                    busPlateCell.textContent = busPlate;
+                    row.appendChild(busPlateCell);
 
-      const tenDaysAgo = new Date();
-      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-      const sightingDate = timestamp.toDate();
+                    const dateCell = document.createElement('td');
+                    dateCell.textContent = data.timestamp.toDate().toLocaleString();
+                    row.appendChild(dateCell);
 
-      if (sightingDate > tenDaysAgo) {
-        return '<span class="green-box">[✔️] In Service</span>';
-      } else {
-        return '<span class="orange-box">[❓] Not Spotted</span>';
-      }
-    }
+                    const serviceCell = document.createElement('td');
+                    const serviceBox = document.createElement('span');
+                    serviceBox.classList.add('service-box');
+                    serviceBox.textContent = data.Service;
+                    serviceCell.appendChild(serviceBox);
+                    row.appendChild(serviceCell);
 
-    // Call the function initially
-    displayBusSightings();
-  </script>
+                    const destinationCell = document.createElement('td');
+                    destinationCell.textContent = data.Destination;
+                    row.appendChild(destinationCell);
+
+                    const busStopCell = document.createElement('td');
+                    busStopCell.textContent = data.BusStop;
+                    row.appendChild(busStopCell);
+
+                    const statusCell = document.createElement('td');
+                    const statusBox = getStatusBox(data.timestamp);
+                    statusCell.innerHTML = statusBox;
+                    row.appendChild(statusCell);
+
+                    busTableBody.appendChild(row);
+                });
+            }
+        }
+
+        window.onload = fetchBusData;
+    </script>
 </body>
 </html>

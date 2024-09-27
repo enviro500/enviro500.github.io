@@ -71,7 +71,7 @@
     </style>
 </head>
 <body>
-	
+    
     <div id="accountSection">
         <span id="accountIcon" class="material-icons">account_circle</span>
         <span id="loginText" onclick="redirectToLogin()">Login</span>
@@ -224,63 +224,38 @@
                 shownWords.pop(); // Remove current index
                 currentIndex = shownWords[shownWords.length - 1]; // Show the last one
                 document.getElementById("pinyinDisplay").textContent = pinyinWords[currentIndex];
-                fetchSoundURL(chineseWords[currentIndex]).then(url => {
-                    currentSoundURL = url;
-                });
+                document.getElementById("soundIcon").style.display = "block";
             }
         }
 
-        // End the test and reset the input
-        function endTest() {
-            alert("You've gone through all the words!");
-            document.getElementById("inputBox").value = ''; // Clear input box
-            document.getElementById("inputBox").style.display = "block";
-            document.getElementById("startBtn").textContent = "Start Spelling";
-            document.getElementById("prevBtn").disabled = true;
-            document.getElementById("nextBtn").disabled = true;
-            document.getElementById("pinyinDisplay").textContent = "";
-            document.getElementById("soundIcon").style.display = "none";
-            isSpelling = false; // Reset spelling session status
-        }
-	
-        // Redirect to login page
-        function redirectToLogin() {
-            window.location.href = 'https://enviro500.github.io/beta/login?chinese-spelling';
-        }
-
-        // Function to toggle the spelling session
+        // Toggle spelling session
         function toggleSpelling() {
             if (isSpelling) {
-                endTest(); // End session
+                endTest();
             } else {
-                startSpelling(); // Start a new session
+                startSpelling();
             }
         }
-        // Run the checkForAuth function on page load
-        window.onload = function() {
-            checkForAuth();
-        };
-        // Function to decode Base64 email (if needed)
-        function decodeBase64(encodedString) {
-            try {
-                return atob(encodedString);
-            } catch (error) {
-                console.error('Error decoding Base64:', error);
-                return null;
-            }
-        }
-        // Check for authentication in the URL
-        function checkForAuth() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const authParam = urlParams.get('auth');
-            if (authParam) {
-                const email = decodeBase64(authParam);
-                if (email) {
-                    document.getElementById('loginText').textContent = email;
-                }
-            }
+
+        // End the spelling session and show results
+function endTest() {
+    isSpelling = false;
+    document.getElementById("startBtn").textContent = "Start Spelling";
+    document.getElementById("inputBox").style.display = "block";
+    document.getElementById("pinyinDisplay").textContent = "Please Check Your Answers.";
+    document.getElementById("soundIcon").style.display = "none";
+    document.getElementById("prevBtn").disabled = true;
+    document.getElementById("nextBtn").disabled = true;
+
+    // Show all tested words
+    const testedWords = chineseWords.join(", ");
+    document.getElementById("pinyinDisplay").innerHTML += `<br/><strong>Words Tested:</strong> ${testedWords}`;
+}
+
+        // Redirect to login page
+        function redirectToLogin() {
+            window.location.href = "/login"; // Update the URL as needed
         }
     </script>
-
 </body>
 </html>

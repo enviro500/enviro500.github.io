@@ -84,6 +84,11 @@
             width: 0;
             transition: width 0.5s ease;
         }
+        #overview {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -111,6 +116,8 @@
     <div id="progressContainer">
         <div id="progressBar"></div>
     </div>
+
+    <div id="overview"></div> <!-- Overview section -->
 
     <script>
         let chineseWords = [];
@@ -263,6 +270,10 @@
             document.getElementById("progressContainer").style.display = "none";
             document.getElementById("prevBtn").disabled = true;
             document.getElementById("nextBtn").disabled = true;
+
+            // Display overview of words tested
+            const overviewElement = document.getElementById("overview");
+            overviewElement.innerHTML = `<strong>Overview:</strong> ${chineseWords.join(", ")}`;
         }
 
         function redirectToLogin() {

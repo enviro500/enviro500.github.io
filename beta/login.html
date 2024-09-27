@@ -2,18 +2,18 @@
 <html>
 
 <head>
-  <title>LOGIN - ENVIRO500</title>
+  <title>LOGINi - ENVIRO500</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     @font-face {
       font-family: 'Montserrat';
       src: url('https://enviro500.github.io/files/Montserrat-Medium.ttf') format('truetype');
     }
-
+    
     @font-face {
-      font-family: 'Interfont';
-      src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
-    }
+        font-family: 'Interfont';
+        src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
+    } 
 
     body {
       background-image: url('https://member.thescienceacademy.sg/media/auth/bg8.jpg');
@@ -22,17 +22,16 @@
       font-size: 15px;
       line-height: 1.5;
       text-align: center;
-      padding: 20px; /* Adjusted padding for better mobile view */
-      margin: 0; /* Added to remove default body margin */
+     padding: 20px; /* Adjusted padding for better mobile view */
+     margin: 0; /* Added to remove default body margin */
     }
-
     html, body {
       overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
     .login-box {
       display: flex;
-      justify-content: center; /* Center horizontally */
+     justify-content: center; /* Center horizontally */
       align-items: center;
       flex-direction: column;
       border: 2px solid white;
@@ -169,6 +168,10 @@
   </div>
 
   <script>
+    function base64Encode(str) {
+      return btoa(unescape(encodeURIComponent(str)));
+    }
+
     var form = document.querySelector('form');
     var result = document.querySelector('#result');
     var forgotPasswordLink = document.querySelector('#forgotPasswordLink');
@@ -179,25 +182,19 @@
       var email = document.querySelector('#email').value;
       var password = document.querySelector('#password').value;
 
-      // Sign in with email and password
       firebase.auth().signInWithEmailAndPassword(email, password)
         .then(function(userCredential) {
-          // User is signed in
           result.textContent = 'Login successful';
-          
-          // Redirect to the Pinyin website after login
-          var redirectUrl = localStorage.getItem('redirectUrl') || 'https://enviro500.github.io/chinese-spelling'; // Replace with your actual URL
-          window.location.href = redirectUrl;
+          var base64Email = base64Encode(email);
+          window.location.href = 'https://enviro500.github.io/chinese-spelling?auth=' + base64Email;
         })
         .catch(function(error) {
-          // Handle errors
           var errorCode = error.code;
           var errorMessage = error.message;
           result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
         });
     });
 
-    // Initialize Firebase
     var firebaseConfig = {
       apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
       authDomain: "enviro500web.firebaseapp.com",
@@ -209,7 +206,6 @@
     };
     firebase.initializeApp(firebaseConfig);
 
-    // Google Sign-In setup
     function initGoogleSignIn() {
       gapi.load('auth2', function() {
         gapi.auth2.init({
@@ -234,23 +230,35 @@
     function onGoogleSignUpSuccess(googleUser) {
       var idToken = googleUser.getAuthResponse().id_token;
       var credential = firebase.auth.GoogleAuthProvider.credential(idToken);
-
-      // Sign up with Google credential
+      
       firebase.auth().signInWithCredential(credential)
-        .then(function(result) {
-          result.textContent = 'Login successful';
-
-          // Redirect to the Pinyin website after login
-          var redirectUrl = localStorage.getItem('redirectUrl') || 'https://enviro500.github.io/chinese-spelling'; // Replace with your actual URL
-          window.location.href = redirectUrl;
-        }).catch(function(error) {
+        .then(function(userCredential) {
+          result.textContent = 'Sign up successful';
+          var base64Email = base64Encode(userCredential.user.email);
+          window.location.href = 'https://enviro500.github.io/chinese-spelling?auth=' + base64Email;
+        })
+        .catch(function(error) {
           result.textContent = 'Error: ' + error.message;
         });
     }
 
     function onGoogleSignUpFailure(error) {
-      result.textContent = 'Google Sign-In failed: ' + error;
+      console.log(error);
     }
+
+    document.getElementById('githubSignInButton').addEventListener('click', function() {
+      var provider = new firebase.auth.GithubAuthProvider();
+      
+      firebase.auth().signInWithPopup(provider)
+        .then(function(userCredential) {
+          result.textContent = 'GitHub sign-in successful';
+          var base64Email = base64Encode(userCredential.user.email);
+          window.location.href = 'https://enviro500.github.io/chinese-spelling?auth=' + base64Email;
+        })
+        .catch(function(error) {
+          result.textContent = 'Error: ' + error.message;
+        });
+    });
 
     window.onload = function() {
       initGoogleSignIn();
@@ -259,4 +267,5 @@
 </body>
 
 </html>
+
 

@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinyin Spelling Practice</title>
+    <title>Pinyin Spelling Practice 拼音听写复习</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Inter", sans-serif;
             text-align: center;
             margin: 0;
             padding: 0;
@@ -25,13 +27,17 @@
             width: 60%;
             padding: 10px;
             font-size: 18px;
+            font-family: "Inter";
             text-align: center;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            font-family: "Inter";
             margin: 10px;
+            border-radius: 20px;
+
         }
         #pinyinDisplay {
             font-size: 32px;
@@ -46,25 +52,26 @@
             cursor: pointer;
             margin-top: 10px;
             color: #007bff; /* Change color as desired */
+            display: none; /* Initially hidden */
         }
     </style>
 </head>
 <body>
 
-    <h1>Chinese Pinyin Spelling Test</h1>
+    <h1>Pinyin Spelling Practice 拼音听写复习</h1>
     <div id="inputArea">
         <div id="inputBoxContainer">
-            <input type="text" id="inputBox" placeholder="Enter Chinese words separated by commas (e.g., 我们，你们，他们)" />
+            <input type="text" id="inputBox" placeholder="输入中文单词 Enter Chinese Phrases" />
         </div>
-        <button id="startBtn" onclick="startSpelling()">Start Spelling</button>
+        <h5>Seperated the phrases by comma or spaces 以逗号或空格分隔</h5>
+        <button id="startBtn" onclick="toggleSpelling()">Start Spelling 开始听写</button>
     </div>
-
     <div id="pinyinDisplay"></div>
-    <span id="soundIcon" class="material-icons" style="display:none;" onclick="playSound()">volume_up</span>
+    <span id="soundIcon" class="material-icons" onclick="playSound()">volume_up</span>
 
     <div id="navigationButtons">
-        <button id="prevBtn" onclick="showPrev()" disabled>Previous</button>
-        <button id="nextBtn" onclick="showNext()" disabled>Next</button>
+        <button id="prevBtn" onclick="showPrev()" disabled>Previous 前一个</button>
+        <button id="nextBtn" onclick="showNext()" disabled>Next 下一个</button>
     </div>
 
     <script>
@@ -73,6 +80,7 @@
         let currentIndex = -1;
         let shownWords = [];
         let currentSoundURL = '';
+        let isSpelling = false; // To track spelling session status
 
         const toneMap = {
             1: { 'a': 'ā', 'e': 'ē', 'i': 'ī', 'o': 'ō', 'u': 'ū', 'ü': 'ǖ' },
@@ -136,10 +144,10 @@
                 return;
             }
 
-            // Replace Chinese commas with English commas
-            const sanitizedInput = input.replace(/，/g, ',');
+            // Replace Chinese commas and multiple spaces with a single space
+            const sanitizedInput = input.replace(/，/g, ',').replace(/\s+/g, ' ').trim();
 
-            chineseWords = sanitizedInput.split(',').map(word => word.trim());
+            chineseWords = sanitizedInput.split(/[, ]+/); // Split by comma or space
             pinyinWords = [];
             shownWords = [];
             currentIndex = -1;
@@ -154,11 +162,14 @@
             document.getElementById("startBtn").textContent = "Stop Spelling";
             document.getElementById("prevBtn").disabled = false;
             document.getElementById("nextBtn").disabled = false;
+            isSpelling = true; // Set spelling session status
             showNext();
         }
 
         // Show the next random word's Pinyin
         async function showNext() {
+            if (!isSpelling) return; // Do nothing if not in spelling session
+
             if (shownWords.length === chineseWords.length) {
                 endTest();
                 return;
@@ -201,6 +212,16 @@
             document.getElementById("nextBtn").disabled = true;
             document.getElementById("pinyinDisplay").textContent = "";
             document.getElementById("soundIcon").style.display = "none";
+            isSpelling = false; // Reset spelling session status
+        }
+
+        // Function to toggle the spelling session
+        function toggleSpelling() {
+            if (isSpelling) {
+                endTest(); // End session
+            } else {
+                startSpelling(); // Start a new session
+            }
         }
     </script>
 

@@ -7,29 +7,62 @@
   <style>
     @font-face {
       font-family: 'Montserrat';
-      src: url('https://enviro500.github.io/Montserrat-Medium.ttf') format('truetype');
+      src: url('https://enviro500.github.io/files/Montserrat-Medium.ttf') format('truetype');
+    }
+
+    @font-face {
+      font-family: 'Interfont';
+      src: url('https://enviro500.github.io/files/Inter-Regular.ttf') format('truetype');
     }
 
     body {
-      background-color: black;
-      color: white;
-      font-family: 'Montserrat', Arial, sans-serif;
-      font-size: 16px;
+      background-image: url('https://member.thescienceacademy.sg/media/auth/bg8.jpg');
+      color: black;
+      font-family: 'Interfont', Arial, sans-serif;
+      font-size: 15px;
       line-height: 1.5;
       text-align: center;
-      padding: 50px;
+      padding: 20px; /* Adjusted padding for better mobile view */
+      margin: 0; /* Added to remove default body margin */
+    }
+
+    html, body {
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+
+    .login-box {
+      display: flex;
+      justify-content: center; /* Center horizontally */
+      align-items: center;
+      flex-direction: column;
+      border: 2px solid white;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 75px 0px;
+      background-color: white;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Added box shadow */
+    }
+
+    .login-text {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: black;
     }
 
     input[type=email],
     input[type=password] {
       padding: 15px;
-      border-radius: 10px;
-      border: none;
+      border-radius: 8px;
+      border: 2px solid grey; /* Changed border color to grey */
       outline: none;
       margin-bottom: 20px;
-      width: 350px;
+      width: 325px;
       font-size: 16px;
-      font-family: 'Montserrat';
+      font-family: 'Interfont';
+      text-align: left;
     }
 
     input[type=submit] {
@@ -37,7 +70,7 @@
       border-radius: 7px;
       border: none;
       font-size: 15px;
-      font-family: 'Montserrat';
+      font-family: 'Interfont';
       background-color: #4A00B0;
       background-image: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to));
       color: white;
@@ -53,59 +86,51 @@
     }
 
     #googleSignInContainer,
-    #microsoftSignInContainer {
+    #microsoftSignInContainer,
+    #githubSignInContainer {
       display: flex;
       justify-content: center;
       margin-top: 20px;
     }
 
+    #googleSignInButton,
+    #githubSignInButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
+      border-radius: 5px;
+      background-color: white;
+      border: 2px solid black;
+      color: black;
+      font-size: 16px;
+      font-family: 'Interfont';
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #googleSignInButton img,
+    #githubSignInButton img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+
+    #googleSignInButton:hover,
+    #githubSignInButton:hover {
+      background-color: #4A00B0;
+      color: white;
+    }
+
     #forgotPasswordLink {
-      color: lightblue;
+      color: black;
       text-decoration: underline;
       cursor: pointer;
       display: block;
       margin-top: 10px;
       font-size: 12px;
-    }
-
-    /* Microsoft Sign-In Button Style */
-    #signInWithMicrosoft {
-      padding: 15px 50px;
-      border-radius: 7px;
-      border: none;
-      font-size: 15px;
-      font-family: 'Montserrat';
-      background-color: #2F2F2F;
-      color: white;
-      cursor: pointer;
-      font-weight: 500;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-    }
-
-    #signInWithMicrosoft:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Google Sign-In Button Style */
-    #signInWithGoogle {
-      padding: 15px 50px;
-      border-radius: 7px;
-      border: none;
-      font-size: 15px;
-      font-family: 'Montserrat';
-      background-color: #4285F4;
-      color: white;
-      cursor: pointer;
-      font-weight: 500;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-    }
-
-    #signInWithGoogle:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      font-family: 'Interfont';
     }
   </style>
   <!-- Include Firebase JavaScript SDK -->
@@ -117,31 +142,38 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase.js"></script>
   <!-- Include Microsoft Authentication Library (MSAL) -->
   <script src="https://alcdn.msauth.net/browser/2.20.0/js/msal-browser.min.js"></script>
-  <!-- Include Google Sign-In API -->
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 
 <body>
-  <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
-  <form id="loginForm">
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Password" required><br>
-    <input type="submit" value="Log in">
-    <a id="forgotPasswordLink" href="reset-password">Forget password? Click here</a>
-  </form>
-  <div id="result"></div>
-  <div id="googleSignInContainer">
-    <div class="g-signin2" data-onsuccess="onGoogleSignIn"></div>
+  <div class="login-box">
+    <div class="login-text">Login</div>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <input type="submit" value="Log in">
+      <a id="forgotPasswordLink" href="reset-password">Forget password? Click here</a>
+    </form>
+    <div id="result"></div>
+    <div id="googleSignInContainer">
+      <button id="googleSignInButton">
+        <img src="https://example.com/google_logo.png" alt="Google Logo" style="width: 20px; height: 20px; margin-right: 10px;">
+        Sign in with Google
+      </button>
+    </div>
+    <div id="githubSignInContainer">
+      <button id="githubSignInButton">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg" alt="GitHub Logo" style="width: 20px; height: 20px; margin-right: 10px;">
+        Sign in with GitHub
+      </button>
+    </div>
   </div>
-  <div id="microsoftSignInContainer">
-    <button id="signInWithMicrosoft">Sign In with Microsoft</button>
-  </div>
+
   <script>
     var form = document.querySelector('form');
     var result = document.querySelector('#result');
     var forgotPasswordLink = document.querySelector('#forgotPasswordLink');
 
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
 
       var email = document.querySelector('#email').value;
@@ -149,12 +181,15 @@
 
       // Sign in with email and password
       firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(function (userCredential) {
+        .then(function(userCredential) {
           // User is signed in
           result.textContent = 'Login successful';
-          window.location.href = 'https://enviro500.github.io/rickroll.mp4'; // Surprises are waiting...
+          
+          // Redirect to the Pinyin website after login
+          var redirectUrl = localStorage.getItem('redirectUrl') || 'https://enviro500.github.io/chinese-spelling'; // Replace with your actual URL
+          window.location.href = redirectUrl;
         })
-        .catch(function (error) {
+        .catch(function(error) {
           // Handle errors
           var errorCode = error.code;
           var errorMessage = error.message;
@@ -174,61 +209,9 @@
     };
     firebase.initializeApp(firebaseConfig);
 
-    // Microsoft Sign-In setup
-    const msalConfig = {
-      auth: {
-        clientId: 'bd81877a-8442-41b4-a217-9d64ac028abd',
-        authority: 'https://login.microsoftonline.com/f8cdef31-a31e-4b4a-93e4-5f571e91255a',
-        redirectUri: 'enviro500.github.io/login',
-      }
-    };
-
-    const msalInstance = new Msal.UserAgentApplication(msalConfig);
-
-    document.getElementById('signInWithMicrosoft').addEventListener('click', function () {
-      msalInstance.loginPopup()
-        .then(function (response) {
-          // Handle successful Microsoft sign-in
-          console.log('Microsoft Sign-In Successful:', response);
-        })
-        .catch(function (error) {
-          // Handle errors
-          console.error('Microsoft Sign-In Error:', error);
-        });
-    });
-
-    msalInstance.handleRedirectCallback((error, response) => {
-      if (error) {
-        console.error('Microsoft Redirect Error:', error);
-      } else {
-        // Redirect callback successful
-        console.log('Microsoft Redirect Successful:', response);
-      }
-    });
-
     // Google Sign-In setup
-    function onGoogleSignIn(googleUser) {
-      var idToken = googleUser.getAuthResponse().id_token;
-      var credential = firebase.auth.GoogleAuthProvider.credential(idToken);
-
-      // Sign up with Google credential
-      firebase.auth().signInWithCredential(credential)
-        .then(function (userCredential) {
-          // User is signed up successfully
-          result.textContent = 'Sign up successful';
-          // You can redirect the user to another page here
-        })
-        .catch(function (error) {
-          // Handle errors
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          result.textContent = 'Error: ' + errorCode + ' - ' + errorMessage;
-        });
-    }
-
-    // Call the function to load Google Sign-In API
-    function loadGoogleSignInAPI() {
-      gapi.load('auth2', function () {
+    function initGoogleSignIn() {
+      gapi.load('auth2', function() {
         gapi.auth2.init({
           client_id: '532926255817-jjg1cc8mes9608q4s7vvl66um81ctrtb.apps.googleusercontent.com'
         });
@@ -243,15 +226,37 @@
         'height': 40,
         'longtitle': true,
         'theme': 'dark',
-        'onsuccess': onGoogleSignIn,
+        'onsuccess': onGoogleSignUpSuccess,
         'onfailure': onGoogleSignUpFailure
       });
     }
 
-    // Call the function to load Google Sign-In API
-    loadGoogleSignInAPI();
+    function onGoogleSignUpSuccess(googleUser) {
+      var idToken = googleUser.getAuthResponse().id_token;
+      var credential = firebase.auth.GoogleAuthProvider.credential(idToken);
+
+      // Sign up with Google credential
+      firebase.auth().signInWithCredential(credential)
+        .then(function(result) {
+          result.textContent = 'Login successful';
+
+          // Redirect to the Pinyin website after login
+          var redirectUrl = localStorage.getItem('redirectUrl') || 'https://enviro500.github.io/chinese-spelling'; // Replace with your actual URL
+          window.location.href = redirectUrl;
+        }).catch(function(error) {
+          result.textContent = 'Error: ' + error.message;
+        });
+    }
+
+    function onGoogleSignUpFailure(error) {
+      result.textContent = 'Google Sign-In failed: ' + error;
+    }
+
+    window.onload = function() {
+      initGoogleSignIn();
+    };
   </script>
-  <script src="//code.tidio.co/exq4tyezs73tsjmbpi7q81qouibyuc63.js" async></script>
 </body>
 
 </html>
+

@@ -242,6 +242,11 @@
             document.getElementById("soundIcon").style.display = "none";
             isSpelling = false; // Reset spelling session status
         }
+	
+        // Redirect to login page
+        function redirectToLogin() {
+            window.location.href = 'https://enviro500.github.io/beta/login?chinese-spelling';
+        }
 
         // Function to toggle the spelling session
         function toggleSpelling() {

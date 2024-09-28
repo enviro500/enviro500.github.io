@@ -117,76 +117,78 @@
     </div>
     
     <!-- Firebase JavaScript SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
+ <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
-            authDomain: "enviro500web.firebaseapp.com",
-            projectId: "enviro500web",
-            storageBucket: "enviro500web.appspot.com",
-            messagingSenderId: "821087210177",
-            appId: "1:821087210177:web:96f8bd5e588ed33085e240",
-            measurementId: "G-DQZ8WQFYSR"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+        authDomain: "enviro500web.firebaseapp.com",
+        projectId: "enviro500web",
+        storageBucket: "enviro500web.appspot.com",
+        messagingSenderId: "821087210177",
+        appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+        measurementId: "G-DQZ8WQFYSR"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        async function loadCodes() {
-            const codesRef = collection(db, "codes");
-            const codeBoxesContainer = document.getElementById("code-boxes");
-            const snapshot = await getDocs(codesRef);
+    async function loadCodes() {
+        const codesRef = collection(db, "codes");
+        const codeBoxesContainer = document.getElementById("code-boxes");
+        const snapshot = await getDocs(codesRef);
 
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const hidden = data.hidden === true; // Check for the hidden field
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const hidden = data.hidden === true; // Check for the hidden field
 
-                if (!hidden) { // Only create box if not hidden
-                    const codeId = doc.id; // Get the document ID
-                    const description = data.description || "No description available"; // Get description
+            if (!hidden) { // Only create box if not hidden
+                const codeId = doc.id; // Get the document ID
+                const description = data.description || "No description available"; // Get description
 
-                    const box = document.createElement("div");
-                    box.className = "code-box"; // Add class for styling
-                    box.innerHTML = `<strong>${codeId}</strong><br>${description}`; // Format the box
-                    codeBoxesContainer.appendChild(box); // Add box to the container
-                }
-            });
-        }
-
-        async function checkCode() {
-            const code = document.getElementById("promo-code").value.trim();
-            const result = document.getElementById("result");
-
-            console.log("Checking code:", code); // Log the code
-
-            try {
-                const docRef = doc(db, "codes", code);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    result.textContent = docSnap.data().message;
-                } else {
-                    result.textContent = "Invalid code.";
-                }
-            } catch (error) {
-                console.error("Error getting document:", error);
+                const box = document.createElement("div");
+                box.className = "code-box"; // Add class for styling
+                box.innerHTML = `<strong>${codeId}</strong><br>${description}`; // Format the box
+                codeBoxesContainer.appendChild(box); // Add box to the container
             }
+        });
+    }
 
-            // Apply fade effect by changing opacity after a short delay
-            setTimeout(function() {
-                result.style.opacity = 1;
-            }, 100);
+    async function checkCode() {
+        const code = document.getElementById("promo-code").value.trim();
+        const result = document.getElementById("result");
+
+        console.log("Checking code:", code); // Log the code
+
+        try {
+            const docRef = doc(db, "codes", code);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                result.textContent = docSnap.data().message;
+            } else {
+                result.textContent = "Invalid code.";
+            }
+        } catch (error) {
+            console.error("Error getting document:", error);
         }
 
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            checkCode();
-        });
+        // Apply fade effect by changing opacity after a short delay
+        setTimeout(function() {
+            result.style.opacity = 1;
+        }, 100);
+    }
 
-        // Load codes when the page is ready
-        window.onload = loadCodes;
-    </script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        checkCode();
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadCodes(); // Load codes once DOM is fully loaded
+    });
+</script>
+
 </body>
 </html>

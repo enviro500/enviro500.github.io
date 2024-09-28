@@ -39,6 +39,17 @@
             margin: 10px;
             border-radius: 20px;
         }
+        #inputArea button {
+            margin: 10px;
+            padding: 10px 20px;
+        }
+
+        #inputArea button .material-icons {
+            vertical-align: middle; 
+
+    
+}
+
         #pinyinDisplay {
             font-size: 32px;
             margin: 20px 0;
@@ -98,13 +109,23 @@
     </div>
 
     <h1>Pinyin Spelling Practice 拼音听写复习</h1>
-    <div id="inputArea">
-        <div id="inputBoxContainer">
-            <input type="text" id="inputBox" placeholder="输入中文单词 Enter Chinese Phrases" />
-        </div>
-        <h5>Separate the phrases by comma or spaces 以逗号或空格分隔</h5>
-        <button id="startBtn" onclick="toggleSpelling()">Start Spelling 开始听写</button>
+<div id="inputArea">
+    <div id="inputBoxContainer">
+        <input type="text" id="inputBox" placeholder="输入中文单词 Enter Chinese Phrases" />
     </div>
+    <h5>Separate the phrases by comma or spaces 以逗号或空格分隔</h5>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <button id="saveBtn" onclick="toggleSpelling()">Start Spelling 开始听写</button>
+        <button id="settingsBtn" onclick="saveSpelling()">
+            <span class="material-icons">bookmark</span>
+        </button>
+        <button id="openBtn" onclick="openSavedSpelling()">
+            <span class="material-icons">folder_open</span>
+        </button>
+    </div>
+</div>
+
+   
     <div id="pinyinDisplay"></div>
     <span id="soundIcon" class="material-icons" onclick="playSound()">volume_up</span>
 

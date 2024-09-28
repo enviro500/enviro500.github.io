@@ -5,10 +5,16 @@
     <title>Code Checker/Redeem</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        @font-face {
-            font-family: 'Montserrat';
-            src: url('https://enviro500.github.io/files/Montserrat-Medium.ttf') format('truetype');
-        }
+@font-face {
+    font-family: 'Montserrat';
+    src: url('https://enviro500.github.io/files/Montserrat-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Gotham';
+    src: url('https://enviro500.github.io/files/fonts/Gotham-Black.ttf') format('truetype'); /* Use 'raw' link for direct access */
+
+}
         body {
             background-image: url('https://member.thescienceacademy.sg/media/auth/bg8.jpg');
             color: white;
@@ -17,21 +23,52 @@
             line-height: 1.5;
             text-align: center;
             padding: 50px;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between elements */
+            align-items: flex-start; /* Align items to the start */
         }
-        .container {
-    background-color: white; /* White background for the box */
-    padding: 30px; /* Add padding for spacing */
-    border-radius: 10px; /* Optional: Rounded corners */
-    max-width: 400px; /* Maximum width for the box */
-    margin: 0 auto; 
-    min-height: 530px;
-    margin: -15px auto 0;
-     position: absolute;
-
-
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
+        h1 {
+    color: black; /* Change text color */
+    font-size: 50px; /* Adjust font size */
+    margin-bottom: 30px; /* Add space below the text */
+    font-family:'Gotham';
+    background: linear-gradient(to right, #4285f4, #d96570); /* Gradient from left to right */
+    -webkit-background-clip: text; /* Clip background to text (for webkit browsers) */
+    color: transparent; /* Make the text color transparent */
 }
 
+        .container {
+            background-color: white; /* White background for the box */
+            padding: 30px; /* Add padding for spacing */
+            border-radius: 10px; /* Optional: Rounded corners */
+            max-width: 400px; /* Maximum width for the box */
+            margin: 0; /* Remove auto margin for left alignment */
+            min-height: 530px;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
+        }
+        .codes-container {
+
+            padding: 20px; /* Padding for spacing */
+            border-radius: 10px; /* Rounded corners */
+            max-width: 400px; /* Maximum width for the codes section */
+            height: 530px; /* Fixed height */
+            overflow-y: auto; /* Scrollable if content overflows */
+            margin-left: 20px; /* Space between the two sections */
+            margin: -30px auto 0 50px;
+        }
+        .code-box {
+            border: 1px solid #ccc; /* Border for the boxes */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px; /* Padding inside the boxes */
+            margin-bottom: 10px; /* Space between boxes */
+            background-color: white;
+            color:black;
+            min-width: 370px;
+            text-align: left;
+            padding: 20px;
+            
+        }
         input[type=text] {
             padding: 15px; /* Increased padding to make the input box taller */
             min-width: 320px; /* Increased width to make the input box wider */
@@ -42,7 +79,6 @@
             font-size: 16px;
             font-weight: 500; /* Montserrat Medium font weight */
             margin-bottom: 20px;
-
         }
         /* Apply the new styles for the Redeem button */
         input[type=submit] {
@@ -81,36 +117,32 @@
             }
         }
     </style>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8304255336435501"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8304255336435501" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
-        <h1><img src="https://i.ibb.co/1Qbf8c9/Screenshot-2023-05-02-214906.png" alt="" width="356" height="112" /></h1>
+        <h1>enviro500</h1>
         <form>
             <input type="text" id="promo-code" name="promo-code" placeholder="Code">
             <br>
             <input type="submit" value="Redeem">
         </form>
         <div id="result"></div>
-
         <!-- YouTube Logo Button -->
         <a href="https://www.youtube.com/enviro500" target="_blank" class="youtube-logo">
             <img src="https://i.ibb.co/mtkWzRF/image.png" alt="YouTube" width="40" height="30">
         </a>
     </div>
+
+    <div class="codes-container">
+        <h2 style="text-align: left;">Available Codes</h2>
+        <div id="code-boxes"></div> <!-- Container for code boxes -->
+    </div>
     
     <!-- Firebase JavaScript SDK -->
-    <script type="module">
-        // Your existing JavaScript code here
-    </script>
-</body>
-
-
-<!-- Firebase JavaScript SDK -->
-<script type="module">
+ <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
@@ -124,6 +156,27 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    async function loadCodes() {
+        const codesRef = collection(db, "codes");
+        const codeBoxesContainer = document.getElementById("code-boxes");
+        const snapshot = await getDocs(codesRef);
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const hidden = data.hidden === true; // Check for the hidden field
+
+            if (!hidden) { // Only create box if not hidden
+                const codeId = doc.id; // Get the document ID
+                const description = data.description || "No description available"; // Get description
+
+                const box = document.createElement("div");
+                box.className = "code-box"; // Add class for styling
+                box.innerHTML = `<strong>${codeId}</strong><br>${description}`; // Format the box
+                codeBoxesContainer.appendChild(box); // Add box to the container
+            }
+        });
+    }
 
     async function checkCode() {
         const code = document.getElementById("promo-code").value.trim();
@@ -154,6 +207,11 @@
         e.preventDefault();
         checkCode();
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadCodes(); // Load codes once DOM is fully loaded
+    });
 </script>
+
 </body>
 </html>

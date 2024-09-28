@@ -10,9 +10,10 @@ This is the official page for Enviro500's website.
 - Page Menu
 - Dashboard
 
-##V1.5
+## V1.5
 - Added Chinese Speling Website
-- 
+- Refreshed Redeem Website with New UI and code library!
+  
 ### V1.4 R1.1
 - Replaced script with added Firestore to redeem website
 

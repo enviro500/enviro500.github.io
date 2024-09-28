@@ -5,16 +5,15 @@
     <title>Code Checker/Redeem</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-@font-face {
-    font-family: 'Montserrat';
-    src: url('https://enviro500.github.io/files/Montserrat-Medium.ttf') format('truetype');
-}
+        @font-face {
+            font-family: 'Montserrat';
+            src: url('https://enviro500.github.io/files/Montserrat-Medium.ttf') format('truetype');
+        }
 
-@font-face {
-    font-family: 'Gotham';
-    src: url('https://enviro500.github.io/files/fonts/Gotham-Black.ttf') format('truetype'); /* Use 'raw' link for direct access */
-
-}
+        @font-face {
+            font-family: 'Gotham';
+            src: url('https://enviro500.github.io/files/fonts/Gotham-Black.ttf') format('truetype'); /* Use 'raw' link for direct access */
+        }
         body {
             background-image: url('https://member.thescienceacademy.sg/media/auth/bg8.jpg');
             color: white;
@@ -26,32 +25,51 @@
             display: flex; /* Use flexbox for layout */
             justify-content: space-between; /* Space between elements */
             align-items: flex-start; /* Align items to the start */
+            max-width: 1400px; /* Increase body max-width */
+            margin: auto; /* Center the body */
         }
-        h1 {
-    color: black; /* Change text color */
-    font-size: 50px; /* Adjust font size */
-    margin-bottom: 30px; /* Add space below the text */
-    font-family:'Gotham';
-    background: linear-gradient(to right, #4285f4, #d96570); /* Gradient from left to right */
-    -webkit-background-clip: text; /* Clip background to text (for webkit browsers) */
-    color: transparent; /* Make the text color transparent */
+        /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+.codes-container {
+    overflow: hidden; /* Hides the scrollbar */
 }
 
+/* Enable scrolling with touch/mouse wheel */
+.codes-container::-webkit-scrollbar {
+    display: none; /* Completely hides the scrollbar */
+}
+
+/* Hide scrollbar for Firefox */
+.codes-container {
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+.codes-container {
+    overflow-y: scroll; /* Allow vertical scrolling */
+}
+
+        h1 {
+            color: black; /* Change text color */
+            font-size: 50px; /* Adjust font size */
+            margin-bottom: 30px; /* Add space below the text */
+            font-family: 'Gotham';
+            background: linear-gradient(to right, #4285f4, #d96570); /* Gradient from left to right */
+            -webkit-background-clip: text; /* Clip background to text (for webkit browsers) */
+            color: transparent; /* Make the text color transparent */
+        }
         .container {
             background-color: white; /* White background for the box */
             padding: 30px; /* Add padding for spacing */
             border-radius: 10px; /* Optional: Rounded corners */
-            max-width: 400px; /* Maximum width for the box */
+            max-width: 500px; /* Increase maximum width for the box */
             margin: 0; /* Remove auto margin for left alignment */
             min-height: 530px;
             position: relative;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
         }
         .codes-container {
-
             padding: 20px; /* Padding for spacing */
             border-radius: 10px; /* Rounded corners */
-            max-width: 400px; /* Maximum width for the codes section */
+            max-width: 600px; /* Increase maximum width for the codes section */
             height: 530px; /* Fixed height */
             overflow-y: auto; /* Scrollable if content overflows */
             margin-left: 20px; /* Space between the two sections */
@@ -63,11 +81,24 @@
             padding: 10px; /* Padding inside the boxes */
             margin-bottom: 10px; /* Space between boxes */
             background-color: white;
-            color:black;
+            color: black;
             min-width: 370px;
             text-align: left;
             padding: 20px;
-            
+            position: relative;
+        }
+        .status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .status.available {
+            color: green; /* Green color for available status */
+        }
+        .status.expired {
+            color: red;
         }
         input[type=text] {
             padding: 15px; /* Increased padding to make the input box taller */
@@ -80,22 +111,20 @@
             font-weight: 500; /* Montserrat Medium font weight */
             margin-bottom: 20px;
         }
-        /* Apply the new styles for the Redeem button */
         input[type=submit] {
             padding: 15px;
             margin-bottom: 20px;
-            border-radius: 5px; /* Changed border-radius to 7px */
+            border-radius: 5px;
             border: none;
             min-width: 350px;
-            background-color: #4A00B0; /* Changed button color */
-            background-image: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to)); /* Apply gradient to the button background */
+            background-color: #4A00B0;
+            background-image: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-to));
             color: white;
-            font-family: 'Montserrat', Arial, sans-serif; /* Montserrat as font for button text */
+            font-family: 'Montserrat', Arial, sans-serif;
             font-size: 16px;
-            font-weight: 500; /* Montserrat Medium font weight */
+            font-weight: 500;
             cursor: pointer;
         }
-        /* Apply the new styles for the Result Text */
         #result {
             margin-top: 20px;
             opacity: 0;
@@ -106,14 +135,13 @@
             display: inline-block;
             margin-top: 20px;
         }
-        /* Media Query for Mobile-Friendly Design */
         @media only screen and (max-width: 600px) {
             body {
-                padding: 20px; /* Reduce padding for smaller screens */
-                font-size: 14px; /* Adjust font size for better readability */
+                padding: 20px;
+                font-size: 14px;
             }
             input[type=text], input[type=submit] {
-                width: 100%; /* Make the input box and button occupy full width on smaller screens */
+                width: 100%;
             }
         }
     </style>
@@ -128,7 +156,6 @@
             <input type="submit" value="Redeem">
         </form>
         <div id="result"></div>
-        <!-- YouTube Logo Button -->
         <a href="https://www.youtube.com/enviro500" target="_blank" class="youtube-logo">
             <img src="https://i.ibb.co/mtkWzRF/image.png" alt="YouTube" width="40" height="30">
         </a>
@@ -136,82 +163,125 @@
 
     <div class="codes-container">
         <h2 style="text-align: left;">Available Codes</h2>
-        <div id="code-boxes"></div> <!-- Container for code boxes -->
+        <div id="available-codes"></div>
+        <h2 style="text-align: left;">Expired Codes</h2>
+        <div id="expired-codes"></div>
     </div>
     
     <!-- Firebase JavaScript SDK -->
- <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
-        authDomain: "enviro500web.firebaseapp.com",
-        projectId: "enviro500web",
-        storageBucket: "enviro500web.appspot.com",
-        messagingSenderId: "821087210177",
-        appId: "1:821087210177:web:96f8bd5e588ed33085e240",
-        measurementId: "G-DQZ8WQFYSR"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+            authDomain: "enviro500web.firebaseapp.com",
+            projectId: "enviro500web",
+            storageBucket: "enviro500web.appspot.com",
+            messagingSenderId: "821087210177",
+            appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+            measurementId: "G-DQZ8WQFYSR"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    async function loadCodes() {
-        const codesRef = collection(db, "codes");
-        const codeBoxesContainer = document.getElementById("code-boxes");
-        const snapshot = await getDocs(codesRef);
+       async function loadCodes() {
+    const codesRef = collection(db, "codes");
+    const availableCodesContainer = document.getElementById("available-codes");
+    const expiredCodesContainer = document.getElementById("expired-codes");
+    const snapshot = await getDocs(codesRef);
+    const currentDate = new Date();
 
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            const hidden = data.hidden === true; // Check for the hidden field
+    const expiredCodes = [];
+    const availableCodes = [];
 
-            if (!hidden) { // Only create box if not hidden
-                const codeId = doc.id; // Get the document ID
-                const description = data.description || "No description available"; // Get description
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+        const hidden = data.hidden === true;
+        if (!hidden) {
+            const codeId = doc.id;
+            const description = data.description || "No description available";
+            const expiryDateStr = data.date;
+            let statusText = "Available";
+            let statusClass = "available";
 
-                const box = document.createElement("div");
-                box.className = "code-box"; // Add class for styling
-                box.innerHTML = `<strong>${codeId}</strong><br>${description}`; // Format the box
-                codeBoxesContainer.appendChild(box); // Add box to the container
-            }
-        });
-    }
-
-    async function checkCode() {
-        const code = document.getElementById("promo-code").value.trim();
-        const result = document.getElementById("result");
-
-        console.log("Checking code:", code); // Log the code
-
-        try {
-            const docRef = doc(db, "codes", code);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                result.textContent = docSnap.data().message;
+            if (expiryDateStr) {
+                const expiryDate = expiryDateStr.toDate(); // Convert Firestore timestamp to Date
+                if (currentDate > expiryDate) {
+                    statusText = `Expired on ${expiryDate.toLocaleDateString()}`; // Format expiry date
+                    statusClass = "expired";
+                    expiredCodes.push({ codeId, description, statusText, expiryDate });
+                } else {
+                    statusText = `Available until ${expiryDate.toLocaleDateString()}`; // Format expiry date
+                    availableCodes.push({ codeId, description, statusText, expiryDate });
+                }
             } else {
-                result.textContent = "Invalid code.";
+                availableCodes.push({ codeId, description, statusText });
             }
-        } catch (error) {
-            console.error("Error getting document:", error);
+        }
+    });
+
+    availableCodes.sort((a, b) => a.expiryDate - b.expiryDate || 0);
+    expiredCodes.sort((a, b) => b.expiryDate - a.expiryDate || 0);
+
+    availableCodes.forEach(({ codeId, description, statusText }) => {
+        const box = document.createElement("div");
+        box.className = "code-box";
+        box.innerHTML = `<strong>${codeId}</strong><br>${description}`;
+        const status = document.createElement("div");
+        status.className = "status available"; // Apply the available class here
+        status.textContent = statusText;
+        box.appendChild(status);
+        availableCodesContainer.appendChild(box);
+    });
+
+    expiredCodes.forEach(({ codeId, description, statusText }) => {
+        const box = document.createElement("div");
+        box.className = "code-box";
+        box.innerHTML = `<strong>${codeId}</strong><br>${description}`;
+        const status = document.createElement("div");
+        status.className = "status expired";
+        status.textContent = statusText;
+        box.appendChild(status);
+        expiredCodesContainer.appendChild(box);
+    });
+}
+
+        async function checkCode() {
+            const code = document.getElementById("promo-code").value.trim();
+            const result = document.getElementById("result");
+
+            console.log("Checking code:", code);
+
+            try {
+                const docRef = doc(db, "codes", code);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    result.textContent = docSnap.data().message;
+                } else {
+                    result.textContent = "Invalid code.";
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+                result.textContent = "Error checking the code.";
+            }
+
+            setTimeout(function() {
+                result.style.opacity = 1;
+            }, 100);
         }
 
-        // Apply fade effect by changing opacity after a short delay
-        setTimeout(function() {
-            result.style.opacity = 1;
-        }, 100);
-    }
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            checkCode();
+        });
 
-    document.querySelector('form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        checkCode();
-    });
-
-    document.addEventListener("DOMContentLoaded", function() {
-        loadCodes(); // Load codes once DOM is fully loaded
-    });
-</script>
-
+        document.addEventListener("DOMContentLoaded", function() {
+            loadCodes();
+        });
+    </script>
 </body>
 </html>
+

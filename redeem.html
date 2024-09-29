@@ -190,193 +190,165 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function loadCodes() {
-            const codesRef = collection(db, "codes");
-            const availableCodesContainer = document.getElementById("available-codes");
-            const expiredCodesContainer = document.getElementById("expired-codes");
-            const redeemedCodesContainer = document.getElementById("redeemed-codes");
-            const snapshot = await getDocs(codesRef);
-            const currentDate = new Date();
+        document.addEventListener("DOMContentLoaded", function() {
+    loadCodes();
+});
 
-            const expiredCodes = [];
-            const availableCodes = [];
-            const redeemedCodes = [];
+async function loadCodes() {
+    const codesRef = collection(db, "codes");
+    const availableCodesContainer = document.getElementById("available-codes");
+    const expiredCodesContainer = document.getElementById("expired-codes");
+    const redeemedCodesContainer = document.getElementById("redeemed-codes");
+    const snapshot = await getDocs(codesRef);
+    const currentDate = new Date();
+    const redeemedCodes = JSON.parse(sessionStorage.getItem("redeemedCodes") || "[]");
 
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const hidden = data.hidden === true;
-                const redeemed = data.redeemed === true;
-                if (!hidden) {
-                    const codeId = doc.id;
-                    const description = data.description || "";
-                    const expiryDateStr = data.date;
-                    let statusText = "Available";
-                    let statusClass = "available";
+    const expiredCodes = [];
+    const availableCodes = [];
 
-                    if (redeemed) {
-                        redeemedCodes.push({ codeId, description, message: data.message, link: data.link, linkname: data.linkname });
-                    } else if (expiryDateStr) {
-                        const expiryDate = expiryDateStr.toDate(); // Convert Firestore timestamp to Date
-                        if (currentDate > expiryDate) {
-                            statusText = `Expired on ${expiryDate.toLocaleDateString()}`; // Format expiry date
-                            statusClass = "expired";
-                            expiredCodes.push({ codeId, description, statusText, expiryDate });
-                        } else {
-                            statusText = `Available until ${expiryDate.toLocaleDateString()}`; // Format expiry date
-                            availableCodes.push({ codeId, description, statusText, expiryDate });
-                        }
-                    } else {
-                        availableCodes.push({ codeId, description, statusText });
-                    }
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+        const hidden = data.hidden === true;
+        const redeemed = redeemedCodes.includes(doc.id);
+        if (!hidden) {
+            const codeId = doc.id;
+            const description = data.description || "";
+            const expiryDateStr = data.date;
+            let statusText = "Available";
+            let statusClass = "available";
+
+            if (redeemed) {
+                // Only show redeemed codes for the current user
+                createRedeemedCodeBox(codeId, description, data.message, data.link, data.linkname, redeemedCodesContainer);
+            } else if (expiryDateStr) {
+                const expiryDate = expiryDateStr.toDate(); // Convert Firestore timestamp to Date
+                if (currentDate > expiryDate) {
+                    statusText = `Expired on ${expiryDate.toLocaleDateString()}`; // Format expiry date
+                    statusClass = "expired";
+                    expiredCodes.push({ codeId, description, statusText, expiryDate });
+                } else {
+                    statusText = `Available until ${expiryDate.toLocaleDateString()}`; // Format expiry date
+                    availableCodes.push({ codeId, description, statusText, expiryDate });
                 }
-            });
+            } else {
+                availableCodes.push({ codeId, description, statusText });
+            }
+        }
+    });
 
-            availableCodes.sort((a, b) => a.expiryDate - b.expiryDate || 0);
-            expiredCodes.sort((a, b) => b.expiryDate - a.expiryDate || 0);
+    availableCodes.sort((a, b) => a.expiryDate - b.expiryDate || 0);
+    expiredCodes.sort((a, b) => b.expiryDate - a.expiryDate || 0);
 
-            availableCodes.forEach(({ codeId, description, statusText }) => {
-                const box = document.createElement("div");
-                box.className = "code-box";
-                box.innerHTML = `<strong>${codeId}</strong><br>${description}`;
-                const status = document.createElement("div");
-                status.className = "status available"; // Apply the available class here
-                status.textContent = statusText;
-                box.appendChild(status);
-                availableCodesContainer.appendChild(box);
-            });
+    availableCodes.forEach(({ codeId, description, statusText }) => {
+        const box = document.createElement("div");
+        box.className = "code-box";
+        box.innerHTML = `<strong>${codeId}</strong><br>${description}`;
+        const status = document.createElement("div");
+        status.className = "status available"; // Apply the available class here
+        status.textContent = statusText;
+        box.appendChild(status);
+        availableCodesContainer.appendChild(box);
+    });
 
-            expiredCodes.forEach(({ codeId, description, statusText }) => {
-                const box = document.createElement("div");
-                box.className = "code-box";
-                box.innerHTML = `<strong>${codeId}</strong><br>${description}`;
-                const status = document.createElement("div");
-                status.className = "status expired";
-                status.textContent = statusText;
-                box.appendChild(status);
-                expiredCodesContainer.appendChild(box);
-            });
-
-            redeemedCodes.forEach(({ codeId, description, message, link, linkname }) => {
-                const box = document.createElement("div");
-                box.className = "code-box";
-                box.innerHTML = `
-                    <strong>${codeId}</strong><br>
-                    ${description ? `<span style="color: darkgrey;">${description}</span><br>` : ""}
-                    <hr style="border: 0; border-top: 1px solid grey;">
-                    <p>${message}</p>
-                `;
-
-                if (link) {
-    const button = document.createElement("button");
-    button.style.backgroundColor = "rgb(114, 57, 234)"; // Purple background color
-    button.style.color = "white";
-    button.style.border = "none";
-    button.style.padding = "9px 18px"; // Padding for a more typical button look
-    button.style.cursor = "pointer";
-    button.style.borderRadius = "5px"; // Rounded but not excessive
-    button.style.fontFamily = "'Montserrat', Arial, sans-serif"; // Consistent font
-    button.style.fontSize = "14px"; // Consistent size
-    button.style.display = "flex"; // Use flex to align icon and text
-    button.style.alignItems = "center"; // Align icon and text vertically
-    button.style.gap = "8px"; // Space between the icon and text
-
-    // Create the icon element
-    const icon = document.createElement("span");
-    icon.className = "material-icons";
-    icon.textContent = "open_in_new"; // The icon name
-
-    // Create the text node
-    const text = document.createTextNode(linkname || "More Details");
-
-    // Append the icon and text to the button
-    button.appendChild(icon);
-    button.appendChild(text);
-
-    // Set the onclick event to open the link
-    button.onclick = () => {
-        window.open(link, "_blank");
-    };
-
-    // Append the button to the box
-    box.appendChild(button);
+    expiredCodes.forEach(({ codeId, description, statusText }) => {
+        const box = document.createElement("div");
+        box.className = "code-box";
+        box.innerHTML = `<strong>${codeId}</strong><br>${description}`;
+        const status = document.createElement("div");
+        status.className = "status expired";
+        status.textContent = statusText;
+        box.appendChild(status);
+        expiredCodesContainer.appendChild(box);
+    });
 }
 
+async function checkCode() {
+    const code = document.getElementById("promo-code").value.trim();
+    const result = document.getElementById("result");
 
+    console.log("Checking code:", code);
 
-                redeemedCodesContainer.appendChild(box);
-            });
-        }
+    try {
+        const docRef = doc(db, "codes", code);
+        const docSnap = await getDoc(docRef);
 
-        async function checkCode() {
-            const code = document.getElementById("promo-code").value.trim();
-            const result = document.getElementById("result");
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const redeemedCodes = JSON.parse(sessionStorage.getItem("redeemedCodes") || "[]");
 
-            console.log("Checking code:", code);
+            if (redeemedCodes.includes(code)) {
+                result.textContent = "This code has already been redeemed.";
+            } else {
+                // Mark the code as redeemed locally
+                redeemedCodes.push(code);
+                sessionStorage.setItem("redeemedCodes", JSON.stringify(redeemedCodes));
 
-            try {
-                const docRef = doc(db, "codes", code);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    if (data.redeemed === true) {
-                        result.textContent = "This code has already been redeemed.";
-                    } else {
-                        // Mark the code as redeemed
-                        await updateDoc(docRef, { redeemed: true });
-                        
-                        // Add the redeemed code to the "Redeemed Codes" section
-                        const redeemedCodesContainer = document.getElementById("redeemed-codes");
-                        const box = document.createElement("div");
-                        box.className = "code-box";
-                        box.innerHTML = `
-                            <strong>${code}</strong><br>
-                            <span style="color: darkgrey;">${data.description}</span><br>
-                            <hr style="border: 0; border-top: 1px solid grey;">
-                            <p>${data.message}</p>
-                        `;
-
-                        if (data.link) {
-                            const button = document.createElement("button");
-                            button.style.backgroundColor = "rgb(114, 57, 234)";
-                            button.style.color = "white";
-                            button.style.border = "none";
-                            button.style.padding = "10px";
-                            button.style.cursor = "pointer";
-                            button.style.display = "flex";
-                            button.style.alignItems = "center";
-                            button.innerHTML = `<span class="material-icons">open_in_new</span> ${data.linkname || "More Details"}`;
-                            button.onclick = () => {
-                                window.open(data.link, "_blank");
-                            };
-                            box.appendChild(button);
-                        }
-
-                        redeemedCodesContainer.appendChild(box);
-                        result.textContent = "Code redeemed successfully!";
-                    }
-                } else {
-                    result.textContent = "Invalid code.";
-                }
-            } catch (error) {
-                console.error("Error getting document:", error);
-                result.textContent = "Error checking the code.";
+                // Add the redeemed code to the "Redeemed Codes" section
+                const redeemedCodesContainer = document.getElementById("redeemed-codes");
+                createRedeemedCodeBox(code, data.description, data.message, data.link, data.linkname, redeemedCodesContainer);
+                result.textContent = "Code redeemed successfully!";
             }
-
-            setTimeout(function() {
-                result.style.opacity = 1;
-            }, 100);
+        } else {
+            result.textContent = "Invalid code.";
         }
+    } catch (error) {
+        console.error("Error getting document:", error);
+        result.textContent = "Error checking the code.";
+    }
 
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            checkCode();
-        });
+    setTimeout(function () {
+        result.style.opacity = 1;
+    }, 100);
+}
 
+function createRedeemedCodeBox(codeId, description, message, link, linkname, container) {
+    const box = document.createElement("div");
+    box.className = "code-box";
+    box.innerHTML = `
+        <strong>${codeId}</strong><br>
+        ${description ? `<span style="color: darkgrey;">${description}</span><br>` : ""}
+        <hr style="border: 0; border-top: 1px solid grey;">
+        <p>${message}</p>
+    `;
 
-        document.addEventListener("DOMContentLoaded", function() {
-            loadCodes();
-        });
+    if (link) {
+        const button = document.createElement("button");
+        button.style.backgroundColor = "rgb(114, 57, 234)";
+        button.style.color = "white";
+        button.style.border = "none";
+        button.style.padding = "9px 18px"; // Padding for a more typical button look
+        button.style.cursor = "pointer";
+        button.style.borderRadius = "5px"; // Rounded but not excessive
+        button.style.fontFamily = "'Montserrat', Arial, sans-serif"; // Consistent font
+        button.style.fontSize = "14px"; // Consistent size
+        button.style.display = "flex"; // Use flex to align icon and text
+        button.style.alignItems = "center"; // Align icon and text vertically
+        button.style.gap = "8px"; // Space between the icon and text
+
+        const icon = document.createElement("span");
+        icon.className = "material-icons";
+        icon.textContent = "open_in_new";
+
+        const text = document.createTextNode(linkname || "More Details");
+
+        button.appendChild(icon);
+        button.appendChild(text);
+
+        button.onclick = () => {
+            window.open(link, "_blank");
+        };
+
+        box.appendChild(button);
+    }
+
+    container.appendChild(box);
+}
+
+document.querySelector('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    checkCode();
+});
+
     </script>
 </body>
 </html>

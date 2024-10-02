@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Document Display</title>
+    <!-- Firebase App and Firestore SDKs -->
+    <script type="module">
+        // Import Firebase libraries
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLy2ZwlxD1_qKZzrhjPsN0no_dn5Eb_7E",
+            authDomain: "bus-spotters.firebaseapp.com",
+            projectId: "bus-spotters",
+            storageBucket: "bus-spotters.appspot.com",
+            messagingSenderId: "872895466265",
+            appId: "1:872895466265:web:32161fda30a88f0c771388",
+            measurementId: "G-737J867X6Q"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Function to check password and handle document display
+        async function checkPassword() {
+            const passwordInput = document.getElementById("password").value;
+            if (passwordInput !== "freenotes") {
+                alert("Incorrect password!");
+                return;
+            }
+
+            // Check if password is already locked
+            const docRef = doc(db, "passwordStatus", "abelStatus");
+            const docSnap = await getDoc(docRef);
+            if (!docSnap.exists()) {
+                alert("Error: Password status document not found. Please check Firestore.");
+                return;
+            }
+
+            const data = docSnap.data();
+            if (data.isLocked) {
+                alert("Access is locked!");
+                return;
+            }
+
+            // Display the Google Document for 9 seconds
+            document.getElementById("password-container").style.display = "none";
+            document.getElementById("document-container").style.display = "block";
+            document.getElementById("google-doc").src = "https://docs.google.com/document/d/1nGECcMRbFBpCOCJE5W7HMrs8YPae6catVATijZALKFo/preview";
+
+            setTimeout(async () => {
+                document.getElementById("document-container").style.display = "none";
+                // Lock the password globally
+                await updateDoc(docRef, { isLocked: true });
+                alert("Access is now locked globally.");
+            }, 4500);
+        }
+
+        // Expose the function to the global scope
+        window.checkPassword = checkPassword;
+    </script>
+</head>
+<body>
+    <div id="password-container">
+        <input type="password" id="password" placeholder="Enter password">
+        <button onclick="checkPassword()">Submit</button>
+    </div>
+    <div id="document-container" style="display: none;">
+        <iframe id="google-doc" src="" style="width: 100vw; height: 100vh; border: none;"></iframe>
+    </div>
+</body>
+</html>

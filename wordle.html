@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Clone</title>
+    <style>
+    @font-face {
+            font-family: 'Font';
+            src: url('https://enviro500.github.io/files/fonts/franklin-normal-600.ttf') format('truetype');
+        }
+        
+        body {
+            font-family: 'Font', sans-serif;
+            display: flex;
+            font-weight: bold;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            flex-direction: column;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            grid-gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center; /* Center the grid */
+        }
+
+        .box {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            background-color: white;
+            text-transform: uppercase; /* Makes letters uppercase */
+            transition: background-color 0.5s, color 0.5s; /* Smooth color transition */
+        }
+
+        /* Animation Styles */
+        .flip {
+            animation: flip 0.5s ease forwards; /* Add flip animation */
+        }
+
+        @keyframes flip {
+            0% {
+                transform: rotateX(0deg);
+            }
+            50% {
+                transform: rotateX(90deg);
+            }
+            100% {
+                transform: rotateX(0deg);
+            }
+        }
+
+        .correct {
+            background-color: green;
+            color: white;
+        }
+
+        .present {
+            background-color: orange;
+            color: white;
+        }
+
+        .absent {
+            background-color: gray;
+            color: white;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        #keyboard {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin: 5px 0;
+        }
+
+        .key {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            background-color: white;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin: 0 2px; /* Adjust margin for keyboard keys */
+        }
+
+        .key.correct {
+            background-color: green;
+            color: white;
+        }
+
+        .key.present {
+            background-color: orange;
+            color: white;
+        }
+
+        .key.absent {
+            background-color: gray;
+            color: white;
+        }
+
+        .enter {
+            width: 85px; /* Set width for ENTER button */
+        }
+
+        .backspace {
+            width: 40px; /* Set width for Backspace button */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wordle Clone</h1>
+        <div class="grid" id="grid"></div>
+        <div id="result"></div>
+        <button id="playAgain" style="display: none;">Play Again</button>
+
+        <div id="keyboard"></div> <!-- Keyboard section -->
+    </div>
+    <script>
+        const resultDiv = document.getElementById('result');
+        const gridDiv = document.getElementById('grid');
+        const playAgainButton = document.getElementById('playAgain');
+        const keyboardDiv = document.getElementById('keyboard');
+
+        let currentRow = 0;
+        let currentColumn = 0;
+        const maxRows = 6; // Maximum number of rows
+        const boxes = [];
+        let solution = '';
+
+        // Create the keyboard layout in QWERTY format
+        const keyboardLayout = [
+            'QWERTYUIOP',
+            'ASDFGHJKL',
+            'ZXCVBNM'
+        ];
+
+        const keyStatus = {};
+
+        function createKeyboard() {
+            keyboardLayout.forEach(row => {
+                const keyboardRow = document.createElement('div');
+                keyboardRow.className = 'keyboard-row';
+                
+                row.split('').forEach((key) => {
+                    const keyDiv = document.createElement('div');
+                    keyDiv.className = 'key';
+                    keyDiv.textContent = key;
+                    keyDiv.dataset.key = key;
+                    keyDiv.addEventListener('click', () => {
+                        handleKeyClick(key); // Handle key clicks
+                    });
+                    keyboardRow.appendChild(keyDiv);
+                    keyStatus[key] = 'absent'; // Initialize all keys as absent
+                });
+
+                keyboardDiv.appendChild(keyboardRow); // Add row to keyboard
+            });
+
+            // Add ENTER button
+            const enterDiv = document.createElement('div');
+            enterDiv.className = 'key enter';
+            enterDiv.textContent = 'ENTER';
+            enterDiv.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default behavior
+                handleEnter(); // Handle enter button click
+            }); 
+            keyboardDiv.lastChild.appendChild(enterDiv); // Add to last row
+
+            // Add Backspace button
+            const backspaceDiv = document.createElement('div');
+            backspaceDiv.className = 'key backspace';
+            backspaceDiv.innerHTML = '<span>&#10006;</span>'; // "X" icon
+            backspaceDiv.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default behavior
+                handleBackspace(); // Handle backspace button click
+            }); 
+            keyboardDiv.lastChild.appendChild(backspaceDiv); // Add to last row
+        }
+
+        // Fetch today's Wordle solution
+        async function fetchSolution() {
+            const today = new Date();
+            const YYYY = today.getFullYear();
+            const MM = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const DD = String(today.getDate()).padStart(2, '0');
+
+            // Prepend CORS Anywhere URL
+            const url = `https://cors-anywhere.herokuapp.com/https://www.nytimes.com/svc/wordle/v2/${YYYY}-${MM}-${DD}.json`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                solution = data.solution.toUpperCase(); // Store solution in uppercase
+            } catch (error) {
+                console.error('Error fetching solution:', error);
+                resultDiv.innerHTML = `<p style="color: red;">Error fetching solution. Please try again later.</p>`;
+            }
+        }
+
+        // Create the grid
+        for (let i = 0; i < maxRows; i++) {
+            const row = [];
+            for (let j = 0; j < 5; j++) {
+                const box = document.createElement('div');
+                box.className = 'box';
+                gridDiv.appendChild(box);
+                row.push(box);
+            }
+            boxes.push(row);
+        }
+
+        // Create the keyboard on page load
+        createKeyboard();
+        // Fetch the solution on page load
+        fetchSolution();
+
+        // Keydown event to capture keyboard inputs
+        document.addEventListener('keydown', (event) => {
+            const key = event.key.toUpperCase();
+            if (key >= 'A' && key <= 'Z') {
+                handleKeyClick(key);
+            } else if (key === 'Enter') {
+                handleEnter();
+            } else if (key === 'Backspace') {
+                handleBackspace();
+            }
+        });
+
+        function handleKeyClick(key) {
+            if (currentColumn < 5 && currentRow < maxRows) {
+                boxes[currentRow][currentColumn].textContent = key;
+                currentColumn++;
+            }
+        }
+
+        function handleEnter() {
+            if (currentColumn < 5) {
+                alert("Please enter a 5-letter word.");
+                return;
+            }
+
+            const guess = boxes[currentRow].map(box => box.textContent).join('');
+            animateGuess(guess); // Animate letters before changing colors
+        }
+
+        function handleBackspace() {
+            if (currentColumn > 0) {
+                currentColumn--;
+                boxes[currentRow][currentColumn].textContent = ''; // Clear the last box with content
+            }
+        }
+
+        function animateGuess(guess) {
+            const currentBoxes = boxes[currentRow];
+
+            // Define the animation duration
+            const animationDuration = 500; // duration in milliseconds
+
+            // Animate each box
+            currentBoxes.forEach((box, index) => {
+                setTimeout(() => {
+                    box.classList.add('flip'); // Add animation class
+                }, animationDuration * index); // Delay each letter animation
+
+                // Change color after the animation ends
+                setTimeout(() => {
+                    box.classList.remove('flip'); // Remove animation class after the animation
+                    updateColorAndKeyStatus(box, guess[index], index); // Update colors and key status
+                }, animationDuration * index + animationDuration); // Change color after the flip
+            });
+
+            currentRow++;
+            currentColumn = 0; // Reset the column
+        }
+
+        function updateColorAndKeyStatus(box, letter, index) {
+            if (solution[index] === letter) {
+                box.classList.add('correct'); // Change to green if correct
+                keyStatus[letter] = 'correct'; // Update key status
+            } else if (solution.includes(letter)) {
+                box.classList.add('present'); // Change to orange if present
+                keyStatus[letter] = 'present'; // Update key status
+            } else {
+                box.classList.add('absent'); // Change to gray if absent
+                keyStatus[letter] = 'absent'; // Update key status
+            }
+            updateKeyboardKeyStatus(letter); // Update keyboard colors
+            checkWinOrLoss(); // Check for win/loss condition
+        }
+
+        function updateKeyboardKeyStatus(letter) {
+            const keyDiv = [...document.querySelectorAll('.key')].find(key => key.dataset.key === letter);
+            if (keyDiv) {
+                const status = keyStatus[letter];
+                keyDiv.classList.add(status); // Add the corresponding class for the key
+            }
+        }
+
+        function checkWinOrLoss() {
+            if (boxes[currentRow - 1].map(box => box.textContent).join('') === solution) {
+                resultDiv.textContent = 'Congratulations! You found the word!';
+                playAgainButton.style.display = 'inline'; // Show play again button
+            } else if (currentRow >= maxRows) {
+                resultDiv.textContent = `Game Over! The word was: ${solution}`;
+                playAgainButton.style.display = 'inline'; // Show play again button
+            }
+        }
+
+        playAgainButton.addEventListener('click', () => {
+            location.reload(); // Reload the page to start a new game
+        });
+    </script>
+</body>
+</html>

@@ -210,6 +210,59 @@
             }); 
             keyboardDiv.lastChild.appendChild(backspaceDiv); // Add to last row
         }
+        async function checkWordValidity(guess) {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${guess.toLowerCase()}`);
+    
+    // If no response or an invalid word
+    if (!response.ok) {
+        showToast("Not in word list");
+        vibrateRow(currentRow); // Vibrate the row
+        return false;
+    }
+
+    const data = await response.json();
+    
+    // Check if the response is the "No Definitions Found" format
+    if (data.title === "No Definitions Found") {
+        showToast("Not in word list");
+        vibrateRow(currentRow); // Vibrate the row
+        return false;
+    }
+
+    return true; // Word is valid
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.position = 'fixed';
+    toast.style.top = '20px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.backgroundColor = 'black';
+    toast.style.color = 'white';
+    toast.style.padding = '10px';
+    toast.style.borderRadius = '10px';
+    toast.style.zIndex = '1000';
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        document.body.removeChild(toast);
+    }, 2000); // Toast lasts for 2 seconds
+}
+
+function vibrateRow(row) {
+    const currentBoxes = boxes[row];
+    currentBoxes.forEach((box) => {
+        box.classList.add('vibrate'); // Add a class for vibration
+    });
+
+    setTimeout(() => {
+        currentBoxes.forEach((box) => {
+            box.classList.remove('vibrate'); // Remove vibration class after 2 seconds
+        });
+    }, 2000);
+}
 
         // Fetch today's Wordle solution
         async function fetchSolution() {
@@ -270,15 +323,23 @@
             }
         }
 
-        function handleEnter() {
-            if (currentColumn < 5) {
-                alert("Please enter a 5-letter word.");
-                return;
-            }
+        async function handleEnter() {
+    if (currentColumn < 5) {
+        alert("Please enter a 5-letter word.");
+        return;
+    }
 
-            const guess = boxes[currentRow].map(box => box.textContent).join('');
-            animateGuess(guess); // Animate letters before changing colors
-        }
+    const guess = boxes[currentRow].map(box => box.textContent).join('');
+
+    // Check if the word is valid before proceeding
+    const isValidWord = await checkWordValidity(guess);
+    if (!isValidWord) {
+        return; // Exit if the word is not valid
+    }
+
+    animateGuess(guess); // Animate letters before changing colors
+}
+
 
         function handleBackspace() {
             if (currentColumn > 0) {

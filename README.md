@@ -56,7 +56,6 @@ What's new in UI2.0?
 - Sign in with mutiple providers, including Microsoft and through Passkey.
 - Bus Model Tracker
 - TRANSENTHU Concept App
-- Firestore with Code Redeen
 
 # Infomation
 Feel free to use any of the code here.

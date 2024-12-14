@@ -80,7 +80,7 @@
       transform: translateY(-50%);
     }
     .carousel-buttons button {
-      background-color: transparent; /* Removed white circle background */
+      background-color: transparent; 
       border: none;
       padding: 12px;
       cursor: pointer;
@@ -123,9 +123,9 @@
       gap: 5px;
     }
     .extra-button {
-      background-color: #1E88E5; /* Same blue as the search button */
-      color: white;
-      border: none;
+      background-color: white !important;
+      color: black !important;
+      border: 2px solid #1E88E5 !important;
       padding: 8px 15px;
       border-radius: 5px;
       cursor: pointer;
@@ -133,6 +133,7 @@
       align-items: center;
       gap: 8px;
     }
+
     .extra-button .material-icons {
       font-size: 18px;
     }
@@ -154,6 +155,40 @@
     }
     .search-suggestions div:hover {
       background-color: #f1f1f1;
+    }
+
+    .person-selector {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .person-selector-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .person-selector-content div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .person-selector-content button {
+      background-color: #1E88E5;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -190,13 +225,12 @@
       </div>
       <input type="date" placeholder="Departure Date" id="depart-date">
       <input type="date" placeholder="Arrival Date" id="arrival-date">
-      <select id="persons">
+      <select id="persons" onclick="openPersonSelector()">
         <option value="1">1 Person</option>
         <option value="2">2 Persons</option>
         <option value="3">3 Persons</option>
       </select>
 
-      <!-- New buttons with icons -->
       <button class="extra-button">
         <span class="material-icons">book</span> Manage Booking
       </button>
@@ -204,17 +238,48 @@
         <span class="material-icons">flight_takeoff</span> Flight Status
       </button>
 
-      <button onclick="searchFlights()">
+      <button class="search-btn" onclick="searchFlights()">
         <span class="material-icons">search</span>
         Search
       </button>
     </div>
   </div>
 
+  <!-- Person selector modal -->
+  <div class="person-selector" id="person-selector">
+    <div class="person-selector-content">
+      <div>
+        <span>Adult (>11y/o)</span>
+        <div>
+          <button onclick="changeCount('adult', -1)">-</button>
+          <span id="adult-count">0</span>
+          <button onclick="changeCount('adult', 1)">+</button>
+        </div>
+      </div>
+      <div>
+        <span>Child (3y/o-11y/o)</span>
+        <div>
+          <button onclick="changeCount('child', -1)">-</button>
+          <span id="child-count">0</span>
+          <button onclick="changeCount('child', 1)">+</button>
+        </div>
+      </div>
+      <div>
+        <span>Infant (<3y/o)</span>
+        <div>
+          <button onclick="changeCount('infant', -1)">-</button>
+          <span id="infant-count">0</span>
+          <button onclick="changeCount('infant', 1)">+</button>
+        </div>
+      </div>
+      <button onclick="savePersonCount()">Done</button>
+    </div>
+  </div>
+
   <script>
     const images = document.querySelectorAll('.carousel-container img');
     let currentIndex = 0;
-
+    
     function showImage(index) {
       images.forEach((img, i) => img.classList.toggle('active', i === index));
     }
@@ -275,6 +340,43 @@
       const persons = document.getElementById('persons').value;
       const url = `https://enviro500.github.io/airalaska/book?from=${from}&to=${to}&depart=${depart}&arrival=${arrival}&persons=${persons}`;
       window.location.href = url;
+    }
+
+    let adultCount = 0;
+    let childCount = 0;
+    let infantCount = 0;
+
+    function openPersonSelector() {
+      document.getElementById('person-selector').style.display = 'flex';
+    }
+
+    function changeCount(type, delta) {
+      if (type === 'adult') {
+        adultCount = Math.max(0, adultCount + delta);
+        document.getElementById('adult-count').textContent = adultCount;
+      } else if (type === 'child') {
+        childCount = Math.max(0, childCount + delta);
+        document.getElementById('child-count').textContent = childCount;
+      } else if (type === 'infant') {
+        infantCount = Math.max(0, infantCount + delta);
+        document.getElementById('infant-count').textContent = infantCount;
+      }
+    }
+
+    function savePersonCount() {
+      let personText = '';
+      if (adultCount > 0) personText += `${adultCount} Adult${adultCount > 1 ? 's' : ''}`;
+      if (childCount > 0) {
+        if (personText) personText += ', ';
+        personText += `${childCount} Child${childCount > 1 ? 'ren' : ''}`;
+      }
+      if (infantCount > 0) {
+        if (personText) personText += ', ';
+        personText += `${infantCount} Infant${infantCount > 1 ? 's' : ''}`;
+      }
+
+      document.getElementById('persons').innerHTML = `<option>${personText || 'Select number of persons'}</option>`;
+      document.getElementById('person-selector').style.display = 'none';
     }
   </script>
 </body>

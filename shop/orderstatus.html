@@ -7,13 +7,15 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body class="bg-gray-100">
 <header class="bg-white shadow p-4 flex justify-between items-center">
-<img src="logo.png" alt="Logo" class="h-10">
-<button class="text-blue-500">Redeem</button>
+    <img src="logo.png" alt="Logo" class="h-10">
+    <button class="text-blue-500">Redeem</button>
 </header>
 <div id="content" class="p-4"></div>
+
 <script>
 const firebaseConfig = {
     apiKey: "AIzaSyCG3UyAJZ9MCtv5YLXlVSmRpd9ZzLUW1yg",
@@ -35,37 +37,62 @@ function getOrderIdFromURL() {
 
 async function fetchOrderData(orderId) {
     const orderDoc = await db.collection("orders").doc(orderId).get();
+    if (!orderDoc.exists) {
+        document.getElementById("content").innerHTML = "<p class='text-red-500'>Order not found.</p>";
+        return;
+    }
+
     const orderData = orderDoc.data();
     const productDoc = await db.collection("sample").doc(orderData.productid).get();
-    const productData = productDoc.data();
+    if (!productDoc.exists) {
+        document.getElementById("content").innerHTML = "<p class='text-red-500'>Product not found.</p>";
+        return;
+    }
 
+    const productData = productDoc.data();
     let statusHTML = "";
-    for (const status of orderData.status) {
+    
+    for (const [index, status] of orderData.status.entries()) {
         const statusDoc = await db.collection("status").doc(status).get();
+        if (!statusDoc.exists) continue;
+        
         const statusData = statusDoc.data();
-        statusHTML += `<div class='relative pl-8 mb-4'>
-            <div class='absolute left-0 w-2 h-full bg-gray-300'></div>
-            <div class='w-4 h-4 bg-white border-2 border-gray-500 rounded-full absolute -left-2'></div>
-            <p>${statusData.status} <span class='text-gray-500 text-sm'>(${statusDoc.id})</span></p>
+        const isLast = index === orderData.status.length - 1;
+
+        statusHTML += `
+        <div class="relative pl-8 mb-4">
+            <div class="absolute left-1 w-1 ${isLast ? 'h-4' : 'h-full'} bg-gray-300"></div>
+            <div class="w-4 h-4 bg-white border-2 border-gray-500 rounded-full absolute -left-2"></div>
+            <p class="ml-2">${statusData.status}</p>
         </div>`;
     }
 
     const content = `
-<div class="bg-white shadow-md rounded p-4 mb-4 flex">
-    <img src="${productData.imageurl}" class="w-32 h-32 object-cover mr-4">
-    <div>
-        <h2 class="text-lg font-semibold">${productData.productname}</h2>
-        <p class="text-gray-600 mb-4">${productData.productdescription}</p>
-        <div>${statusHTML}</div>
-        <div class="mt-2">
-            <input type="text" value="${orderData.code}" readonly class="border p-1 mr-2">
-            <button class="text-blue-500">Copy code</button>
-            <button class="bg-blue-500 text-white py-1 px-4 rounded">Click to redeem</button>
+    <div class="bg-white shadow-md rounded p-4 mb-4 flex">
+        <img src="${productData.imageurl}" class="w-32 h-32 object-cover mr-4">
+        <div class="flex-1">
+            <h2 class="text-lg font-semibold">${productData.productname}</h2>
+            <p class="text-gray-600 mb-4">${productData.productdescription}</p>
+            <div class="relative">
+                ${statusHTML}
+            </div>
+            <div class="mt-2 flex items-center border p-1 rounded relative">
+                <input type="text" id="orderCode" value="${orderData.code}" readonly class="flex-1 outline-none">
+                <button onclick="copyCode()" class="absolute right-2">
+                    <i class="ph ph-copy text-gray-500"></i>
+                </button>
+            </div>
+            <button class="bg-blue-500 text-white py-1 px-4 rounded mt-2">Click to redeem</button>
         </div>
-    </div>
-</div>`;
+    </div>`;
 
     document.getElementById("content").innerHTML = content;
+}
+
+function copyCode() {
+    const codeInput = document.getElementById("orderCode");
+    codeInput.select();
+    document.execCommand("copy");
 }
 
 const orderId = getOrderIdFromURL();

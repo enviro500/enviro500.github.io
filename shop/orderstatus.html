@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
@@ -23,7 +24,7 @@
         </button>
     </div>
 </header>
-<div id="content" class="p-4"></div>
+<div id="content" class="p-4 flex justify-center items-center h-screen"></div>
 
 <script>
 const firebaseConfig = {
@@ -51,7 +52,25 @@ function searchOrder() {
     }
 }
 
-async function fetchOrderData(orderId) {
+async function promptForPassword(orderId) {
+    document.getElementById("content").innerHTML = `
+        <div class="bg-white shadow-md rounded-xl p-6 w-96 text-center">
+            <h2 class="text-lg font-semibold">Enter Password</h2>
+            <p class="text-sm text-gray-600 mb-4">The password should be sent to you via Shopee Chat.</p>
+            <input type="password" id="orderPassword" class="border p-2 w-full mb-4 rounded-lg" placeholder="Enter password">
+            <div class="g-recaptcha mb-4" data-sitekey="your-recaptcha-site-key"></div>
+            <button onclick="verifyPassword('${orderId}')" class="bg-blue-700 text-white py-2 px-4 rounded-lg w-full">Submit</button>
+        </div>`;
+}
+
+async function verifyPassword(orderId) {
+    const passwordInput = document.getElementById("orderPassword").value.trim();
+    const captchaResponse = grecaptcha.getResponse();
+    if (!captchaResponse) {
+        alert("Please complete the reCAPTCHA.");
+        return;
+    }
+
     const orderDoc = await db.collection("orders").doc(orderId).get();
     if (!orderDoc.exists) {
         document.getElementById("content").innerHTML = "<p class='text-red-500'>Order not found.</p>";
@@ -59,12 +78,18 @@ async function fetchOrderData(orderId) {
     }
 
     const orderData = orderDoc.data();
-    const productDoc = await db.collection("sample").doc(orderData.productid).get();
-    if (!productDoc.exists) {
-        document.getElementById("content").innerHTML = "<p class='text-red-500'>Product not found.</p>";
+    if (passwordInput !== orderData.password) {
+        alert("Incorrect password.");
         return;
     }
 
+    fetchOrderData(orderId);
+}
+
+async function fetchOrderData(orderId) {
+    const orderDoc = await db.collection("orders").doc(orderId).get();
+    const orderData = orderDoc.data();
+    const productDoc = await db.collection("sample").doc(orderData.productid).get();
     const productData = productDoc.data();
     let statusHTML = "<div class='relative border-l-4 border-gray-300 pl-4 space-y-4'>";
     
@@ -77,7 +102,7 @@ async function fetchOrderData(orderId) {
     }
     statusHTML += "</div>";
 
-    const content = `
+    document.getElementById("content").innerHTML = `
     <div class="bg-white shadow-md rounded-xl p-6 mb-4 flex flex-col sm:flex-row">
         <img src="${productData.imageurl}" class="w-32 h-32 object-cover rounded-lg mb-4 sm:mr-4">
         <div class="flex-1">
@@ -90,11 +115,9 @@ async function fetchOrderData(orderId) {
                     <i class="ph ph-copy text-gray-500"></i>
                 </button>
             </div>
-            <a href="${orderData.redeemurl}" target="_blank" class="bg-blue-500 text-white py-2 px-4 rounded-lg mt-3 inline-block">Redeem</a>
+            <a href="${orderData.redeemurl}" target="_blank" class="bg-blue-500 text-white py-2 px-4 rounded-lg mt-3 inline-block">Click to redeem</a>
         </div>
     </div>`;
-
-    document.getElementById("content").innerHTML = content;
 }
 
 function copyCode() {
@@ -104,7 +127,9 @@ function copyCode() {
 }
 
 const orderId = getOrderIdFromURL();
-if (orderId) fetchOrderData(orderId);
+if (orderId) {
+    promptForPassword(orderId);
+}
 </script>
 </body>
 </html>

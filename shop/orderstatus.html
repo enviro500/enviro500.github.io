@@ -16,7 +16,12 @@
 <body class="bg-gray-100">
 <header class="bg-white shadow p-4 flex justify-between items-center">
     <img src="logo.png" alt="Logo" class="h-10">
-    <button class="text-blue-500">Redeem</button>
+    <div class="flex items-center border p-2 rounded-lg w-64">
+        <input type="text" id="searchOrder" placeholder="Enter Order ID" class="flex-1 outline-none text-sm">
+        <button onclick="searchOrder()">
+            <i class="ph ph-magnifying-glass text-gray-500"></i>
+        </button>
+    </div>
 </header>
 <div id="content" class="p-4"></div>
 
@@ -39,6 +44,13 @@ function getOrderIdFromURL() {
     return params.get("orderid");
 }
 
+function searchOrder() {
+    const orderId = document.getElementById("searchOrder").value.trim();
+    if (orderId) {
+        window.location.href = `https://enviro500.github.io/shop/orderstatus?orderid=${orderId}`;
+    }
+}
+
 async function fetchOrderData(orderId) {
     const orderDoc = await db.collection("orders").doc(orderId).get();
     if (!orderDoc.exists) {
@@ -54,20 +66,20 @@ async function fetchOrderData(orderId) {
     }
 
     const productData = productDoc.data();
-    let statusHTML = "<div class='relative border-l-4 border-gray-300 pl-4'>";
+    let statusHTML = "<div class='relative border-l-4 border-gray-300 pl-4 space-y-4'>";
     
     for (const status of orderData.status) {
         const statusDoc = await db.collection("status").doc(status).get();
         if (!statusDoc.exists) continue;
         
         const statusData = statusDoc.data();
-        statusHTML += `<div class='mb-2'><p>${statusData.status}</p></div>`;
+        statusHTML += `<div class='mb-4'><p>${statusData.status}</p></div>`;
     }
     statusHTML += "</div>";
 
     const content = `
-    <div class="bg-white shadow-md rounded-xl p-6 mb-4 flex">
-        <img src="${productData.imageurl}" class="w-32 h-32 object-cover rounded-lg mr-4">
+    <div class="bg-white shadow-md rounded-xl p-6 mb-4 flex flex-col sm:flex-row">
+        <img src="${productData.imageurl}" class="w-32 h-32 object-cover rounded-lg mb-4 sm:mr-4">
         <div class="flex-1">
             <h2 class="text-lg font-semibold">${productData.productname}</h2>
             <p class="text-gray-600 mb-4">${productData.productdescription}</p>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Status</title>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<header class="bg-white shadow p-4 flex justify-between items-center">
+<img src="logo.png" alt="Logo" class="h-10">
+<button class="text-blue-500">Redeem</button>
+</header>
+<div id="content" class="p-4"></div>
+<script>
+const firebaseConfig = {
+// Your Firebase config here
+    apiKey: "AIzaSyCG3UyAJZ9MCtv5YLXlVSmRpd9ZzLUW1yg",
+  authDomain: "enviro500-gift-cards.firebaseapp.com",
+  databaseURL: "https://enviro500-gift-cards-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "enviro500-gift-cards",
+  storageBucket: "enviro500-gift-cards.firebasestorage.app",
+  messagingSenderId: "998794526608",
+  appId: "1:998794526608:web:b7555c1ea13937b1033d15",
+  measurementId: "G-XV39GPDZKS"
+};
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+function getOrderIdFromURL() {
+const params = new URLSearchParams(window.location.search);
+return params.get("orderid");
+}
+
+async function fetchOrderData(orderId) {
+const orderDoc = await db.collection("orders").doc(orderId).get();
+const orderData = orderDoc.data();
+const productDoc = await db.collection("sample").doc(orderData.productid).get();
+const productData = productDoc.data();
+
+let statusHTML = "";
+for (const status of orderData.status) {
+const statusDoc = await db.collection("status").doc(status).get();
+const statusData = statusDoc.data();
+statusHTML += `<p>${statusData.status} <span class='text-gray-500 text-sm'>(${statusDoc.id})</span></p>`;
+}
+
+const content = `
+<div class="bg-white shadow-md rounded p-4 mb-4">
+<img src="${productData.imageurl}" class="w-full h-48 object-cover mb-2">
+<h2 class="text-lg font-semibold">${productData.productname}</h2>
+<p class="text-gray-600">${productData.productdescription}</p>
+<div class="mt-4">
+${statusHTML}
+</div>
+<div class="mt-2">
+<input type="text" value="${orderId}" readonly class="border p-1 mr-2">
+<button class="text-blue-500">Copy code</button>
+<button class="bg-blue-500 text-white py-1 px-4 rounded">Click to redeem</button>
+</div>
+</div>`;
+
+document.getElementById("content").innerHTML = content;
+}
+
+const orderId = getOrderIdFromURL();
+if (orderId) fetchOrderData(orderId);
+</script>
+</body>
+</html>

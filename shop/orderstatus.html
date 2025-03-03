@@ -11,91 +11,46 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
-    body { font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
-    #overlay { 
-        position: fixed; 
-        top: 0; left: 0; width: 100vw; height: 100vh; 
-        background: rgba(0, 0, 0, 0.5); 
-        display: flex; align-items: center; justify-content: center;
-    }
-    #content.blur { filter: blur(8px); }
+    body { font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    .blurred { filter: blur(5px); pointer-events: none; }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 50; }
 </style>
 </head>
 <body class="bg-gray-100">
 <header class="bg-white shadow p-4 w-full flex justify-between items-center fixed top-0">
     <img src="logo.png" alt="Logo" class="h-10 ml-4">
+    <div class="mr-4"></div>
 </header>
 <div id="content" class="p-4 flex justify-center items-center w-full h-full mt-16"></div>
-<div id="overlay" class="hidden">
-    <div class="bg-white shadow-md rounded-xl p-6 w-96 text-center">
-        <h2 class="text-lg font-semibold">Enter Password</h2>
-        <p class="text-sm text-gray-600 mb-4">The password should be sent to you via Shopee Chat.</p>
-        <input type="password" id="orderPassword" class="border p-2 w-full mb-4 rounded-lg" placeholder="Enter password">
-        <div class="g-recaptcha mb-4" data-sitekey="6LeM9eYqAAAAAByYI25YLPTjPKZWa5lPFlT372jc"></div>
-        <button onclick="verifyPassword()" class="bg-blue-700 text-white py-2 px-4 rounded-lg w-full">Submit</button>
-    </div>
-</div>
 
 <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyCG3UyAJZ9MCtv5YLXlVSmRpd9ZzLUW1yg",
-  authDomain: "enviro500-gift-cards.firebaseapp.com",
-  databaseURL: "https://enviro500-gift-cards-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "enviro500-gift-cards",
-  storageBucket: "enviro500-gift-cards.firebasestorage.app",
-  messagingSenderId: "998794526608",
-  appId: "1:998794526608:web:b7555c1ea13937b1033d15",
-  measurementId: "G-XV39GPDZKS"
-};
-firebase.initializeApp(firebaseConfig);
+const firebaseConfig = { /* Firebase config */ };
+const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-function getQueryParams() {
+function getOrderIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     return { orderId: params.get("orderid"), password: params.get("pw") };
 }
 
-function showPasswordPrompt(preFilledPassword) {
-    document.getElementById("overlay").classList.remove("hidden");
-    document.getElementById("content").classList.add("blur");
-    if (preFilledPassword) {
-        document.getElementById("orderPassword").value = preFilledPassword;
-    }
+async function promptForPassword(orderId, autoPassword = "") {
+    document.body.classList.add("blurred");
+    document.body.innerHTML += `
+        <div class="overlay">
+            <div class="bg-white shadow-md rounded-xl p-6 w-96 text-center">
+                <h2 class="text-lg font-semibold">Enter Password</h2>
+                <p class="text-sm text-gray-600 mb-4">The password should be sent to you via Shopee Chat.</p>
+                <input type="password" id="orderPassword" class="border p-2 w-full mb-4 rounded-lg" placeholder="Enter password" value="${autoPassword}">
+                <div class="g-recaptcha mb-4" data-sitekey="6LeM9eYqAAAAAByYI25YLPTjPKZWa5lPFlT372jc"></div>
+                <button onclick="verifyPassword('${orderId}')" class="bg-blue-700 text-white py-2 px-4 rounded-lg w-full">Submit</button>
+            </div>
+        </div>`;
 }
 
-async function verifyPassword() {
-    const passwordInput = document.getElementById("orderPassword").value.trim();
-    const captchaResponse = grecaptcha.getResponse();
-    if (!captchaResponse) {
-        alert("Please complete the reCAPTCHA.");
-        return;
-    }
-    
-    const { orderId } = getQueryParams();
-    if (!orderId) return;
-    const orderDoc = await db.collection("orders").doc(orderId).get();
-    if (!orderDoc.exists) {
-        alert("Order not found.");
-        return;
-    }
-    if (passwordInput !== orderDoc.data().password) {
-        alert("Incorrect password.");
-        return;
-    }
-    
-    document.getElementById("overlay").classList.add("hidden");
-    document.getElementById("content").classList.remove("blur");
-    fetchOrderData(orderId);
+const { orderId, password } = getOrderIdFromURL();
+if (orderId) {
+    promptForPassword(orderId, password || "");
 }
-
-async function fetchOrderData(orderId) {
-    const orderDoc = await db.collection("orders").doc(orderId).get();
-    const orderData = orderDoc.data();
-    document.getElementById("content").innerHTML = `<p>Order Details for ${orderId}</p>`; // Replace with actual order details
-}
-
-const { orderId, password } = getQueryParams();
-if (orderId) showPasswordPrompt(password);
 </script>
 </body>
 </html>

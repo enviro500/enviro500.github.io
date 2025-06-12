@@ -15,7 +15,7 @@
         body {
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffcd3c 100%);
+            background: linear-gradient(135deg, #006994 0%, #0ea5e9 50%, #38bdf8 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,8 +118,8 @@
 
         .form-input:focus {
             outline: none;
-            border-color: #ff6b35;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
         }
 
         .form-input::placeholder {
@@ -129,7 +129,7 @@
         .login-button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: linear-gradient(135deg, #006994 0%, #0ea5e9 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -142,9 +142,9 @@
         }
 
         .login-button:hover {
-            background: linear-gradient(135deg, #e55a2b 0%, #e8841a 100%);
+            background: linear-gradient(135deg, #005577 0%, #0284c7 100%);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
         }
 
         .login-button:active {
@@ -163,7 +163,7 @@
         }
 
         .forgot-password a {
-            color: #ff6b35;
+            color: #0ea5e9;
             text-decoration: none;
             font-weight: 500;
             font-size: 14px;
@@ -171,7 +171,7 @@
         }
 
         .forgot-password a:hover {
-            color: #e55a2b;
+            color: #0284c7;
             text-decoration: underline;
         }
 
@@ -231,7 +231,7 @@
         }
 
         .hint-close {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: linear-gradient(135deg, #006994 0%, #0ea5e9 100%);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -243,7 +243,7 @@
         }
 
         .hint-close:hover {
-            background: linear-gradient(135deg, #e55a2b 0%, #e8841a 100%);
+            background: linear-gradient(135deg, #005577 0%, #0284c7 100%);
         }
 
         .overlay {
@@ -269,13 +269,6 @@
 
         .error-message {
             color: #d13438;
-            font-size: 14px;
-            margin-top: 8px;
-            display: none;
-        }
-
-        .success-message {
-            color: #107c10;
             font-size: 14px;
             margin-top: 8px;
             display: none;
@@ -321,16 +314,12 @@
                 max-width: 250px;
             }
         }
-
-
     </style>
 </head>
 <body>
-
-
     <div class="login-container">
         <div class="logo">
-            <img src="https://via.placeholder.com/200x100/ff6b35/ffffff?text=Your+Logo" alt="Company Logo" class="logo-image">
+            <img src="https://via.placeholder.com/200x100/0ea5e9/ffffff?text=Your+Logo" alt="Company Logo" class="logo-image">
         </div>
 
         <h1 class="login-title">Login</h1>
@@ -354,7 +343,6 @@
                 <span id="loginText">Login</span>
             </button>
 
-            <div class="success-message" id="successMessage">Login successful! Redirecting...</div>
             <div class="error-message" id="loginError"></div>
         </form>
 
@@ -368,7 +356,7 @@
 
     <!-- Hint box -->
     <div class="hint-box" id="hintBox">
-        <img src="https://via.placeholder.com/300x150/ff6b35/ffffff?text=Forgot+Password" alt="Forgot Password" class="hint-image">
+        <img src="https://via.placeholder.com/300x150/0ea5e9/ffffff?text=Forgot+Password" alt="Forgot Password" class="hint-image">
         <h3 class="hint-title">Password Reset</h3>
         <p class="hint-text">
             Enter your email address and we'll send you a link to reset your password. 
@@ -405,7 +393,6 @@
         const spinner = document.getElementById('spinner');
         const loginText = document.getElementById('loginText');
         const loginError = document.getElementById('loginError');
-        const successMessage = document.getElementById('successMessage');
         const forgotPasswordLink = document.getElementById('forgotPasswordLink');
 
         // Login form submission
@@ -433,12 +420,9 @@
                 const user = userCredential.user;
                 
                 console.log('Login successful:', user);
-                showSuccess('Login successful! Redirecting...');
                 
-                // Redirect after successful login
-                setTimeout(() => {
-                    window.location.href = 'https://example.com'; // Change this to your desired redirect URL
-                }, 2000);
+                // Redirect immediately after successful login
+                window.location.href = 'https://example.com'; // Change this to your desired redirect URL
 
             } catch (error) {
                 console.error('Login error:', error);
@@ -466,14 +450,8 @@
             loginError.style.display = 'block';
         }
 
-        function showSuccess(message) {
-            successMessage.textContent = message;
-            successMessage.style.display = 'block';
-        }
-
         function clearMessages() {
             loginError.style.display = 'none';
-            successMessage.style.display = 'none';
         }
 
         function handleAuthError(error) {

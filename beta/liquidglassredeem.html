@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <title>Code Checker / Redeem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        @font-face {
+            font-family: 'Montserrat';
+            src: url('https://enviro500.github.io/files/Montserrat-Medium.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Gotham';
+            src: url('https://enviro500.github.io/files/fonts/Gotham-Black.ttf') format('truetype');
+        }
+
+        body {
+            background-image: url('https://member.thescienceacademy.sg/media/auth/bg8.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #FFFFFF;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            text-align: center;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: stretch;
+            max-width: 100vw;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .codes-container {
+            flex: 1;
+            padding: 0px;
+            border-radius: 10px;
+            height: calc(100vh - 20px);
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .codes-container::-webkit-scrollbar { display: none; }
+
+        h1 {
+            font-family: 'Gotham';
+            font-size: 36px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #4285f4, #d96570);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 24px;
+            box-shadow: 
+                0 8px 32px rgba(31, 38, 135, 0.37),
+                inset 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 -1px rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            width: 380px;
+            flex-shrink: 0;
+            height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        .container:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(31, 38, 135, 0.45);
+        }
+
+        .code-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 18px;
+            margin-bottom: 12px;
+            text-align: left;
+            font-size: 14px;
+            position: relative;
+            transition: all 0.25s ease;
+        }
+        .code-box:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-1px);
+        }
+
+        .status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .status.available { color: #4ade80; }
+        .status.expired { color: #f87171; }
+
+        input[type=text], input[type=submit] {
+            border-radius: 16px;
+            width: 100%;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        input[type=text] {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        input[type=submit] {
+            background: linear-gradient(135deg, rgba(74,0,176,0.9), rgba(114,57,234,0.9));
+            color: white;
+            font-weight: 600;
+            padding: 14px 18px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .glass-button {
+            background: linear-gradient(135deg, rgba(114,57,234,0.9), rgba(74,0,176,0.9));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: white;
+            padding: 9px 18px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        h2 {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        #result { margin-top: 15px; opacity: 0; transition: opacity 0.5s; }
+        .youtube-logo { margin-top: 20px; transition: transform 0.2s; }
+        .youtube-logo:hover { transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .container { width: 100%; height: auto; }
+            .codes-container { height: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>enviro500</h1>
+        <form>
+            <input type="text" id="promo-code" placeholder="Enter your code">
+            <input type="submit" value="Redeem Code">
+        </form>
+        <div id="result"></div>
+        <a href="https://www.youtube.com/enviro500" target="_blank" class="youtube-logo">
+            <img src="https://i.ibb.co/mtkWzRF/image.png" alt="YouTube" width="40" height="30">
+        </a>
+    </div>
+
+    <div class="codes-container">
+        <h2>Redeemed Codes</h2>
+        <div id="redeemed-codes"></div>
+        <h2>Available Codes</h2>
+        <div id="available-codes"></div>
+        <h2>Expired Codes</h2>
+        <div id="expired-codes"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBctgwRSi-AEoAC6zun_-jXMlyWRzrU7uA",
+            authDomain: "enviro500web.firebaseapp.com",
+            projectId: "enviro500web",
+            storageBucket: "enviro500web.appspot.com",
+            messagingSenderId: "821087210177",
+            appId: "1:821087210177:web:96f8bd5e588ed33085e240",
+            measurementId: "G-DQZ8WQFYSR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener("DOMContentLoaded", loadCodes);
+
+        async function loadCodes() {
+            const codesRef = collection(db, "codes");
+            const snapshot = await getDocs(codesRef);
+
+            const availableCodesContainer = document.getElementById("available-codes");
+            const expiredCodesContainer = document.getElementById("expired-codes");
+            const redeemedCodesContainer = document.getElementById("redeemed-codes");
+
+            const currentDate = new Date();
+            const redeemedCodes = JSON.parse(sessionStorage.getItem("redeemedCodes") || "[]");
+
+            const availableCodes = [];
+            const expiredCodes = [];
+
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const hidden = data.hidden === true;
+                const redeemed = redeemedCodes.includes(docSnap.id);
+
+                if (!hidden) {
+                    const codeId = docSnap.id;
+                    const description = data.description || "";
+                    const expiryDate = data.date?.toDate?.();
+                    let statusText = "Available";
+
+                    if (redeemed) {
+                        createRedeemedCodeBox(codeId, description, data.message, data.link, data.linkname, redeemedCodesContainer);
+                    } else if (expiryDate) {
+                        if (currentDate > expiryDate) {
+                            statusText = `Expired on ${expiryDate.toLocaleDateString()}`;
+                            expiredCodes.push({ codeId, description, statusText, expiryDate });
+                        } else {
+                            statusText = `Available until ${expiryDate.toLocaleDateString()}`;
+                            availableCodes.push({ codeId, description, statusText, expiryDate });
+                        }
+                    } else {
+                        availableCodes.push({ codeId, description, statusText });
+                    }
+                }
+            });
+
+            availableCodes.sort((a, b) => (a.expiryDate || 0) - (b.expiryDate || 0));
+            expiredCodes.sort((a, b) => (b.expiryDate || 0) - (a.expiryDate || 0));
+
+            availableCodes.forEach(({ codeId, description, statusText }) => {
+                const box = document.createElement("div");
+                box.className = "code-box";
+                box.innerHTML = `<strong>${codeId}</strong><br>${description}`;
+                const status = document.createElement("div");
+                status.className = "status available";
+                status.textContent = statusText;
+                box.appendChild(status);
+                availableCodesContainer.appendChild(box);
+            });
+
+            expiredCodes.forEach(({ codeId, description, statusText }) => {
+                const box = document.createElement("div");
+                box.className = "code-box";
+                box.innerHTML = `<strong>${codeId}</strong><br>${description}`;
+                const status = document.createElement("div");
+                status.className = "status expired";
+                status.textContent = statusText;
+                box.appendChild(status);
+                expiredCodesContainer.appendChild(box);
+            });
+        }
+
+        async function checkCode() {
+            const code = document.getElementById("promo-code").value.trim();
+            const result = document.getElementById("result");
+
+            try {
+                const docRef = doc(db, "codes", code);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const redeemedCodes = JSON.parse(sessionStorage.getItem("redeemedCodes") || "[]");
+
+                    if (redeemedCodes.includes(code)) {
+                        result.textContent = "This code has already been redeemed.";
+                    } else {
+                        redeemedCodes.push(code);
+                        sessionStorage.setItem("redeemedCodes", JSON.stringify(redeemedCodes));
+                        createRedeemedCodeBox(code, data.description, data.message, data.link, data.linkname, document.getElementById("redeemed-codes"));
+                        result.textContent = "Code redeemed successfully!";
+                    }
+                } else {
+                    result.textContent = "Invalid code.";
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+                result.textContent = "Error checking the code.";
+            }
+
+            setTimeout(() => result.style.opacity = 1, 100);
+        }
+
+        function createRedeemedCodeBox(codeId, description, message, link, linkname, container) {
+            const box = document.createElement("div");
+            box.className = "code-box";
+            box.innerHTML = `
+                <strong>${codeId}</strong><br>
+                ${description ? `<span style="opacity:0.7;">${description}</span><br>` : ""}
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2);">
+                <p>${message}</p>
+            `;
+            if (link) {
+                const button = document.createElement("button");
+                button.className = "glass-button";
+                button.innerHTML = `<span class="material-icons">open_in_new</span> ${linkname || "More Details"}`;
+                button.onclick = () => window.open(link, "_blank");
+                box.appendChild(button);
+            }
+            container.appendChild(box);
+        }
+
+        document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            checkCode();
+        });
+    </script>
+</body>
+</html>

@@ -552,6 +552,22 @@ document.getElementById('giftCardType').addEventListener('change', function (e) 
 
 }
 
+// Handle gift card type selection
+document.getElementById('giftCardType')?.addEventListener('change', function(e) {
+    const variationSelect = document.getElementById('giftCardVariation');
+    variationSelect.innerHTML = '<option value="">Select Variation/Amount</option>';
+    variationSelect.disabled = false;
+
+    const selectedType = giftCardTypes.find(t => t.id === e.target.value);
+    if (selectedType && selectedType.variations) {
+        selectedType.variations.forEach(variation => {
+            const option = document.createElement('option');
+            option.value = variation;
+            option.textContent = variation;
+            variationSelect.appendChild(option);
+        });
+    }
+});
 
         // Generate secure password
         function generateSecurePassword() {

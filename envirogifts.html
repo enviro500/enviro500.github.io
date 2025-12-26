@@ -497,15 +497,18 @@
         // Load gift card types
         async function loadGiftCardTypes() {
     try {
-        const snapshot = await db.collection('config').get();
+        const types = ['roblox', 'steam']; // add more IDs here
         giftCardTypes = [];
 
-        snapshot.forEach(doc => {
-            giftCardTypes.push({
-                id: doc.id,
-                ...doc.data()
-            });
-        });
+        for (const id of types) {
+            const doc = await db.collection('config').doc(id).get();
+            if (doc.exists) {
+                giftCardTypes.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            }
+        }
 
         populateGiftCardTypeSelect();
     } catch (error) {

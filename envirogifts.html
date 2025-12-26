@@ -529,11 +529,12 @@
         option.textContent = type.name;
         select.appendChild(option);
     });
-            // Handle gift card type selection (THIS WAS MISSING)
+}
+
+// Handle gift card type → variations
 document.getElementById('giftCardType').addEventListener('change', function (e) {
     const variationSelect = document.getElementById('giftCardVariation');
 
-    // Reset variations
     variationSelect.innerHTML = '<option value="">Select Variation/Amount</option>';
 
     const selectedType = giftCardTypes.find(t => t.id === e.target.value);
@@ -549,25 +550,10 @@ document.getElementById('giftCardType').addEventListener('change', function (e) 
         variationSelect.appendChild(option);
     });
 });
+      
 
-}
 
-// Handle gift card type selection
-document.getElementById('giftCardType')?.addEventListener('change', function(e) {
-    const variationSelect = document.getElementById('giftCardVariation');
-    variationSelect.innerHTML = '<option value="">Select Variation/Amount</option>';
-    variationSelect.disabled = false;
 
-    const selectedType = giftCardTypes.find(t => t.id === e.target.value);
-    if (selectedType && selectedType.variations) {
-        selectedType.variations.forEach(variation => {
-            const option = document.createElement('option');
-            option.value = variation;
-            option.textContent = variation;
-            variationSelect.appendChild(option);
-        });
-    }
-});
 
         // Generate secure password
         function generateSecurePassword() {

@@ -529,6 +529,27 @@
         option.textContent = type.name;
         select.appendChild(option);
     });
+            // Handle gift card type selection (THIS WAS MISSING)
+document.getElementById('giftCardType').addEventListener('change', function (e) {
+    const variationSelect = document.getElementById('giftCardVariation');
+
+    // Reset variations
+    variationSelect.innerHTML = '<option value="">Select Variation/Amount</option>';
+
+    const selectedType = giftCardTypes.find(t => t.id === e.target.value);
+
+    if (!selectedType || !Array.isArray(selectedType.variations)) {
+        return;
+    }
+
+    selectedType.variations.forEach(variation => {
+        const option = document.createElement('option');
+        option.value = variation;
+        option.textContent = variation;
+        variationSelect.appendChild(option);
+    });
+});
+
 }
 
 

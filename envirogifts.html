@@ -479,12 +479,12 @@
     <script>
         // Firebase Configuration - REPLACE WITH YOUR CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyBzf-3hz0ZV-qGJkVWQ8lL7t-YoD3x1JCg",
-            authDomain: "envirogifts.firebaseapp.com",
-            projectId: "envirogifts",
-            storageBucket: "envirogifts",
-            messagingSenderId: "envirogifts",
-            appId: "1:62805138496:web:ba0950e7580ad7e0b8d3a5"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         // Initialize Firebase
@@ -496,46 +496,37 @@
 
         // Load gift card types
         async function loadGiftCardTypes() {
-            try {
-                const doc = await db.collection('config').doc('giftCardTypes').get();
-                if (doc.exists) {
-                    giftCardTypes = doc.data();
-                    populateGiftCardTypeSelect();
-                }
-            } catch (error) {
-                console.error('Error loading gift card types:', error);
-            }
-        }
+    try {
+        const snapshot = await db.collection('config').get();
+        giftCardTypes = [];
+
+        snapshot.forEach(doc => {
+            giftCardTypes.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+
+        populateGiftCardTypeSelect();
+    } catch (error) {
+        console.error('Error loading gift card types:', error);
+    }
+}
+
 
         // Populate gift card type select
         function populateGiftCardTypeSelect() {
-            const select = document.getElementById('giftCardType');
-            if (!giftCardTypes || !giftCardTypes.types) return;
+    const select = document.getElementById('giftCardType');
+    select.innerHTML = '<option value="">Select Gift Card Type</option>';
 
-            giftCardTypes.types.forEach(type => {
-                const option = document.createElement('option');
-                option.value = type.id;
-                option.textContent = type.name;
-                select.appendChild(option);
-            });
-        }
+    giftCardTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.id;
+        option.textContent = type.name;
+        select.appendChild(option);
+    });
+}
 
-        // Handle gift card type selection
-        document.getElementById('giftCardType')?.addEventListener('change', function(e) {
-            const variationSelect = document.getElementById('giftCardVariation');
-            variationSelect.innerHTML = '<option value="">Select Variation/Amount</option>';
-            variationSelect.disabled = false;
-
-            const selectedType = giftCardTypes.types.find(t => t.id === e.target.value);
-            if (selectedType && selectedType.variations) {
-                selectedType.variations.forEach(variation => {
-                    const option = document.createElement('option');
-                    option.value = variation;
-                    option.textContent = variation;
-                    variationSelect.appendChild(option);
-                });
-            }
-        });
 
         // Generate secure password
         function generateSecurePassword() {
@@ -593,7 +584,7 @@
             const hashedPassword = await hashPassword(password);
             const encryptedCode = encryptCode(code, password);
             
-            const giftCardType = giftCardTypes.types.find(t => t.id === giftCardTypeId);
+            const giftCardType = giftCardTypes.find(t => t.id === giftCardTypeId);
             
             try {
                 await db.collection('orders').doc(orderId).set({

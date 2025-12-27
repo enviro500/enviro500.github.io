@@ -412,6 +412,7 @@
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
         }
 
         .modal-btn.cancel {
@@ -424,8 +425,40 @@
             color: white;
         }
 
-        .modal-btn:hover {
+        .modal-btn.confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal-btn:hover:not(:disabled) {
             opacity: 0.8;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 8px;
+            border: 1px solid #ffc107;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-top: 3px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-container label {
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #856404;
+            font-weight: 500;
         }
 
         /* Timestamp Badge */
@@ -561,9 +594,13 @@
                 <p><strong>Important:</strong> Do not reveal sensitive personal information during the screen recording, as we do not accept edited screen recordings as proof.</p>
                 <p>Once you click the "Reveal Code" button, if you did not screen record the redemption process, no refunds will be accepted.</p>
             </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="agreeCheckbox">
+                <label for="agreeCheckbox">I agree to the refund policy and understand that revealing the code without screen recording will make me ineligible for refunds.</label>
+            </div>
             <div class="modal-footer">
                 <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
-                <button class="modal-btn confirm" onclick="confirmReveal()">I Understand, Reveal Code</button>
+                <button class="modal-btn confirm" id="confirmRevealBtn" disabled onclick="confirmReveal()">I Understand, Reveal Code</button>
             </div>
         </div>
     </div>
@@ -806,7 +843,7 @@
                 }
                 
                 if (orderData.revealed) {
-                    showCode();
+                    await showCode();
                     document.getElementById('revealBtn').style.display = 'none';
                 } else {
                     document.getElementById('revealBtn').style.display = 'block';
@@ -841,7 +878,21 @@
         // Close modal
         function closeModal() {
             document.getElementById('warningModal').classList.remove('show');
+            document.getElementById('agreeCheckbox').checked = false;
+            document.getElementById('confirmRevealBtn').disabled = true;
         }
+
+        // Enable/disable confirm button based on checkbox
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('agreeCheckbox');
+            const confirmBtn = document.getElementById('confirmRevealBtn');
+            
+            if (checkbox && confirmBtn) {
+                checkbox.addEventListener('change', function() {
+                    confirmBtn.disabled = !this.checked;
+                });
+            }
+        });
 
         // Confirm reveal
         async function confirmReveal() {
@@ -858,18 +909,22 @@
                 currentOrder.data.revealed = true;
                 currentOrder.data.revealedAt = timestamp;
                 
-                showCode();
+                await showCode();
             } catch (error) {
                 alert('Error updating reveal status: ' + error.message);
             }
         }
 
         // Show code
-        function showCode() {
-            const decryptedCode = decryptCode(currentOrder.data.encryptedCode, currentOrder.password);
-            document.getElementById('codeInput').value = decryptedCode;
-            document.getElementById('revealBtn').style.display = 'none';
-            document.getElementById('codeDisplay').classList.add('show');
+        async function showCode() {
+            try {
+                const decryptedCode = await decryptCode(currentOrder.data.encryptedCode, currentOrder.password);
+                document.getElementById('codeInput').value = decryptedCode;
+                document.getElementById('revealBtn').style.display = 'none';
+                document.getElementById('codeDisplay').classList.add('show');
+            } catch (error) {
+                alert('Error decrypting code: ' + error.message);
+            }
         }
 
         // Copy button

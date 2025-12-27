@@ -614,7 +614,7 @@
         }
 
         // PBKDF2 password hashing with salt
-        async function hashPassword(password, salt = null) {
+        async function hashPassword(password, saltHex = null) {
             const encoder = new TextEncoder();
             const passwordData = encoder.encode(password);
             
@@ -627,15 +627,22 @@
                 ['deriveBits']
             );
             
-            // Generate or use provided salt
-            const saltBuffer = salt ? base64ToBuffer(salt) : crypto.getRandomValues(new Uint8Array(16));
+            // Use provided salt or generate new one
+            let saltBuffer;
+            if (saltHex) {
+                // Convert hex string to Uint8Array
+                const saltBytes = new Uint8Array(saltHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+                saltBuffer = saltBytes;
+            } else {
+                saltBuffer = crypto.getRandomValues(new Uint8Array(16));
+            }
             
             // Derive key using PBKDF2 with high iteration count
             const hashBuffer = await crypto.subtle.deriveBits(
                 {
                     name: 'PBKDF2',
                     salt: saltBuffer,
-                    iterations: 600000, // High iteration count for security
+                    iterations: 600000,
                     hash: 'SHA-256'
                 },
                 keyMaterial,
@@ -644,20 +651,21 @@
             
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            const saltHex = Array.from(new Uint8Array(saltBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+            const saltHex2 = Array.from(new Uint8Array(saltBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
             
-            return `${saltHex}:${hashHex}`;
+            return `${saltHex2}:${hashHex}`;
         }
 
         // Verify password against stored hash
         async function verifyPassword(password, storedHash) {
-            const [salt, hash] = storedHash.split(':');
-            const newHash = await hashPassword(password, salt);
-            return newHash === storedHash;
+            const [saltHex, expectedHash] = storedHash.split(':');
+            const computedHash = await hashPassword(password, saltHex);
+            const [, computedHashPart] = computedHash.split(':');
+            return computedHashPart === expectedHash;
         }
 
         // Derive AES key from password using PBKDF2
-        async function deriveKey(password, salt) {
+        async function deriveKey(password, saltBase64) {
             const encoder = new TextEncoder();
             const passwordData = encoder.encode(password);
             
@@ -672,7 +680,7 @@
             return await crypto.subtle.deriveKey(
                 {
                     name: 'PBKDF2',
-                    salt: base64ToBuffer(salt),
+                    salt: base64ToBuffer(saltBase64),
                     iterations: 100000,
                     hash: 'SHA-256'
                 },
@@ -689,12 +697,12 @@
                 const parts = encryptedData.split(':');
                 if (parts.length !== 3) throw new Error('Invalid encrypted data format');
                 
-                const [ivHex, saltHex, cipherHex] = parts;
-                const iv = base64ToBuffer(ivHex);
-                const cipher = base64ToBuffer(cipherHex);
+                const [ivBase64, saltBase64, cipherBase64] = parts;
+                const iv = base64ToBuffer(ivBase64);
+                const cipher = base64ToBuffer(cipherBase64);
                 
                 // Derive AES key from password
-                const key = await deriveKey(password, saltHex);
+                const key = await deriveKey(password, saltBase64);
                 
                 // Decrypt using AES-GCM
                 const decryptedBuffer = await crypto.subtle.decrypt(
@@ -748,9 +756,11 @@
                 }
                 
                 const orderData = doc.data();
-                const hashedInputPassword = await hashPassword(password);
                 
-                if (hashedInputPassword !== orderData.passwordHash) {
+                // Verify password using PBKDF2
+                const passwordValid = await verifyPassword(password, orderData.passwordHash);
+                
+                if (!passwordValid) {
                     document.getElementById('redeemError').textContent = 'Invalid password';
                     document.getElementById('redeemError').classList.add('show');
                     return;

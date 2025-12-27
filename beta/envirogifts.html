@@ -18,7 +18,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 20px;
             padding-bottom: 80px;
@@ -27,14 +27,6 @@
         .container {
             max-width: 900px;
             margin: 0 auto;
-        }
-
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
         }
 
         /* Redemption Page */
@@ -104,11 +96,10 @@
         }
 
         input[type="text"],
-        input[type="password"],
-        select {
+        input[type="password"] {
             width: 100%;
             padding: 15px;
-            border: 2px solid #4facfe;
+            border: 2px solid #2a5298;
             border-radius: 8px;
             font-size: 16px;
             outline: none;
@@ -116,16 +107,15 @@
             font-family: 'Inter', sans-serif;
         }
 
-        input:focus,
-        select:focus {
-            border-color: #00f2fe;
+        input:focus {
+            border-color: #1e3c72;
         }
 
         .btn {
             width: 100%;
             padding: 15px;
             border: none;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             border-radius: 8px;
             font-size: 18px;
@@ -137,7 +127,7 @@
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.4);
         }
 
         .btn:disabled {
@@ -214,16 +204,6 @@
             .gift-card-info h2 {
                 font-size: 1.5rem;
             }
-
-            .code-display {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .copy-btn {
-                width: 100%;
-                justify-content: center;
-            }
         }
 
         .gift-card-image {
@@ -261,7 +241,7 @@
         }
 
         .reveal-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             border: none;
             padding: 15px 30px;
@@ -274,23 +254,29 @@
 
         .reveal-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.4);
         }
 
         .code-display {
             display: none;
-            gap: 10px;
-            align-items: center;
+            position: relative;
         }
 
         .code-display.show {
+            display: block;
+        }
+
+        .code-input-wrapper {
+            position: relative;
             display: flex;
+            align-items: center;
         }
 
         .code-input {
-            flex: 1;
+            width: 100%;
             padding: 15px;
-            border: 2px solid #4facfe;
+            padding-right: 50px;
+            border: 2px solid #2a5298;
             border-radius: 8px;
             font-size: 18px;
             font-weight: bold;
@@ -299,22 +285,26 @@
         }
 
         .copy-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
+            position: absolute;
+            right: 5px;
+            background: transparent;
+            color: #2a5298;
             border: none;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
-            min-width: 60px;
+            border-radius: 4px;
         }
 
         .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+            background: rgba(42, 82, 152, 0.1);
+        }
+
+        .copy-btn .material-icons {
+            font-size: 20px;
         }
 
         .tutorial-section {
@@ -334,7 +324,7 @@
             flex: 1;
             min-width: 200px;
             padding: 15px 25px;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -352,7 +342,7 @@
 
         .action-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.4);
         }
 
         @media (max-width: 768px) {
@@ -458,7 +448,7 @@
 
         .timestamp-badge .material-icons {
             font-size: 18px;
-            color: #4facfe;
+            color: #2a5298;
             animation: spin 3s linear infinite;
         }
 
@@ -471,36 +461,6 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Admin Page */
-        .admin-card {
-            background: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-link {
-            color: #1e5a7d;
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-
-        .generated-password {
-            background: #e8f5e9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-            display: none;
-            font-family: monospace;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .generated-password.show {
-            display: block;
-        }
-
         .error {
             color: #f44336;
             margin-top: 10px;
@@ -508,16 +468,6 @@
         }
 
         .error.show {
-            display: block;
-        }
-
-        .success {
-            color: #4CAF50;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .success.show {
             display: block;
         }
 
@@ -529,49 +479,48 @@
     </style>
 </head>
 <body>
-    <!-- Redemption Page -->
-    <div id="redeemPage" class="page active">
-        <div class="container">
-            <div class="redeem-card">
-                <div class="redeem-left">
-                    <h1>Redeem your<br><span style="color: #4facfe;">envirogifts</span></h1>
-                </div>
-                
-                <div class="vertical-divider"></div>
-                
-                <div class="redeem-right">
-                    <form id="redeemForm">
-                        <div class="form-group">
-                            <input type="text" id="orderId" placeholder="Order ID" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="password" placeholder="Password" required>
-                        </div>
-                        <div class="recaptcha-container">
-                            <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
-                        </div>
-                        <button type="submit" class="btn">Redeem</button>
-                    </form>
-                    <div class="error" id="redeemError"></div>
-                </div>
+    <div class="container">
+        <div class="redeem-card">
+            <div class="redeem-left">
+                <h1>Redeem your<br><span style="color: #2a5298;">envirogifts</span></h1>
             </div>
-
-            <div class="gift-card-display" id="giftCardDisplay">
-                <div class="warning-banner" id="warningBanner">
-                    <span class="material-icons">warning</span>
-                    <div id="warningText"></div>
-                </div>
-                
-                <div class="gift-card-container">
-                    <div class="gift-card-image" id="giftCardImage">
-                        Gift Card Image
+            
+            <div class="vertical-divider"></div>
+            
+            <div class="redeem-right">
+                <form id="redeemForm">
+                    <div class="form-group">
+                        <input type="text" id="orderId" placeholder="Order ID" required>
                     </div>
-                    <div class="gift-card-info">
-                        <h2 id="giftCardName">Roblox Gift Card</h2>
-                        <div class="amount" id="giftCardAmount">$50</div>
-                        <div class="expires" id="giftCardExpiry">Expires on 26/12/2025</div>
-                        <button class="reveal-btn" id="revealBtn">Click to Reveal Code</button>
-                        <div class="code-display" id="codeDisplay">
+                    <div class="form-group">
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+                    <div class="recaptcha-container">
+                        <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                    </div>
+                    <button type="submit" class="btn">Redeem</button>
+                </form>
+                <div class="error" id="redeemError"></div>
+            </div>
+        </div>
+
+        <div class="gift-card-display" id="giftCardDisplay">
+            <div class="warning-banner" id="warningBanner">
+                <span class="material-icons">warning</span>
+                <div id="warningText"></div>
+            </div>
+            
+            <div class="gift-card-container">
+                <div class="gift-card-image" id="giftCardImage">
+                    Gift Card Image
+                </div>
+                <div class="gift-card-info">
+                    <h2 id="giftCardName">Roblox Gift Card</h2>
+                    <div class="amount" id="giftCardAmount">$50</div>
+                    <div class="expires" id="giftCardExpiry">Expires on 26/12/2025</div>
+                    <button class="reveal-btn" id="revealBtn">Click to Reveal Code</button>
+                    <div class="code-display" id="codeDisplay">
+                        <div class="code-input-wrapper">
                             <input type="text" class="code-input" id="codeInput" readonly>
                             <button class="copy-btn" id="copyBtn">
                                 <span class="material-icons">content_copy</span>
@@ -579,57 +528,22 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="tutorial-section" id="tutorialSection">
-                    <h3>Need Help?</h3>
-                    <a href="#" class="action-btn" id="howToRedeemBtn">
-                        <span class="material-icons">help_outline</span>
-                        How to Redeem
-                    </a>
-                    <a href="#" class="action-btn" id="troubleshootingBtn">
-                        <span class="material-icons">build</span>
-                        Troubleshooting
-                    </a>
-                    <a href="#" class="action-btn" id="shopBtn">
-                        <span class="material-icons">shopping_cart</span>
-                        Shop
-                    </a>
-                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Admin Order Creation Page -->
-    <div id="adminPage" class="page">
-        <div class="container">
-            <div class="admin-card">
-                <a href="#" class="nav-link" onclick="showPage('redeemPage')">← Back to Redemption</a>
-                <h1>Create Order</h1>
-                <form id="adminForm">
-                    <div class="form-group">
-                        <input type="text" id="adminOrderId" placeholder="Order ID" required>
-                    </div>
-                    <div class="form-group">
-                        <select id="giftCardType" required>
-                            <option value="">Select Gift Card Type</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <select id="giftCardVariation" required disabled>
-                            <option value="">Select Variation/Amount</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="giftCardCode" placeholder="Gift Card Code" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="date" id="expiryDate" placeholder="Expiry Date" required>
-                    </div>
-                    <button type="submit" class="btn">Create Order</button>
-                </form>
-                <div class="generated-password" id="generatedPassword"></div>
-                <div class="error" id="adminError"></div>
-                <div class="success" id="adminSuccess"></div>
+            <div class="tutorial-section" id="tutorialSection">
+                <h3>Need Help?</h3>
+                <a href="#" class="action-btn" id="howToRedeemBtn">
+                    <span class="material-icons">help_outline</span>
+                    How to Redeem
+                </a>
+                <a href="#" class="action-btn" id="troubleshootingBtn">
+                    <span class="material-icons">build</span>
+                    Troubleshooting
+                </a>
+                <a href="#" class="action-btn" id="shopBtn">
+                    <span class="material-icons">shopping_cart</span>
+                    Shop
+                </a>
             </div>
         </div>
     </div>
@@ -661,157 +575,154 @@
     </div>
 
     <script>
-        // Firebase Configuration - REPLACE WITH YOUR CONFIG
+        // Firebase Configuration
         const firebaseConfig = {
-  apiKey: "AIzaSyBzf-3hz0ZV-qGJkVWQ8lL7t-YoD3x1JCg",
-  authDomain: "envirogifts.firebaseapp.com",
-  projectId: "envirogifts",
-  storageBucket: "envirogifts.firebasestorage.app",
-  messagingSenderId: "62805138496",
-  appId: "1:62805138496:web:ba0950e7580ad7e0b8d3a5",
-  measurementId: "G-0QPJNG9XH5"
-};
+            apiKey: "AIzaSyBzf-3hz0ZV-qGJkVWQ8lL7t-YoD3x1JCg",
+            authDomain: "envirogifts.firebaseapp.com",
+            projectId: "envirogifts",
+            storageBucket: "envirogifts.firebasestorage.app",
+            messagingSenderId: "62805138496",
+            appId: "1:62805138496:web:ba0950e7580ad7e0b8d3a5",
+            measurementId: "G-0QPJNG9XH5"
+        };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         let currentOrder = null;
-        let giftCardTypes = null;
+        let giftCardTypes = [];
 
         // Load gift card types
         async function loadGiftCardTypes() {
             try {
-                const doc = await db.collection('config').doc('giftCardTypes').get();
-                if (doc.exists) {
-                    giftCardTypes = doc.data();
-                    populateGiftCardTypeSelect();
+                const types = ['roblox', 'steam']; // add more IDs here
+                giftCardTypes = [];
+
+                for (const id of types) {
+                    const doc = await db.collection('config').doc(id).get();
+                    if (doc.exists) {
+                        giftCardTypes.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    }
                 }
             } catch (error) {
                 console.error('Error loading gift card types:', error);
             }
         }
 
-        // Populate gift card type select
-        function populateGiftCardTypeSelect() {
-            const select = document.getElementById('giftCardType');
-            if (!giftCardTypes || !giftCardTypes.types) return;
-
-            giftCardTypes.types.forEach(type => {
-                const option = document.createElement('option');
-                option.value = type.id;
-                option.textContent = type.name;
-                select.appendChild(option);
-            });
-        }
-
-        // Handle gift card type selection
-        document.getElementById('giftCardType')?.addEventListener('change', function(e) {
-            const variationSelect = document.getElementById('giftCardVariation');
-            variationSelect.innerHTML = '<option value="">Select Variation/Amount</option>';
-            variationSelect.disabled = false;
-
-            const selectedType = giftCardTypes.types.find(t => t.id === e.target.value);
-            if (selectedType && selectedType.variations) {
-                selectedType.variations.forEach(variation => {
-                    const option = document.createElement('option');
-                    option.value = variation;
-                    option.textContent = variation;
-                    variationSelect.appendChild(option);
-                });
-            }
-        });
-
-        // Generate secure password
-        function generateSecurePassword() {
-            const length = 16;
-            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-            let password = "";
-            const values = new Uint32Array(length);
-            crypto.getRandomValues(values);
-            for (let i = 0; i < length; i++) {
-                password += charset[values[i] % charset.length];
-            }
-            return password;
-        }
-
-        // Encrypt data (simple XOR encryption for demonstration)
-        function encryptCode(code, key) {
-            let encrypted = '';
-            for (let i = 0; i < code.length; i++) {
-                encrypted += String.fromCharCode(code.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-            }
-            return btoa(encrypted);
-        }
-
-        // Decrypt data
-        function decryptCode(encrypted, key) {
-            const decoded = atob(encrypted);
-            let decrypted = '';
-            for (let i = 0; i < decoded.length; i++) {
-                decrypted += String.fromCharCode(decoded.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-            }
-            return decrypted;
-        }
-
-        // Hash password
-        async function hashPassword(password) {
+        // PBKDF2 password hashing with salt
+        async function hashPassword(password, salt = null) {
             const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hash = await crypto.subtle.digest('SHA-256', data);
-            return Array.from(new Uint8Array(hash))
-                .map(b => b.toString(16).padStart(2, '0'))
-                .join('');
+            const passwordData = encoder.encode(password);
+            
+            // Import password as key material
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                passwordData,
+                'PBKDF2',
+                false,
+                ['deriveBits']
+            );
+            
+            // Generate or use provided salt
+            const saltBuffer = salt ? base64ToBuffer(salt) : crypto.getRandomValues(new Uint8Array(16));
+            
+            // Derive key using PBKDF2 with high iteration count
+            const hashBuffer = await crypto.subtle.deriveBits(
+                {
+                    name: 'PBKDF2',
+                    salt: saltBuffer,
+                    iterations: 600000, // High iteration count for security
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                256
+            );
+            
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            const saltHex = Array.from(new Uint8Array(saltBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+            
+            return `${saltHex}:${hashHex}`;
         }
 
-        // Admin form submission
-        document.getElementById('adminForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Verify password against stored hash
+        async function verifyPassword(password, storedHash) {
+            const [salt, hash] = storedHash.split(':');
+            const newHash = await hashPassword(password, salt);
+            return newHash === storedHash;
+        }
+
+        // Derive AES key from password using PBKDF2
+        async function deriveKey(password, salt) {
+            const encoder = new TextEncoder();
+            const passwordData = encoder.encode(password);
             
-            const orderId = document.getElementById('adminOrderId').value;
-            const giftCardTypeId = document.getElementById('giftCardType').value;
-            const variation = document.getElementById('giftCardVariation').value;
-            const code = document.getElementById('giftCardCode').value;
-            const expiryDate = document.getElementById('expiryDate').value;
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                passwordData,
+                'PBKDF2',
+                false,
+                ['deriveKey']
+            );
             
-            const password = generateSecurePassword();
-            const hashedPassword = await hashPassword(password);
-            const encryptedCode = encryptCode(code, password);
-            
-            const giftCardType = giftCardTypes.types.find(t => t.id === giftCardTypeId);
-            
+            return await crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: base64ToBuffer(salt),
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['decrypt']
+            );
+        }
+
+        // Decrypt gift card code using AES-256-GCM
+        async function decryptCode(encryptedData, password) {
             try {
-                await db.collection('orders').doc(orderId).set({
-                    orderId: orderId,
-                    passwordHash: hashedPassword,
-                    giftCardType: giftCardTypeId,
-                    giftCardName: giftCardType.name,
-                    variation: variation,
-                    encryptedCode: encryptedCode,
-                    expiryDate: expiryDate,
-                    imageUrl: giftCardType.imageUrl || '',
-                    tutorialUrl: giftCardType.tutorialUrl || '',
-                    revealed: false,
-                    revealedAt: null,
-                    createdAt: new Date().toISOString()
-                });
+                const parts = encryptedData.split(':');
+                if (parts.length !== 3) throw new Error('Invalid encrypted data format');
                 
-                document.getElementById('generatedPassword').textContent = `Password: ${password}`;
-                document.getElementById('generatedPassword').classList.add('show');
-                document.getElementById('adminSuccess').textContent = 'Order created successfully!';
-                document.getElementById('adminSuccess').classList.add('show');
-                document.getElementById('adminError').classList.remove('show');
+                const [ivHex, saltHex, cipherHex] = parts;
+                const iv = base64ToBuffer(ivHex);
+                const cipher = base64ToBuffer(cipherHex);
                 
-                setTimeout(() => {
-                    document.getElementById('adminSuccess').classList.remove('show');
-                }, 3000);
+                // Derive AES key from password
+                const key = await deriveKey(password, saltHex);
                 
-                e.target.reset();
+                // Decrypt using AES-GCM
+                const decryptedBuffer = await crypto.subtle.decrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    key,
+                    cipher
+                );
+                
+                const decoder = new TextDecoder();
+                return decoder.decode(decryptedBuffer);
             } catch (error) {
-                document.getElementById('adminError').textContent = 'Error creating order: ' + error.message;
-                document.getElementById('adminError').classList.add('show');
+                console.error('Decryption error:', error);
+                throw new Error('Failed to decrypt gift card code');
             }
-        });
+        }
+
+        // Helper: Convert base64 string to ArrayBuffer
+        function base64ToBuffer(base64) {
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
 
         // Redeem form submission
         document.getElementById('redeemForm').addEventListener('submit', async function(e) {
@@ -951,6 +862,20 @@
             document.getElementById('codeDisplay').classList.add('show');
         }
 
+        // Copy button
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const codeInput = document.getElementById('codeInput');
+            codeInput.select();
+            document.execCommand('copy');
+            
+            const btn = document.getElementById('copyBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="material-icons">check</span>';
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 2000);
+        });
+
         // Update timestamp every second
         function updateTimestamp() {
             const now = new Date();
@@ -980,35 +905,8 @@
         updateTimestamp();
         setInterval(updateTimestamp, 1000);
 
-        // Copy button
-        document.getElementById('copyBtn').addEventListener('click', function() {
-            const codeInput = document.getElementById('codeInput');
-            codeInput.select();
-            document.execCommand('copy');
-            
-            const btn = document.getElementById('copyBtn');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<span class="material-icons">check</span>';
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-            }, 2000);
-        });
-
-        // Show page
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-        }
-
         // Load gift card types on page load
         loadGiftCardTypes();
-
-        // Admin access - add ?admin=true to URL
-        if (window.location.search.includes('admin=true')) {
-            showPage('adminPage');
-        }
     </script>
 </body>
 </html>

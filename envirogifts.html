@@ -279,6 +279,41 @@
             pointer-events: none;
         }
 
+        .reveal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .reveal-overlay:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .reveal-overlay.hidden {
+            display: none;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #3a5ba0 0%, #4a7bc8 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            pointer-events: none;
+        }
+
         .copy-btn {
             position: absolute;
             right: 5px;
@@ -294,7 +329,12 @@
             border-radius: 4px;
         }
 
-        .copy-btn:hover {
+        .copy-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .copy-btn:hover:not(:disabled) {
             background: rgba(74, 123, 200, 0.1);
         }
 
@@ -650,9 +690,12 @@
                     <div class="code-display" id="codeDisplay">
                         <div class="code-input-wrapper">
                             <input type="text" class="code-input blurred" id="codeInput" value="XXXX-XXXX-XXXX-XXXX" readonly>
-                            <button class="copy-btn" id="copyBtn">
+                            <button class="copy-btn" id="copyBtn" disabled>
                                 <span class="material-icons">content_copy</span>
                             </button>
+                            <div class="reveal-overlay" id="revealOverlay">
+                                <button class="reveal-btn">Click to Reveal Code</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -813,13 +856,17 @@
             let history = JSON.parse(localStorage.getItem('giftCardHistory') || '[]');
             const existing = history.find(h => h.orderId === orderId);
             if (!existing) {
+                const purchaseDate = new Date(orderData.createdAt);
+                const expiryParts = orderData.expiryDate.split('-');
+                const formattedExpiry = `${expiryParts[2]}/${expiryParts[1]}/${expiryParts[0]}`;
+                
                 history.push({
                     orderId: orderId,
                     password: password,
                     giftCardName: orderData.giftCardName,
                     variation: orderData.variation,
                     imageUrl: orderData.imageUrl,
-                    expiryDate: orderData.expiryDate,
+                    expiryDate: formattedExpiry,
                     purchasedOn: orderData.createdAt,
                     revealed: orderData.revealed
                 });
@@ -924,7 +971,10 @@
 
             document.getElementById('giftCardName').textContent = orderData.giftCardName;
             document.getElementById('giftCardAmount').textContent = orderData.variation;
-            document.getElementById('giftCardExpiry').textContent = `Expires on ${orderData.expiryDate}`;
+            
+            const expiryParts = orderData.expiryDate.split('-');
+            const formattedExpiry = `${expiryParts[2]}/${expiryParts[1]}/${expiryParts[0]}`;
+            document.getElementById('giftCardExpiry').textContent = `Expires on ${formattedExpiry}`;
 
             if (orderData.imageUrl) {
                 document.getElementById('giftCardImage').style.backgroundImage = `url(${orderData.imageUrl})`;
@@ -945,9 +995,17 @@
 
             if (orderData.revealed && skipRevealCheck) {
                 await showCode();
-            } else if (!orderData.revealed) {
+                document.getElementById('revealOverlay').classList.add('hidden');
+                document.getElementById('copyBtn').disabled = false;
+            } else if (orderData.revealed) {
+                await showCode();
+                document.getElementById('revealOverlay').classList.add('hidden');
+                document.getElementById('copyBtn').disabled = false;
+            } else {
                 document.getElementById('codeInput').value = 'XXXX-XXXX-XXXX-XXXX';
                 document.getElementById('codeInput').classList.add('blurred');
+                document.getElementById('revealOverlay').classList.remove('hidden');
+                document.getElementById('copyBtn').disabled = true;
             }
 
             document.getElementById('giftCardDisplay').classList.add('show');
@@ -991,10 +1049,6 @@
                 loadHistory();
 
                 await displayGiftCard(orderData);
-
-                if (!orderData.revealed) {
-                    document.getElementById('warningModal').classList.add('show');
-                }
 
                 setTimeout(() => {
                     document.getElementById('giftCardDisplay').scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -1046,6 +1100,8 @@
                 }
 
                 await showCode();
+                document.getElementById('revealOverlay').classList.add('hidden');
+                document.getElementById('copyBtn').disabled = false;
             } catch (error) {
                 alert('Error updating reveal status: ' + error.message);
             }
@@ -1063,6 +1119,12 @@
                 alert('Error decrypting code: ' + error.message);
             }
         }
+
+        document.getElementById('revealOverlay').addEventListener('click', function() {
+            if (!currentOrder.data.revealed) {
+                document.getElementById('warningModal').classList.add('show');
+            }
+        });
 
         document.getElementById('copyBtn').addEventListener('click', function() {
             const codeInput = document.getElementById('codeInput');

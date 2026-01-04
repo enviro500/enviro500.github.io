@@ -288,14 +288,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 8px;
             cursor: pointer;
             transition: opacity 0.3s ease;
+            z-index: 10;
         }
 
         .reveal-overlay:hover {
-            background: rgba(255, 255, 255, 1);
+            background: rgba(255, 255, 255, 0.9);
         }
 
         .reveal-overlay.hidden {
@@ -474,11 +475,19 @@
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
         .history-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 2px 8px rgba(58, 91, 160, 0.4);
+        }
+
+        .history-btn .material-icons {
+            font-size: 18px;
         }
 
         @media (max-width: 768px) {
@@ -761,13 +770,13 @@
 
     <script>
         const firebaseConfig = {
-            apiKey: "",
-            authDomain: "envirogiftsebaseapp.com",
-            projectId: "envirfts",
-            storageBucket: "enviroge.app",
-            messagingSenderId: "",
-            appId: "1b8d3a5",
-            measurementId: "G-"
+            apiKey: "AIzaSyBzf-3hz0ZV-qGJkVWQ8lL7t-YoD3x1JCg",
+            authDomain: "envirogifts.firebaseapp.com",
+            projectId: "envirogifts",
+            storageBucket: "envirogifts.firebasestorage.app",
+            messagingSenderId: "62805138496",
+            appId: "1:62805138496:web:ba0950e7580ad7e0b8d3a5",
+            measurementId: "G-0QPJNG9XH5"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -899,44 +908,12 @@
                         <p>Expiry: ${card.expiryDate}</p>
                     </div>
                     <div class="history-card-actions">
-                        ${card.revealed ? 
-                            `<button class="history-btn" onclick="markAsUnredeemed('${card.orderId}')">Mark as Unredeemed</button>` : 
-                            `<button class="history-btn" onclick="markAsRedeemed('${card.orderId}')">Mark as Redeemed</button>`
-                        }
-                        <button class="history-btn" onclick="viewCard('${card.orderId}', '${card.password}')">View Icon</button>
+                        <button class="history-btn" onclick="viewCard('${card.orderId}', '${card.password}')">
+                            <span class="material-icons">visibility</span>
+                        </button>
                     </div>
                 </div>
             `;
-        }
-
-        async function markAsRedeemed(orderId) {
-            let history = JSON.parse(localStorage.getItem('giftCardHistory') || '[]');
-            const card = history.find(h => h.orderId === orderId);
-            if (card) {
-                card.revealed = true;
-                localStorage.setItem('giftCardHistory', JSON.stringify(history));
-                try {
-                    await db.collection('orders').doc(orderId).update({revealed: true, revealedAt: new Date().toISOString()});
-                } catch (error) {
-                    console.error('Error updating Firebase:', error);
-                }
-                loadHistory();
-            }
-        }
-
-        async function markAsUnredeemed(orderId) {
-            let history = JSON.parse(localStorage.getItem('giftCardHistory') || '[]');
-            const card = history.find(h => h.orderId === orderId);
-            if (card) {
-                card.revealed = false;
-                localStorage.setItem('giftCardHistory', JSON.stringify(history));
-                try {
-                    await db.collection('orders').doc(orderId).update({revealed: false, revealedAt: null});
-                } catch (error) {
-                    console.error('Error updating Firebase:', error);
-                }
-                loadHistory();
-            }
         }
 
         async function viewCard(orderId, password) {
